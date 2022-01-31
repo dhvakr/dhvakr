@@ -1,0 +1,80 @@
+body 
+{
+  background-color: #191b1f;
+  font-family: 'Crimson', serif;
+  min-height: 75vh;
+}
+
+h1 
+{
+  font-size: 34pt;
+}
+
+::selection
+{
+  color: #060707ec;
+  background: #fff;
+}
+
+.bio-text 
+{
+  margin: 0 auto;
+  clear: both;
+  font-size: 20px;
+  font-family: 'Crimson', serif;
+  max-height: 100vh;
+  padding-top: 50px;
+  color: #ccc;
+  font-weight: 200;
+}
+.bio-text p
+{
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(235, 232, 232, 0.575);
+  margin-top: 35px;
+  line-height: 30px;
+}
+
+.footer, ul
+{
+  list-style: none;
+  display: flex;
+  padding-top: 45px;
+  padding-left: 0px;
+}
+.footer li:after 
+{
+  content: "" !important;
+}
+
+.social-item 
+{
+  margin-right: 5px;
+  padding: 5px;
+  border-radius: 4px;
+}
+.social-item a 
+{
+  display: flex;
+  align-items: left;
+  text-decoration: none;
+}
+.social-item svg 
+{
+  width: 20px;
+  height: 18px;
+  padding-right: 3px;
+  fill: #aaa;
+}
+.social-item-name 
+{
+  font-size: 15px;
+  color: #aaa;
+  font-weight: 400;
+  font-family: 'Verdana', system-ui;
+}
+.social-item:hover 
+{
+  background-color: rgba(46, 43, 43, 0.767);
+}
