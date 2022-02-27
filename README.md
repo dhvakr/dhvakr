@@ -6,7 +6,7 @@
 <a href="https://www.linkedin.com/in/dhvakr/"><img src="assets\img\linkedin.svg" alt="linkedin" align="right" height='24px'/></a>
 
 ## Hey 👋, **Folks**
-I am a versatilist and easily adapt to different hats (Backend Developer 🌐, App Developer 📱, Cloud Developer ☁ or beginner level Designer 🎨) depending on what the project requires. I love experimenting and researching the latest technology 💻 and leveraging them to build cool stuffs 🛠️. it empowers me to create magnificent products.
+I am a versatilist and easily adapt to different hats (Backend Developer 🌐, Hybrid App Developer 📱, Cloud Developer ☁ or beginner level Designer 🎨) depending on what the project requires. I love experimenting and researching the latest technology 💻 and leveraging them to build cool stuffs 🛠️. it empowers me to create magnificent products.
 <br>
 <!-- Custom Image.. Beware the width -->
 <img align="right" alt="GIF" src="https://user-images.githubusercontent.com/59435839/129004906-faee9096-72a0-4776-9ad0-b9061273b23f.png" width="300px"/>
@@ -17,7 +17,7 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, A
 - 🤝 &nbsp; I’m looking to collaborate on [Future Projects]()
 - 🌱 &nbsp; I’m currently learning *Flutter;* 
 - 🤔 &nbsp; I’m looking for help with `DevOps`
-- 👨🏻‍💻 &nbsp; Mastering: `.java`, `.dart`
+- 👨🏻‍💻 &nbsp; Mastering: `.java`
 - 💬 &nbsp; Ask me about anything tech related, I am happy to help;
 - 📫 &nbsp; Feel free to ping me on Twitter [@dhvakr](https://twitter.com/dhvakr) 
 - 📝 &nbsp; Checkout my [Resume](https://dhvakr.me/assets/resume.pdf)
@@ -44,7 +44,6 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, A
 
   <!-- Tools -->
   [![Firebase](https://img.shields.io/badge/-Firebase-yellow?style=flat-square&logo=Firebase&logoColor=white)](https://firebase.google.com/)
-  [![Flutter](https://img.shields.io/badge/-Flutter-blue?style=flat-square&logo=Flutter)](https://flutter.dev/)
   [![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com/)
   [![Github Actions](https://img.shields.io/badge/-Github_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/features/actions)
   [![Jenkins](https://img.shields.io/badge/-Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white)](https://www.jenkins.io/)
@@ -62,11 +61,10 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, A
   [![MySQL](https://img.shields.io/badge/-MYSQL-4479A1?style=flat-square&logo=MySQL&logoColor=white)](https://www.mysql.com/)
   [![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/)
   [![MongoDB](https://img.shields.io/badge/-MongoDB-13aa52?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-  [![DigitalOcean](https://img.shields.io/badge/-DigitalOcean-blue?style=flat-square&logo=Digitalocean&logoColor=white)](https://www.digitalocean.com/)
+  [![Netlify](https://img.shields.io/badge/-Netlify-00C7B7?style=flat-square&logo=Netlify&logoColor=white)](https://www.digitalocean.com/)
   [![Heroku](https://img.shields.io/badge/-Heroku-430098?style=flat-square&logo=heroku)](https://www.heroku.com/)
   [![Awazon AWS](https://img.shields.io/badge/Amazon%20AWS-232F3E?style=flat-square&logo=amazon-aws)](https://aws.amazon.com/)
   [![Google Cloud Platform](https://img.shields.io/badge/-Google_Cloud_Platform-1a73e8?style=flat-square&logo=google-cloud&logoColor=white)](https://cloud.google.com/)
-  [![Microsoft Azure](https://img.shields.io/badge/Microsoft%20Azure-232F7E?style=flat-square&logo=microsoft-azure)](https://azure.microsoft.com/en-us/)
   [![Raspberry Pi](https://img.shields.io/badge/-Raspberry%20Pi-C51A4A?style=flat-square&logo=Raspberry-Pi)](https://www.raspberrypi.org/)
   
 ### 📊 Github Stats
