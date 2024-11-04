@@ -8,16 +8,16 @@
 ## Hey 👋, **Folks**
 I am a versatilist and easily adapt to different hats (Backend Developer 🌐, DevSecOps/Security practitioner 🔐, Cloud Developer ☁ or Beginner Level Designer 🎨) depending on what the project requires. I love experimenting and researching the latest technology 💻 and leveraging them to build cool stuffs 🛠️. it empowers me to create magnificent products.
 <br>
-<!-- Custom Image.. Beware the width -->
+<!-- Custom Image.. Beware with the width -->
 <img align="right" alt="GIF" src="https://user-images.githubusercontent.com/59435839/190238699-c583229a-df70-4174-a9f6-90b876b5791d.png" width="240px"/>
 
 ### 🧐 More About Me:
 
-- 🔭 &nbsp; I’m currently working on **Cloud Service's (GCP , AWS)**
-- 🤝 &nbsp; I’m looking to collaborate on [Future Projects]()
-- 🌱 &nbsp; I’m currently learning *GoLang* 
-- 🤔 &nbsp; I’m looking for help with `infosec`
-- 👨🏻‍💻 &nbsp; Mastering: `.java`
+- 🔭 &nbsp; Currently working on **Cloud Service's (GCP , AWS)**
+- 🤝 &nbsp; Looking to collaborate on scalable backend solutions
+- 🌱 &nbsp; Intermediate in *Python* 
+- 🤔 &nbsp; Looking for help with `infosec`
+- 👨🏻‍💻 &nbsp; Mastering: `.java, AI Prompts`
 - 💬 &nbsp; Ask me about anything tech related, I am happy to help;
 - 📫 &nbsp; Feel free to ping me on Twitter [@dhvakr](https://twitter.com/dhvakr) 
 - 📝 &nbsp; Checkout my [Resume](https://dhvakr.me/assets/resume.pdf)
@@ -47,13 +47,9 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, D
   [![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com/)
   [![Github Actions](https://img.shields.io/badge/-Github_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/features/actions)
   [![Jenkins](https://img.shields.io/badge/-Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white)](https://www.jenkins.io/)
-  [![Nodejs](https://img.shields.io/badge/-Nodejs-43853d?style=flat-square&logo=Node.js&logoColor=white)](https://nodejs.org/en/)
   [![npm](https://img.shields.io/badge/-NPM-CB3837?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/)
-  [![Selenium](https://img.shields.io/badge/-Selenium-43B02A?style=flat-square&logo=Selenium&logoColor=white)](https://www.selenium.dev/)
   [![Prettier](https://img.shields.io/badge/-Prettier-F7B93E?style=flat-square&logo=prettier&logoColor=white)](https://prettier.io/)
   [![Canva](https://img.shields.io/badge/-Canva-00C4CC?style=flat-square&logo=Canva&logoColor=white)](https://www.canva.com/)
-  [![Figma](https://img.shields.io/badge/-Figma-orange?style=flat-square&logo=Figma&logoColor=white)](https://www.figma.com/)
-  [![Flowable](https://img.shields.io/badge/Learning-Flowable-orange?style=flat-square&logo=Flowable&logoColor=white)](https://www.flowable.com/open-source) <!-- Learning -->
   [![Kafka](https://img.shields.io/badge/-Kafka-231F20?style=flat-square&logo=ApacheKafka&logoColor=white)](https://kafka.apache.org/)
   [![Redis](https://img.shields.io/badge/-Redis-DC382D?style=flat-square&logo=ApacheKafka&logoColor=white)](https://redis.io/)
   [![Docker](https://img.shields.io/badge/-Docker-46a2f1?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
@@ -62,7 +58,6 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, D
   [![JetBrains](https://img.shields.io/badge/-JetBrains%20Tools-222222?style=flat-square&logo=JetBrains&logoColor=white)](https://www.jetbrains.com/)
   [![Airbyte](https://img.shields.io/badge/-Airbyte-615EFF?style=flat-square&logo=Airbyte&logoColor=white)](https://airbyte.com/)
   [![Minio](https://img.shields.io/badge/-Minio-F05032?style=flat-square&logo=Minio&logoColor=white)](https://min.io/)
-  [![MySQL](https://img.shields.io/badge/-MYSQL-4479A1?style=flat-square&logo=MySQL&logoColor=white)](https://www.mysql.com/)
   [![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/)
   [![MongoDB](https://img.shields.io/badge/-MongoDB-13aa52?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
   [![Netlify](https://img.shields.io/badge/-Netlify-00C7B7?style=flat-square&logo=Netlify&logoColor=white)](https://www.netlify.com/)
