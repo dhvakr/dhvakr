@@ -4,4 +4,4 @@
 <a href="https://www.linkedin.com/in/dhvakr/"><img src="assets\img\linkedin.svg" alt="linkedin" align="right" height='24px'/></a>
 
 ## Hey 👋, **Folks**
-This is my Initial First Iteration Of My Personal Website
+This is my second iteration of my portfolio website
