@@ -6,21 +6,21 @@
 <a href="https://www.linkedin.com/in/dhvakr/"><img src="https://github.com/dhvakr/dhvakr/raw/iteration-1/assets/img/linkedin.svg" alt="linkedin" align="right" height='24px'/></a>
 
 ## Hey 👋, **Folks**
-I am a versatilist and easily adapt to different hats (Backend Developer 🌐, DevSecOps/Security practitioner 🔐, Cloud Developer ☁ or Beginner Level Designer 🎨) depending on what the project requires. I love experimenting and researching the latest technology 💻 and leveraging them to build cool stuffs 🛠️. it empowers me to create magnificent products.
+I am a versatilist and easily adapt to different hats (Backend Developer 🌐, DevSecOps/Security practitioner 🔐, Cloud Developer ☁) depending on what the project requires. I love experimenting and researching the latest technology 💻 and leveraging them to build cool stuffs 🛠️. it empowers me to create magnificent products.
 <br>
 <!-- Custom Image.. Beware with the width -->
 <img align="right" alt="GIF" src="https://user-images.githubusercontent.com/59435839/190238699-c583229a-df70-4174-a9f6-90b876b5791d.png" width="240px"/>
 
 ### 🧐 More About Me:
 
-- 🔭 &nbsp; Currently working on **Cloud Service's (GCP , AWS)**
+- 🔭 &nbsp; Currently working on **DSA**
 - 🤝 &nbsp; Looking to collaborate on scalable backend solutions
 - 🌱 &nbsp; Intermediate in *Python* 
 - 🤔 &nbsp; Looking for help with `infosec`
 - 👨🏻‍💻 &nbsp; Mastering: `.java, AI Prompts`
 - 💬 &nbsp; Ask me about anything tech related, I am happy to help;
-- 📫 &nbsp; Feel free to ping me on Twitter [@dhvakr](https://twitter.com/dhvakr) 
-- 📝 &nbsp; Checkout my [Resume](https://dhvakr.me/assets/resume.pdf)
+- 📫 &nbsp; Feel free to ping me on X [@dhvakr](https://x.com/dhvakr) 
+- 📝 &nbsp; Checkout my [Resume](https://dhvakr.me/assets/Divakaran%20-%20Software%20Engineer.pdf)
 - 💆‍♂️ &nbsp; When I am free, I play games and listen to music/podcast's
 --- 
 <details open> <!-- Spotify Playing Status -->
@@ -32,36 +32,37 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, D
 
 <!-- TECH STACKS AND TOOLS -->
 ### 🖥️ My DevSetup
-  [![OS](https://img.shields.io/badge/OS-Windows-blue?style=flat-square&logo=windows)](https://www.microsoft.com/en-in/windows/windows-11)
   [![OS](https://img.shields.io/badge/OS-Linux-informational?style=flat-square&logo=linux&logoColor=white)](https://en.wikipedia.org/wiki/Linux)
+  [![OS](https://img.shields.io/badge/OS-apple-blue?style=flat-square&logo=pple)](https://www.apple.com/in/mac)
   [![Editor](https://img.shields.io/badge/Editor-VSCode-blue?style=flat-square&logo=visual-studio-code&logoColor=white)](https://code.visualstudio.com/)
   [![Dotfiles](https://img.shields.io/badge/Setup-Dotfiles-blue?style=flat-square&logo=when-i-work&logoColor=white)](https://github.com/br3ndonland/dotfiles)       
 ### 🔨 Languages and Tools I use:
-  [![Java](https://img.shields.io/badge/-Java-007396?style=flat-square&logo=java&logoColor=white)](https://dev.java/)
+  [![Java](https://img.shields.io/badge/-Java-007396?style=flat-square&logo=openjdk&logoColor=white)](https://dev.java/)
+  [![Go](https://img.shields.io/badge/-Go-00ADD8?style=flat-square&logo=Go&logoColor=white)](https://golang.org/)
   [![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=Python&logoColor=white)](https://www.python.org/)
-  [![Golang](https://img.shields.io/badge/-Golang-00ADD8?style=flat-square&logo=Go&logoColor=white)](https://golang.org/)
 
 
   <!-- Tools -->
-  [![Firebase](https://img.shields.io/badge/-Firebase-yellow?style=flat-square&logo=Firebase&logoColor=white)](https://firebase.google.com/)
-  [![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com/)
+  [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#)
+  [![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)](#)
+  [![JetBrains](https://img.shields.io/badge/-JetBrains%20Tools-222222?style=flat-square&logo=JetBrains&logoColor=white)](https://www.jetbrains.com/)
+  [![Postman](https://img.shields.io/badge/Postman-FF6C37?logo=postman&logoColor=white)](#)
   [![Github Actions](https://img.shields.io/badge/-Github_Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/features/actions)
-  [![Jenkins](https://img.shields.io/badge/-Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white)](https://www.jenkins.io/)
+  [![Gitlab CI](https://img.shields.io/badge/GitLab%20CI-FC6D26?style=flat-square&logo=gitlab&logoColor=white)](https://www.gitlab.com/)
+  [![k6](https://img.shields.io/badge/k6-6364FF?logo=k6&logoColor=fff)](#)
+  [![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com/)
   [![npm](https://img.shields.io/badge/-NPM-CB3837?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/)
-  [![Prettier](https://img.shields.io/badge/-Prettier-F7B93E?style=flat-square&logo=prettier&logoColor=white)](https://prettier.io/)
-  [![Canva](https://img.shields.io/badge/-Canva-00C4CC?style=flat-square&logo=Canva&logoColor=white)](https://www.canva.com/)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-009485.svg?logo=fastapi&logoColor=white)](#)
   [![Kafka](https://img.shields.io/badge/-Kafka-231F20?style=flat-square&logo=ApacheKafka&logoColor=white)](https://kafka.apache.org/)
-  [![Redis](https://img.shields.io/badge/-Redis-DC382D?style=flat-square&logo=ApacheKafka&logoColor=white)](https://redis.io/)
   [![Docker](https://img.shields.io/badge/-Docker-46a2f1?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
   [![Kubernates](https://img.shields.io/badge/-Kubernates-blue?style=flat-square&logo=Kubernetes&logoColor=white)](https://kubernetes.io/)
   [![Terraform](https://img.shields.io/badge/-Terraform-7B42BC?style=flat-square&logo=Terraform&logoColor=white)](https://www.terraform.io/)
-  [![JetBrains](https://img.shields.io/badge/-JetBrains%20Tools-222222?style=flat-square&logo=JetBrains&logoColor=white)](https://www.jetbrains.com/)
   [![Airbyte](https://img.shields.io/badge/-Airbyte-615EFF?style=flat-square&logo=Airbyte&logoColor=white)](https://airbyte.com/)
   [![Minio](https://img.shields.io/badge/-Minio-F05032?style=flat-square&logo=Minio&logoColor=white)](https://min.io/)
   [![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/)
+  [![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)](#)
   [![MongoDB](https://img.shields.io/badge/-MongoDB-13aa52?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-  [![Netlify](https://img.shields.io/badge/-Netlify-00C7B7?style=flat-square&logo=Netlify&logoColor=white)](https://www.netlify.com/)
-  [![Vercel](https://img.shields.io/badge/-Vercel-430098?style=flat-square&logo=Vercel)](https://vercel.com/)
+  [![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=Cloudflare&logoColor=white)](#)
   [![Awazon AWS](https://img.shields.io/badge/Amazon%20AWS-232F3E?style=flat-square&logo=amazon-aws)](https://aws.amazon.com/)
   [![Google Cloud Platform](https://img.shields.io/badge/-Google_Cloud_Platform-1a73e8?style=flat-square&logo=google-cloud&logoColor=white)](https://cloud.google.com/)
   
