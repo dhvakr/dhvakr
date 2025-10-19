@@ -348,13 +348,18 @@ main {
 
 .terminal-line {
   opacity: 1;
+  display: flex;
+  align-items: baseline;
+  text-indent: -0.5ch;
+  padding-left: 0.5ch;
+  letter-spacing: 0ch;
   transition: opacity 0.3s ease;
 }
 
 .typing-effect {
   overflow: hidden;
   white-space: nowrap;
-  animation: typing 3s steps(30) infinite;
+  animation: typing 3s steps(30);
 }
 
 @keyframes typing {
