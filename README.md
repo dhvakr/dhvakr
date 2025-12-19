@@ -13,15 +13,15 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, D
 
 ### 🧐 More About Me:
 
-- 🔭 &nbsp; Currently working on **DSA**
-- 🤝 &nbsp; Looking to collaborate on scalable backend solutions
-- 🌱 &nbsp; Intermediate in *Python* 
-- 🤔 &nbsp; Looking for help with `infosec`
-- 👨🏻‍💻 &nbsp; Mastering: `.java, AI Prompts`
-- 💬 &nbsp; Ask me about anything tech related, I am happy to help;
-- 📫 &nbsp; Feel free to ping me on X [@dhvakr](https://x.com/dhvakr) 
-- 📝 &nbsp; Checkout my [Resume](https://dhvakr.me/assets/Divakaran%20-%20Software%20Engineer.pdf)
-- 💆‍♂️ &nbsp; When I am free, I play games and listen to music/podcast's
+- 🔭 &nbsp; Currently working on **Go**
+- 🤝 &nbsp; Open to collaborating on scalable backend systems
+- 🌱 &nbsp; Intermediate in *DSA, System Design* 
+- 🤔 &nbsp; Exploring and learning `cybersecurity`
+- 👨🏻‍💻 &nbsp; Primary stack: `.java, .go`
+- 💬 &nbsp; Happy to discuss anything tech — backend, systems, or architecture
+- 📫 &nbsp; Reach me on X(Twitter): [@dhvakr](https://x.com/dhvakr) 
+- 📝 &nbsp; Checkout my [Resume](https://rxresu.me/dhvakr/swe)
+- 💆‍♂️ &nbsp; Off-hours: games, music, and podcasts
 --- 
 <details open> <!-- Spotify Playing Status -->
 <summary><b><i>Vibing to 🎧</i></b></summary>
@@ -56,8 +56,6 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, D
   [![Kafka](https://img.shields.io/badge/-Kafka-231F20?style=flat-square&logo=ApacheKafka&logoColor=white)](https://kafka.apache.org/)
   [![Docker](https://img.shields.io/badge/-Docker-46a2f1?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
   [![Kubernates](https://img.shields.io/badge/-Kubernates-blue?style=flat-square&logo=Kubernetes&logoColor=white)](https://kubernetes.io/)
-  [![Terraform](https://img.shields.io/badge/-Terraform-7B42BC?style=flat-square&logo=Terraform&logoColor=white)](https://www.terraform.io/)
-  [![Airbyte](https://img.shields.io/badge/-Airbyte-615EFF?style=flat-square&logo=Airbyte&logoColor=white)](https://airbyte.com/)
   [![Minio](https://img.shields.io/badge/-Minio-F05032?style=flat-square&logo=Minio&logoColor=white)](https://min.io/)
   [![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/)
   [![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)](#)
