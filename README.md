@@ -41,7 +41,6 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, D
   [![Go](https://img.shields.io/badge/-Go-00ADD8?style=flat-square&logo=Go&logoColor=white)](https://golang.org/)
   [![Python](https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=Python&logoColor=white)](https://www.python.org/)
 
-
   <!-- Tools -->
   [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#)
   [![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)](#)
@@ -51,12 +50,10 @@ I am a versatilist and easily adapt to different hats (Backend Developer 🌐, D
   [![Gitlab CI](https://img.shields.io/badge/GitLab%20CI-FC6D26?style=flat-square&logo=gitlab&logoColor=white)](https://www.gitlab.com/)
   [![k6](https://img.shields.io/badge/k6-6364FF?logo=k6&logoColor=fff)](#)
   [![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)](https://git-scm.com/)
-  [![npm](https://img.shields.io/badge/-NPM-CB3837?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/)
-  [![FastAPI](https://img.shields.io/badge/FastAPI-009485.svg?logo=fastapi&logoColor=white)](#)
-  [![Kafka](https://img.shields.io/badge/-Kafka-231F20?style=flat-square&logo=ApacheKafka&logoColor=white)](https://kafka.apache.org/)
   [![Docker](https://img.shields.io/badge/-Docker-46a2f1?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
   [![Kubernates](https://img.shields.io/badge/-Kubernates-blue?style=flat-square&logo=Kubernetes&logoColor=white)](https://kubernetes.io/)
   [![Minio](https://img.shields.io/badge/-Minio-F05032?style=flat-square&logo=Minio&logoColor=white)](https://min.io/)
+  [![Kafka](https://img.shields.io/badge/-Kafka-231F20?style=flat-square&logo=ApacheKafka&logoColor=white)](https://kafka.apache.org/)
   [![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?style=flat-square&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/)
   [![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)](#)
   [![MongoDB](https://img.shields.io/badge/-MongoDB-13aa52?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
