@@ -212,6 +212,17 @@ header.nav{
 }
 .nav .wrap{ display:flex; align-items:center; justify-content:space-between; gap:24px; height:66px; }
 .logo{ display:flex; align-items:center; gap:11px; text-decoration:none; }
+/* Ikat is the product; Inibee is the studio behind it. Set small and
+   on the baseline of the logotype so it reads as attribution, not a
+   second brand competing with the first. */
+.byline{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:var(--step--2);
+  color:var(--ink-3); letter-spacing:0.02em; white-space:nowrap;
+  padding-left:11px; border-left:1px solid var(--rule-2); }
+.byline b{ font-weight:500; color:var(--ink-2); }
+/* The section links reappear at 1081px, and between there and ~1200px the
+   byline plus those links push the CTA off the right edge. Hold it back
+   until the row genuinely fits; the footer carries the tagline either way. */
+@media (max-width:1199px){ .byline{ display:none; } }
 .logo svg{ display:block; height:20px; width:auto; }
 .logo .word{
   font-family:'Bricolage Grotesque', sans-serif;
@@ -769,6 +780,7 @@ table.map td.holders{ width:30%; font-family:'IBM Plex Mono',monospace; font-siz
 footer{ padding:26px 0 36px; }
 footer .wrap{ display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; font-size:var(--step--2); color:var(--ink-3); letter-spacing:0.04em; }
 footer em{ font-style:normal; color:var(--cross); }
+footer b{ font-weight:500; color:var(--ink-2); }
 footer a{ color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule-2);
   transition:color .3s var(--ease-soft), border-color .3s var(--ease-soft); }
 footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
@@ -790,6 +802,7 @@ footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
         <circle cx="19" cy="15" r="1.7" fill="var(--cross)"/>
       </svg>
       <span class="word">ikat</span>
+      <span class="byline">a product of <b>Inibee</b></span>
     </a>
     <nav class="navlinks" aria-label="Sections">
       <a href="#gap">The gap</a>
@@ -1347,7 +1360,7 @@ docker run -p 8080:8080 \
 
 <footer>
   <div class="wrap">
-    <span class="mono">&copy; 2026 ikat &nbsp;/&nbsp; built by <a href="/">Divakaran</a></span>
+    <span class="mono">&copy; 2026 ikat &nbsp;/&nbsp; a product of <b>Inibee</b> &nbsp;/&nbsp; built by <a href="/">Divakaran</a></span>
     <span class="mono"><em>ikat</em> &nbsp;/&nbsp; threads bound and dyed before the weaving, so the pattern is in the thread itself</span>
   </div>
 </footer>

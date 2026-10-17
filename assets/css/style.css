@@ -5,15 +5,16 @@
    purpose, so a visitor with no stored choice and no OS preference
    still gets the intended ground.
 
-   Black and white carry the page. Colour is signal, never decoration,
-   and is only ever allowed to mean:
+   Black and white carry the page. There is exactly one accent — a warm
+   bronze — and one alarm:
 
-     sig     green    holding · within objective · the accent
-     warm    brown    the earlier state · secondary data
-     breach  rust     over the objective
+     sig     bronze   the accent · emphasis · links · numbers
+     trace   ink      the latency trace while it is inside the objective
+     breach  rust     over the objective, and nothing else
 
-   That contract is what lets the latency panel in the hero teach
-   itself without a legend.
+   The latency panel reads plainly because of that last pair: a healthy
+   system is drawn in ink like the rest of the page, and colour appears
+   only when something is wrong. No legend needed.
    =================================================================== */
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -31,17 +32,16 @@
   --line-2:  rgba(244,243,239,0.17);
 
   /* ---- signal ---- */
-  --sig:       #7FBE94;   /* text-safe on this ground */
-  --sig-graph: #7FBE94;   /* strokes, fills, filled blocks */
-  --sig-wash:  rgba(127,190,148,0.13);
-  --warm:      #C6A382;
-  --warm-wash: rgba(198,163,130,0.13);
-  --breach:       #E58066;
-  --breach-graph: #E58066;
-  --breach-wash:  rgba(229,128,102,0.13);
+  --sig:       #CBA67E;   /* text-safe on this ground */
+  --sig-graph: #CBA67E;   /* strokes, fills, filled blocks */
+  --sig-wash:  rgba(203,166,126,0.13);
+  --trace:     #F4F3EF;   /* the trace inside the objective — ink, not colour */
+  --breach:       #E0674A;
+  --breach-graph: #E0674A;
+  --breach-wash:  rgba(224,103,74,0.14);
   --on-sig:   #0A0A0B;    /* ink laid on a signal-coloured block */
 
-  --sel-bg: rgba(127,190,148,0.26);
+  --sel-bg: rgba(203,166,126,0.26);
   --sel-fg: #FFFFFF;
 
   /* ---- type ---- */
@@ -77,17 +77,16 @@
   --line:    rgba(15,15,14,0.12);
   --line-2:  rgba(15,15,14,0.20);
 
-  --sig:       #2D6A45;
-  --sig-graph: #2F6E47;
-  --sig-wash:  rgba(47,110,71,0.12);
-  --warm:      #7A5230;
-  --warm-wash: rgba(122,82,48,0.12);
-  --breach:       #B23A1C;
-  --breach-graph: #C8441F;
-  --breach-wash:  rgba(200,68,31,0.11);
+  --sig:       #7A5230;
+  --sig-graph: #8A5E38;
+  --sig-wash:  rgba(138,94,56,0.12);
+  --trace:     #0F0F0E;
+  --breach:       #A8331A;
+  --breach-graph: #B83A1E;
+  --breach-wash:  rgba(184,58,30,0.10);
   --on-sig:   #FFFFFF;
 
-  --sel-bg: rgba(47,110,71,0.17);
+  --sel-bg: rgba(138,94,56,0.16);
   --sel-fg: #0F0F0E;
 }
 
@@ -102,17 +101,16 @@
   --line:    rgba(15,15,14,0.12);
   --line-2:  rgba(15,15,14,0.20);
 
-  --sig:       #2D6A45;
-  --sig-graph: #2F6E47;
-  --sig-wash:  rgba(47,110,71,0.12);
-  --warm:      #7A5230;
-  --warm-wash: rgba(122,82,48,0.12);
-  --breach:       #B23A1C;
-  --breach-graph: #C8441F;
-  --breach-wash:  rgba(200,68,31,0.11);
+  --sig:       #7A5230;
+  --sig-graph: #8A5E38;
+  --sig-wash:  rgba(138,94,56,0.12);
+  --trace:     #0F0F0E;
+  --breach:       #A8331A;
+  --breach-graph: #B83A1E;
+  --breach-wash:  rgba(184,58,30,0.10);
   --on-sig:   #FFFFFF;
 
-  --sel-bg: rgba(47,110,71,0.17);
+  --sel-bg: rgba(138,94,56,0.16);
   --sel-fg: #0F0F0E;
   }
 }
@@ -173,7 +171,9 @@ img, svg, canvas, iframe { display: block; max-width: 100%; }
   font-family: var(--mono);
   font-size: var(--step--2);
   text-transform: uppercase;
-  letter-spacing: 0.13em;
+  /* 0.13em was pushing the longer role line onto a second row in the
+     hero's narrower column; the label still reads as a label at 0.1 */
+  letter-spacing: 0.1em;
   color: var(--fg-3);
   display: flex;
   align-items: center;
@@ -186,7 +186,12 @@ img, svg, canvas, iframe { display: block; max-width: 100%; }
   height: 1px;
   background: var(--sig-graph);
   flex: none;
+  align-self: center;
 }
+/* the hero's role line is the longest on the page — let it hold one row
+   wherever the column is wide enough for it */
+.hero .eyebrow { flex-wrap: nowrap; }
+@media (max-width: 560px) { .hero .eyebrow { flex-wrap: wrap; } }
 
 /* ============================ header ============================ */
 
@@ -516,7 +521,7 @@ section + section { border-top: 1px solid var(--line); }
   letter-spacing: -0.02em;
 }
 .readout-v.is-breach { color: var(--breach); }
-.readout-v.is-ok { color: var(--sig); }
+.readout-v.is-ok { color: var(--fg); }
 
 /* At phone width the three labels have to share ~90px each. Tracking and
    size come down just enough that "vs objective" stays on one line, so the
@@ -547,7 +552,7 @@ section + section { border-top: 1px solid var(--line); }
 .panel-note .dot {
   width: 7px; height: 7px;
   border-radius: 50%;
-  background: var(--sig-graph);
+  background: var(--fg-2);
   flex: none;
   transition: background 0.3s ease;
 }
@@ -758,7 +763,7 @@ section + section { border-top: 1px solid var(--line); }
   border-style: dashed;
   background: transparent;
 }
-.sys-soon .sys-kind { color: var(--warm); }
+.sys-soon .sys-kind { color: var(--sig); }
 
 .sys-top { display: flex; align-items: baseline; gap: 10px; }
 .sys-top h3 {
@@ -773,6 +778,7 @@ section + section { border-top: 1px solid var(--line); }
   white-space: nowrap;
 }
 .sys p { font-size: var(--step--1); color: var(--fg-2); text-wrap: pretty; }
+.sys p em { color: var(--fg); }
 .sys-bench {
   font-family: var(--mono);
   font-size: var(--step--1);
@@ -917,7 +923,7 @@ section + section { border-top: 1px solid var(--line); }
   margin-bottom: 5px;
 }
 .signal span { display: block; font-size: var(--step--1); color: var(--fg-2); text-wrap: pretty; }
-.signal span em { font-style: normal; color: var(--warm); }
+.signal span em { font-style: normal; color: var(--sig); }
 .signal a { color: var(--fg-2); border-bottom: 1px solid var(--line-2); }
 .signal a:hover { color: var(--sig); border-color: var(--sig-graph); }
 
@@ -1068,7 +1074,7 @@ footer a:hover { color: var(--sig); }
 .move-n {
   font-family: var(--mono);
   font-size: var(--step--1);
-  color: var(--warm);
+  color: var(--sig);
   letter-spacing: 0.04em;
   padding-top: 3px;
 }

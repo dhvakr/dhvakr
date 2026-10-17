@@ -72,7 +72,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           <h1>Divakaran&nbsp;<span class="sur">T</span></h1>
           <p class="hero-alias"><span>most people call me</span> Diva</p>
           <p class="hero-lede">I build backends that stay fast <em>when the traffic actually arrives.</em></p>
-          <p class="hero-sub"><span data-years>Five</span> years of backend and cloud engineering in production — a multi-tenant platform across AWS and Azure, identity for 4M+ users, pipelines carrying 100K+ events an hour, and $120K a year taken off the cloud bill.</p>
+          <p class="hero-sub"><span data-years>Five</span> years of backend and cloud engineering in production — a multi-tenant platform across six clouds, identity for 4M+ users, pipelines carrying 100K+ events an hour, and $120K a year taken off the cloud bill.</p>
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="mailto:hello@dhvakr.me">Start a conversation</a>
@@ -127,7 +127,6 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <div class="pstat hl"><b>4M+</b><span>users on the identity platform I built backend for — banking and public sector</span></div>
         <div class="pstat"><b>70+</b><span>enterprise clients on the AI SaaS platform I own the roadmap for</span></div>
         <div class="pstat hl"><b>&lt;1s</b><span>REST API P95, held as load rose — down from 2s</span></div>
-        <div class="pstat"><b>&minus;79%</b><span>production RDS load, after finding the hourly full-table scan behind it</span></div>
         <div class="pstat"><b>100K+</b><span>audit events an hour through Kafka and the outbox pattern</span></div>
         <div class="pstat"><b>10K+</b><span>notifications a second, sustained on async Python workers</span></div>
         <div class="pstat hl"><b>$120K</b><span>off the annual cloud bill — consolidated services, redundant auth calls removed</span></div>
@@ -141,7 +140,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       <div class="sec-head reveal">
         <p class="eyebrow">Work</p>
         <h2><span data-years>Five</span> years of numbers that moved in the right direction.</h2>
-        <p>Every line below is something I measured before and after. The tick on each bar is where the number started; the bar is where it ended.</p>
+        <p>Where there is a bar below, it is something I measured before and after: the tick is where the number started, the bar is where it ended.</p>
       </div>
 
       <div class="role reveal">
@@ -149,20 +148,8 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           <h3>Strategy <span class="role-aka">(formerly MicroStrategy)</span></h3>
           <span class="role-meta mono">Software Engineer, IC3 &nbsp;·&nbsp; March 2026 — present</span>
         </div>
-        <p class="role-what">I build and operate a <strong>Kubernetes-based multi-tenant cloud platform</strong> that provisions customer analytics environments across AWS and Azure — a Spring Boot control plane driving Temporal workflows, Helm and Terraform. Shipped per-environment <strong>mutual TLS</strong> with certificates issued from a multi-tenant private root CA, which removed the reverse-proxy layer entirely and put Zero Trust authentication between services. Licence validation runs as JWT at the platform gateway, with a grace path for customer-managed deployments.</p>
-        <ul class="deltas reveal">
-          <li class="delta">
-            <span class="d-label">Production RDS load — found an hourly full-table scan</span>
-            <span class="d-bar" style="--base:100%; --w:21%"><i></i></span>
-            <span class="d-nums"><em>&minus;79%</em></span>
-          </li>
-          <li class="delta">
-            <span class="d-label">Hibernate schema DDL executed at service startup</span>
-            <span class="d-bar" style="--base:100%; --w:1%"><i></i></span>
-            <span class="d-nums"><s>383</s><span class="arw">&rarr;</span><em>3</em></span>
-          </li>
-        </ul>
-        <p class="role-also">Also traced SSO session loss behind an Azure Application Gateway to session-affinity bypass through a secondary DNS name, and fixed the routing through the canonical FQDN. Assessed WAF coverage across both clouds after a penetration test flagged SSRF and anonymous access, and defined the remediation. Designed the zero-downtime migration of AI service storage on EKS from EFS to EBS, using a same-node live-sync cutover.</p>
+        <p class="role-what">I build and operate a <strong>Kubernetes-based multi-tenant cloud platform</strong> that provisions customer analytics environments across GCP, AWS, Azure, StackIT, IBM Cloud and self-hosted &mdash; a Spring Boot control plane driving Temporal workflows, Helm and Terraform.</p>
+        <p class="role-also">Six target platforms with six different ideas of what a network, a disk and an identity are, reconciled behind one control plane. Every environment has to come up isolated from its neighbours, reproducible from the spec, and recoverable when a provision dies halfway through.</p>
       </div>
 
       <div class="role reveal">
@@ -301,7 +288,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       <div class="sec-head reveal">
         <p class="eyebrow">Systems</p>
         <h2>Things I build when nobody assigns them.</h2>
-        <p>Two of these are running. Three are on the bench — designed, not yet published. I would rather name what I am actually building than pad this out with tutorials.</p>
+        <p>Some are running, some are being built. I would rather name what I am actually working on than pad this out with tutorials.</p>
       </div>
 
       <div class="sys-grid">
@@ -328,18 +315,18 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 
         <article class="sys sys-soon reveal">
           <div class="sys-top">
-            <h3>tenant-ca</h3>
-            <span class="sys-kind">in design</span>
+            <h3>kubectl-reach</h3>
+            <span class="sys-kind">building</span>
           </div>
-          <p>A multi-tenant certificate authority that issues short-lived workload identities instead of long-lived secrets — automatic rotation, revocation that propagates, and an audit trail per tenant. The goal is service-to-service authentication with nothing proxying in the path.</p>
-          <div class="sys-tags"><span>Go</span><span>mTLS</span><span>X.509</span><span>SPIFFE</span><span>Kubernetes</span></div>
-          <p class="sys-bench">The generalised form of the per-environment mTLS I shipped on a private root CA at Strategy.</p>
+          <p>The question every operator asks and no dashboard answers: <em>what can this pod actually reach, right now?</em> It composes NetworkPolicies, RBAC bindings and service-mesh identity into a single reachability answer — and names the exact rule doing the allowing, so you can go and change it.</p>
+          <div class="sys-tags"><span>Go</span><span>Kubernetes</span><span>NetworkPolicy</span><span>RBAC</span><span>kubectl plugin</span></div>
+          <p class="sys-bench">A question I have answered by hand across six platforms. That is usually the sign it should be a tool.</p>
         </article>
 
         <article class="sys sys-soon reveal">
           <div class="sys-top">
             <h3>envctl</h3>
-            <span class="sys-kind">in design</span>
+            <span class="sys-kind">building</span>
           </div>
           <p>A control plane that provisions and reconciles whole customer environments across AWS and Azure from one declarative spec. Built on durable workflows, so a provision that dies halfway resumes rather than stranding a tenant in a half-built state someone has to unpick by hand.</p>
           <div class="sys-tags"><span>Go</span><span>Temporal</span><span>Terraform</span><span>Helm</span><span>Multi-cloud</span></div>
@@ -349,7 +336,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <article class="sys sys-soon reveal">
           <div class="sys-top">
             <h3>planguard</h3>
-            <span class="sys-kind">in design</span>
+            <span class="sys-kind">building</span>
           </div>
           <p>Catches a query-plan regression before it reaches production: snapshot the plan for every query in CI, then fail the build when one quietly turns into a full-table scan.</p>
           <div class="sys-tags"><span>Java</span><span>PostgreSQL</span><span>CI</span><span>Static analysis</span></div>
@@ -400,19 +387,19 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       <div class="tiers reveal">
         <div class="tier primary">
           <div class="tier-k"><b>Deep</b><span>day one, no ramp-up</span></div>
-          <div class="tier-v"><span>Java</span><span>Spring Boot</span><span>Go</span><span>PostgreSQL</span><span>Redis</span><span>Kafka</span><span>Docker</span><span>Kubernetes</span><span>AWS</span></div>
+          <div class="tier-v"><span>Java</span><span>Spring Boot</span><span>Go</span><span>Kubernetes</span><span>PostgreSQL</span><span>Redis</span><span>Kafka</span><span>Docker</span><span>AWS</span><span>Azure</span><span>Shell</span></div>
         </div>
         <div class="tier">
           <div class="tier-k"><b>Shipped &amp; operated</b><span>in production, under load</span></div>
-          <div class="tier-v"><span>Keycloak</span><span>OIDC</span><span>OAuth 2.0</span><span>JWT</span><span>Hibernate/JPA</span><span>MongoDB</span><span>Redshift</span><span>OpenTelemetry</span><span>Jaeger</span><span>Sentry</span><span>GitLab CI</span><span>GitHub Actions</span><span>EKS</span><span>MSK</span></div>
+          <div class="tier-v"><span>Terraform</span><span>Helm</span><span>Temporal</span><span>GCP</span><span>EKS</span><span>Keycloak</span><span>OIDC</span><span>OAuth 2.0</span><span>JWT</span><span>mTLS</span><span>Hibernate/JPA</span><span>MongoDB</span><span>Redshift</span><span>OpenTelemetry</span><span>Jaeger</span><span>Sentry</span></div>
         </div>
         <div class="tier">
           <div class="tier-k"><b>Working knowledge</b><span>useful, not claiming depth</span></div>
-          <div class="tier-v"><span>Python</span><span>Flask</span><span>Gunicorn</span><span>React</span><span>TypeScript</span><span>Shell</span></div>
+          <div class="tier-v"><span>Python</span><span>Flask</span><span>Gunicorn</span><span>React</span><span>TypeScript</span></div>
         </div>
         <div class="tier">
           <div class="tier-k"><b>Reading up on</b><span>right now</span></div>
-          <div class="tier-v"><span>GraalVM native-image</span><span>MCP</span><span>Agent infrastructure</span><span>Go runtime internals</span></div>
+          <div class="tier-v"><span>Kubernetes operators</span><span>eBPF &amp; Cilium</span><span>Service mesh</span><span>Crossplane</span><span>OpenTofu</span><span>GraalVM native-image</span><span>MCP &amp; agent infrastructure</span></div>
         </div>
       </div>
     </div>
@@ -427,6 +414,10 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       </div>
 
       <div class="signals reveal">
+        <div class="signal">
+          <b>Best Performer</b>
+          <span>Strategy &mdash; recognised in my first months on the platform team, for the work on multi-tenant provisioning and service-to-service authentication.</span>
+        </div>
         <div class="signal">
           <b>Employee Of The Year</b>
           <span>Solinas Integrity — for taking $120K a year off the cloud bill and owning the backend services end to end. Also named <em>Best Key Player</em> for carrying R&amp;D and the product demos alongside delivery.</span>
@@ -605,9 +596,9 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
      A strip chart of P95 under rising load. The phases are the real
      sequence of interventions, in the order they shipped: load arrives,
      P95 crosses the 1 s objective, then indexing, then Redis in front of
-     reads, then the notification path moved to Go. Amber is inside the
-     objective, red is over it. No legend — the dashed rule is the
-     objective and the colour change is the verdict.
+     reads, then the notification path moved to Go. Inside the objective the
+     trace is drawn in ink; over it, in rust. No legend — the dashed rule is
+     the objective, and colour appearing at all is the verdict.
      ===================================================================== */
   var chart = (function(){
     var cv = document.getElementById('latency');
@@ -638,8 +629,8 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 
     function readColours(){
       var cs = getComputedStyle(document.documentElement);
-      C.sig    = cs.getPropertyValue('--sig-graph').trim()    || '#F2B53C';
-      C.breach = cs.getPropertyValue('--breach-graph').trim() || '#FF6B5A';
+      C.sig    = cs.getPropertyValue('--trace').trim()        || '#F4F3EF';
+      C.breach = cs.getPropertyValue('--breach-graph').trim() || '#E0674A';
       C.line   = cs.getPropertyValue('--line').trim()         || 'rgba(255,255,255,0.1)';
       C.fg3    = cs.getPropertyValue('--fg-3').trim()         || '#82828C';
       C.bg2    = cs.getPropertyValue('--bg-2').trim()         || '#121216';
@@ -708,7 +699,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         trace();
         ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
       };
-      [[0, yObj, C.breach, 0.16], [yObj, H, C.sig, 0.13]].forEach(function(band){
+      [[0, yObj, C.breach, 0.16], [yObj, H, C.sig, 0.07]].forEach(function(band){
         ctx.save();
         ctx.beginPath(); ctx.rect(0, band[0], W, band[1] - band[0]); ctx.clip();
         ctx.globalAlpha = band[3];
