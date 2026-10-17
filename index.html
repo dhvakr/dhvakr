@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Divakaran T (Diva) — Backend &amp; Cloud Engineer</title>
 <meta name="author" content="Divakaran T">
-<meta name="description" content="Divakaran T (Diva) — Software Engineer III, backend. Chennai. Identity for 4M+ users, pipelines at 100K+ events an hour, P95 held under a second, $120K a year off the cloud bill.">
+<meta name="description" content="Divakaran T (Diva) — Software Engineer III, backend and cloud. Chennai. Multi-tenant Kubernetes platform on AWS and Azure, identity for 4M+ users, 100K+ events an hour, $120K a year off the cloud bill.">
 <meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#FBFAF7" media="(prefers-color-scheme: light)">
 
 <meta property="og:title" content="Divakaran T (Diva) — Backend &amp; Cloud Engineer">
-<meta property="og:description" content="Software Engineer III, backend. Identity for 4M+ users, pipelines at 100K+ events an hour, P95 held under a second, $120K a year off the cloud bill.">
+<meta property="og:description" content="Software Engineer III, backend and cloud. Multi-tenant Kubernetes platform on AWS and Azure, identity for 4M+ users, 100K+ events an hour, $120K a year off the cloud bill.">
 <meta property="og:image" content="https://dhvakr.me/assets/img/dk.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -47,7 +47,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     <a class="logo" href="/" aria-label="dhvakr, home">dhvakr</a>
     <ul class="nav-links">
       <li><a href="#work">Work</a></li>
-      <li><a href="#strategy">Strategy</a></li>
+      <li><a href="#ownership">Ownership</a></li>
       <li><a href="#systems">Systems</a></li>
       <li class="keep"><a class="nav-ikat" href="/ikat/">Ikat</a></li>
       <li><a href="#stack">Stack</a></li>
@@ -68,11 +68,11 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Software Engineer III &nbsp;·&nbsp; Backend</p>
+          <p class="eyebrow">Software Engineer III &nbsp;·&nbsp; Backend &amp; Cloud Engineering</p>
           <h1>Divakaran&nbsp;<span class="sur">T</span></h1>
           <p class="hero-alias"><span>most people call me</span> Diva</p>
           <p class="hero-lede">I build backends that stay fast <em>when the traffic actually arrives.</em></p>
-          <p class="hero-sub">Four years of Java and Go in production — identity for 4M+ users, pipelines carrying 100K+ events an hour, P95 held under a second, and $120K a year taken off the cloud bill.</p>
+          <p class="hero-sub"><span data-years>Five</span> years of backend and cloud engineering in production — a multi-tenant platform across AWS and Azure, identity for 4M+ users, pipelines carrying 100K+ events an hour, and $120K a year taken off the cloud bill.</p>
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="mailto:hello@dhvakr.me">Start a conversation</a>
@@ -127,6 +127,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <div class="pstat hl"><b>4M+</b><span>users on the identity platform I built backend for — banking and public sector</span></div>
         <div class="pstat"><b>70+</b><span>enterprise clients on the AI SaaS platform I own the roadmap for</span></div>
         <div class="pstat hl"><b>&lt;1s</b><span>REST API P95, held as load rose — down from 2s</span></div>
+        <div class="pstat"><b>&minus;79%</b><span>production RDS load, after finding the hourly full-table scan behind it</span></div>
         <div class="pstat"><b>100K+</b><span>audit events an hour through Kafka and the outbox pattern</span></div>
         <div class="pstat"><b>10K+</b><span>notifications a second, sustained on async Python workers</span></div>
         <div class="pstat hl"><b>$120K</b><span>off the annual cloud bill — consolidated services, redundant auth calls removed</span></div>
@@ -139,17 +140,38 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">Work</p>
-        <h2>Four years of numbers that moved in the right direction.</h2>
+        <h2><span data-years>Five</span> years of numbers that moved in the right direction.</h2>
         <p>Every line below is something I measured before and after. The tick on each bar is where the number started; the bar is where it ended.</p>
       </div>
 
       <div class="role reveal">
         <div class="role-head">
+          <h3>Strategy <span class="role-aka">(formerly MicroStrategy)</span></h3>
+          <span class="role-meta mono">Software Engineer, IC3 &nbsp;·&nbsp; March 2026 — present</span>
+        </div>
+        <p class="role-what">I build and operate a <strong>Kubernetes-based multi-tenant cloud platform</strong> that provisions customer analytics environments across AWS and Azure — a Spring Boot control plane driving Temporal workflows, Helm and Terraform. Shipped per-environment <strong>mutual TLS</strong> with certificates issued from a multi-tenant private root CA, which removed the reverse-proxy layer entirely and put Zero Trust authentication between services. Licence validation runs as JWT at the platform gateway, with a grace path for customer-managed deployments.</p>
+        <ul class="deltas reveal">
+          <li class="delta">
+            <span class="d-label">Production RDS load — found an hourly full-table scan</span>
+            <span class="d-bar" style="--base:100%; --w:21%"><i></i></span>
+            <span class="d-nums"><em>&minus;79%</em></span>
+          </li>
+          <li class="delta">
+            <span class="d-label">Hibernate schema DDL executed at service startup</span>
+            <span class="d-bar" style="--base:100%; --w:1%"><i></i></span>
+            <span class="d-nums"><s>383</s><span class="arw">&rarr;</span><em>3</em></span>
+          </li>
+        </ul>
+        <p class="role-also">Also traced SSO session loss behind an Azure Application Gateway to session-affinity bypass through a secondary DNS name, and fixed the routing through the canonical FQDN. Assessed WAF coverage across both clouds after a penetration test flagged SSRF and anonymous access, and defined the remediation. Designed the zero-downtime migration of AI service storage on EKS from EFS to EBS, using a same-node live-sync cutover.</p>
+      </div>
+
+      <div class="role reveal">
+        <div class="role-head">
           <h3>Solinas Integrity</h3>
-          <span class="role-meta mono">Software Engineer II &rarr; III &nbsp;·&nbsp; Sept 2024 — present</span>
+          <span class="role-meta mono">Software Engineer II &nbsp;·&nbsp; Sept 2024 — Mar 2026</span>
           <span class="role-tag">Employee Of The Year</span>
         </div>
-        <p class="role-what">I own the technical roadmap for an <strong>AI SaaS platform serving 70+ enterprise clients</strong>, and lead a five-person team through delivery. Designed four Java services from scratch and held them to resilience standards so the platform stays available when inference traffic spikes. Alongside that: HLD and LLD for new surfaces, <strong>50+ code reviews</strong>, and a test-coverage floor of 90%.</p>
+        <p class="role-what">Owned the technical roadmap for an <strong>AI SaaS platform serving 70+ enterprise clients</strong>, and led a five-person team through delivery. Designed four Java services from scratch and held them to resilience standards so the platform stays available when inference traffic spikes. Alongside that: HLD and LLD for new surfaces, <strong>50+ code reviews</strong>, and a test-coverage floor of 90%.</p>
         <ul class="deltas reveal">
           <li class="delta">
             <span class="d-label">REST API P95 latency — indexing and Redis caching</span>
@@ -217,11 +239,11 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     </div>
   </section>
 
-  <!-- =========================== strategy =========================== -->
-  <section id="strategy">
+  <!-- =========================== ownership =========================== -->
+  <section id="ownership">
     <div class="wrap">
       <div class="sec-head reveal">
-        <p class="eyebrow">Strategy</p>
+        <p class="eyebrow">Ownership</p>
         <h2>The half of the job that isn&rsquo;t writing code.</h2>
         <p>Owning what gets built and why, what it costs to run, and whether the people around it get better. This is the part that doesn&rsquo;t fit in a commit history.</p>
       </div>
@@ -230,33 +252,40 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <li class="move">
           <span class="move-n">01</span>
           <div>
+            <b>Set the security bar after a penetration test</b>
+            <span>A test flagged SSRF and anonymous access on web services. I assessed WAF coverage across both AWS and Azure and defined the remediation, rather than filing the findings and waiting for someone else to scope it.</span>
+          </div>
+        </li>
+        <li class="move">
+          <span class="move-n">02</span>
+          <div>
             <b>Owned the roadmap, not just the tickets</b>
             <span>Set the technical direction for an AI SaaS platform serving 70+ enterprise clients, and aligned sprints with product so delivery was predictable rather than heroic.</span>
           </div>
         </li>
         <li class="move">
-          <span class="move-n">02</span>
+          <span class="move-n">03</span>
           <div>
             <b>Took $120K a year off the cloud bill &mdash; then argued for where it went</b>
             <span>Consolidated microservices and removed redundant auth calls. The harder part was making the case to reinvest the saving into security work across teams, instead of letting it quietly become margin.</span>
           </div>
         </li>
         <li class="move">
-          <span class="move-n">03</span>
+          <span class="move-n">04</span>
           <div>
             <b>Turned demos into a feedback loop</b>
             <span>15+ product demonstrations and field enablement lifted customer acquisition by 20%. The objections I heard in those rooms came back as roadmap items.</span>
           </div>
         </li>
         <li class="move">
-          <span class="move-n">04</span>
+          <span class="move-n">05</span>
           <div>
             <b>Built the bench</b>
             <span>Led a five-person team, directed HLD and LLD for new surfaces, mentored through 50+ code reviews, and held a 90% test-coverage floor in CI so quality was a gate rather than an opinion.</span>
           </div>
         </li>
         <li class="move">
-          <span class="move-n">05</span>
+          <span class="move-n">06</span>
           <div>
             <b>Went looking for the next problem</b>
             <span>Noticed that teams can get an AI agent working in an afternoon and then stall for months because nobody will let it near production. That gap is what I am building <a href="/ikat/">Ikat</a> for.</span>
@@ -271,27 +300,17 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">Systems</p>
-        <h2>Things I built to find out how they work.</h2>
-        <p>Not client work. These exist because reading about a cache is not the same as writing one and then benchmarking it honestly.</p>
+        <h2>Things I build when nobody assigns them.</h2>
+        <p>Two of these are running. Three are on the bench — designed, not yet published. I would rather name what I am actually building than pad this out with tutorials.</p>
       </div>
 
       <div class="sys-grid">
         <article class="sys reveal">
           <div class="sys-top">
-            <h3>API Gateway &amp; Rate Limiting</h3>
-            <span class="sys-kind">production &middot; Solinas</span>
-          </div>
-          <p>A gateway layer in front of the microservices: authentication centralised at the edge, and Redis-backed throttling with burst control so one noisy client cannot take the platform down with it.</p>
-          <div class="sys-tags"><span>Java</span><span>Spring Boot</span><span>Redis</span><span>JWT</span><span>OAuth 2.0</span></div>
-          <p class="sys-bench">Peak-load failures down 65%. Unauthorised access to 0 — every call validated before it reaches a service.</p>
-        </article>
-
-        <article class="sys reveal">
-          <div class="sys-top">
             <h3>RBAC Policy Service</h3>
-            <span class="sys-kind">production &middot; Grootan</span>
+            <span class="sys-kind">running &middot; Grootan</span>
           </div>
-          <p>Role-based access control over Keycloak, handling multi-tenant permissions and the audit trail that compliance actually asks for. Admins manage their own roles instead of filing a ticket.</p>
+          <p>Role-based access control over Keycloak, handling multi-tenant permissions and the audit trail compliance actually asks for. Admins manage their own roles instead of filing a ticket.</p>
           <div class="sys-tags"><span>Java</span><span>Keycloak</span><span>Multi-tenant</span><span>Caching</span></div>
           <p class="sys-bench">P95 authorisation latency down 80%. 13 hours a week back for admins, and 75% fewer support tickets.</p>
         </article>
@@ -299,7 +318,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <article class="sys reveal">
           <div class="sys-top">
             <h3>DCache</h3>
-            <span class="sys-kind">built to understand it</span>
+            <span class="sys-kind">running &middot; personal</span>
           </div>
           <p>A thread-safe LRU cache in the spirit of Caffeine: O(1) lookups, per-entry TTL, asynchronous refresh, and a background sweep that expires entries without blocking readers.</p>
           <div class="sys-tags"><span>Java</span><span>Concurrency</span><span>LRU</span><span>TTL</span><span>JMH</span></div>
@@ -307,15 +326,34 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           <a class="sys-link" href="https://github.com/dhvakr/DCache" target="_blank" rel="noopener">github.com/dhvakr/DCache &rarr;</a>
         </article>
 
-        <article class="sys reveal">
+        <article class="sys sys-soon reveal">
           <div class="sys-top">
-            <h3>Custom Actuator</h3>
-            <span class="sys-kind">built to understand it</span>
+            <h3>tenant-ca</h3>
+            <span class="sys-kind">in design</span>
           </div>
-          <p>A custom Spring Boot actuator endpoint that surfaces live internal state on demand. Written because &ldquo;add observability&rdquo; means very little until you have had to decide what is worth exposing and what is noise.</p>
-          <div class="sys-tags"><span>Java</span><span>Spring Boot</span><span>Actuator</span><span>Observability</span></div>
-          <p class="sys-bench">The small end of the same discipline that cut debugging time by 40% in production.</p>
-          <a class="sys-link" href="https://github.com/dhvakr/Solinas-CustomActuator" target="_blank" rel="noopener">github.com/dhvakr/Solinas-CustomActuator &rarr;</a>
+          <p>A multi-tenant certificate authority that issues short-lived workload identities instead of long-lived secrets — automatic rotation, revocation that propagates, and an audit trail per tenant. The goal is service-to-service authentication with nothing proxying in the path.</p>
+          <div class="sys-tags"><span>Go</span><span>mTLS</span><span>X.509</span><span>SPIFFE</span><span>Kubernetes</span></div>
+          <p class="sys-bench">The generalised form of the per-environment mTLS I shipped on a private root CA at Strategy.</p>
+        </article>
+
+        <article class="sys sys-soon reveal">
+          <div class="sys-top">
+            <h3>envctl</h3>
+            <span class="sys-kind">in design</span>
+          </div>
+          <p>A control plane that provisions and reconciles whole customer environments across AWS and Azure from one declarative spec. Built on durable workflows, so a provision that dies halfway resumes rather than stranding a tenant in a half-built state someone has to unpick by hand.</p>
+          <div class="sys-tags"><span>Go</span><span>Temporal</span><span>Terraform</span><span>Helm</span><span>Multi-cloud</span></div>
+          <p class="sys-bench">Drift detection and rollback as first-class operations, not a runbook.</p>
+        </article>
+
+        <article class="sys sys-soon reveal">
+          <div class="sys-top">
+            <h3>planguard</h3>
+            <span class="sys-kind">in design</span>
+          </div>
+          <p>Catches a query-plan regression before it reaches production: snapshot the plan for every query in CI, then fail the build when one quietly turns into a full-table scan.</p>
+          <div class="sys-tags"><span>Java</span><span>PostgreSQL</span><span>CI</span><span>Static analysis</span></div>
+          <p class="sys-bench">Written because I found one carrying 79% of production RDS load, and nothing in the pipeline would have caught it.</p>
         </article>
       </div>
     </div>
@@ -477,6 +515,27 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
   /* ---------------- footer year ---------------- */
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
+
+  /* ---------------- years of experience ----------------
+     Written out in words and recomputed on load, so the page does not
+     quietly go stale every January. Career starts Feb 2022; the markup
+     carries the current word as a fallback, so this only ever corrects
+     it. Rounds to nearest, which is how the count is spoken out loud. */
+  (function(){
+    var START = new Date(2022, 1, 1);
+    var WORDS = ['zero','one','two','three','four','five','six','seven',
+                 'eight','nine','ten','eleven','twelve','thirteen','fourteen',
+                 'fifteen','sixteen','seventeen','eighteen','nineteen','twenty',
+                 'twenty-one','twenty-two','twenty-three','twenty-four','twenty-five'];
+    var yrs = (Date.now() - START.getTime()) / 31556952000;
+    var n = Math.max(1, Math.round(yrs));
+    var word = WORDS[n] || String(n);
+    document.querySelectorAll('[data-years]').forEach(function(el){
+      // match the sentence position the span already sits in
+      var cap = /^[A-Z]/.test(el.textContent.trim());
+      el.textContent = cap ? word.charAt(0).toUpperCase() + word.slice(1) : word;
+    });
+  })();
 
   /* ---------------- theme ----------------
      The button only ever writes an explicit choice. With nothing
