@@ -1,0 +1,5 @@
+# dhvakr.me
+User-agent: *
+Allow: /
+
+Sitemap: https://dhvakr.me/sitemap.xml
