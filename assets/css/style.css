@@ -28,15 +28,15 @@
    AA. The theme blocks below consume these and never name a colour
    themselves, so adding a fifth accent is one block here.
 
-   Stamped on <html> as data-accent; the default below is blue. */
+   Stamped on <html> as data-accent; the default below is green. */
 :root,
-:root[data-accent="blue"] {
-  --acc-d: #6FB3D1;   --acc-d-rgb: 111,179,209;
-  --acc-l: #1F5F78;   --acc-lg: #246A85;   --acc-lg-rgb: 36,106,133;
-}
 :root[data-accent="green"] {
   --acc-d: #7FBE94;   --acc-d-rgb: 127,190,148;
   --acc-l: #2D6A45;   --acc-lg: #2F6E47;   --acc-lg-rgb: 47,110,71;
+}
+:root[data-accent="blue"] {
+  --acc-d: #6FB3D1;   --acc-d-rgb: 111,179,209;
+  --acc-l: #1F5F78;   --acc-lg: #246A85;   --acc-lg-rgb: 36,106,133;
 }
 :root[data-accent="orange"] {
   --acc-d: #EDA74E;   --acc-d-rgb: 237,167,78;

@@ -11,12 +11,14 @@
 
 <meta property="og:title" content="Divakaran T (Diva) — Backend &amp; Cloud Engineer">
 <meta property="og:description" content="Software Engineer III, backend and cloud. Multi-tenant Kubernetes platform on AWS and Azure, identity for 4M+ users, 100K+ events an hour, $120K a year off the cloud bill.">
-<meta property="og:image" content="https://dhvakr.me/assets/img/dk.png">
+<meta property="og:image" content="https://dhvakr.me/assets/img/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:type" content="profile">
 <meta property="og:url" content="https://dhvakr.me/">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://dhvakr.me/assets/img/og.png">
+<meta property="og:image:alt" content="Divakaran T — backend and cloud engineering. A latency trace crossing a one-second objective and coming back under it.">
 <meta name="twitter:creator" content="@dhvakr">
 
 <link rel="canonical" href="https://dhvakr.me/">
@@ -61,8 +63,8 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <span class="accent-swatch" aria-hidden="true"></span>
       </button>
       <div class="accent-menu" id="accentMenu" role="menu" aria-label="Accent colour" hidden>
-        <button role="menuitemradio" aria-checked="true"  data-accent="blue"   type="button"><span aria-hidden="true"></span>Blue</button>
-        <button role="menuitemradio" aria-checked="false" data-accent="green"  type="button"><span aria-hidden="true"></span>Green</button>
+        <button role="menuitemradio" aria-checked="false" data-accent="blue"   type="button"><span aria-hidden="true"></span>Blue</button>
+        <button role="menuitemradio" aria-checked="true"  data-accent="green"  type="button"><span aria-hidden="true"></span>Green</button>
         <button role="menuitemradio" aria-checked="false" data-accent="orange" type="button"><span aria-hidden="true"></span>Orange</button>
         <button role="menuitemradio" aria-checked="false" data-accent="brown"  type="button"><span aria-hidden="true"></span>Brown</button>
       </div>
@@ -369,7 +371,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
             <h3>envctl</h3>
             <span class="sys-kind">building</span>
           </div>
-          <p>A control plane that provisions and reconciles whole customer environments across AWS and Azure from one declarative spec. Built on durable workflows, so a provision that dies halfway resumes rather than stranding a tenant in a half-built state someone has to unpick by hand.</p>
+          <p>A control plane that provisions and reconciles whole product environments across AWS and Azure from one declarative spec. Built on durable workflows, so a provision that dies halfway resumes rather than stranding a tenant in a half-built state someone has to unpick by hand.</p>
           <div class="sys-tags"><span>Go</span><span>Temporal</span><span>Terraform</span><span>Helm</span><span>Multi-cloud</span></div>
           <p class="sys-bench">Drift detection and rollback as first-class operations, not a runbook.</p>
         </article>
@@ -601,7 +603,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     if (!wrap || !btn || !menu) return;
     var items = [].slice.call(menu.querySelectorAll('[data-accent]'));
 
-    function current(){ return root.getAttribute('data-accent') || 'blue'; }
+    function current(){ return root.getAttribute('data-accent') || 'green'; }
     function mark(){
       var c = current();
       items.forEach(function(b){ b.setAttribute('aria-checked', b.dataset.accent === c ? 'true' : 'false'); });
