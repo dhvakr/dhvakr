@@ -68,7 +68,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Software Engineer III &nbsp;·&nbsp; Backend &amp; Cloud Engineering</p>
+          <p class="eyebrow">Backend &amp; Cloud Engineering</p>
           <h1>Divakaran&nbsp;<span class="sur">T</span></h1>
           <p class="hero-alias"><span>most people call me</span> Diva</p>
           <p class="hero-lede">I build backends that stay fast <em>when the traffic actually arrives.</em></p>
@@ -139,8 +139,35 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     <div class="wrap">
       <div class="sec-head reveal">
         <p class="eyebrow">Work</p>
-        <h2><span data-years>Five</span> years of numbers that moved in the right direction.</h2>
-        <p>Where there is a bar below, it is something I measured before and after: the tick is where the number started, the bar is where it ended.</p>
+        <h2>Identity, then the services, then the platform they all run on.</h2>
+        <p><span data-years>Five</span> years, three companies, one direction of travel. Where there is a bar further down, it is something I measured before and after.</p>
+      </div>
+
+      <!-- The arc: three phases, drawn in the order they happened. The rail
+           draws itself on reveal and each station lights as it is reached. -->
+      <div class="arc reveal" id="arc">
+        <div class="arc-rail" aria-hidden="true"><i></i><span class="arc-pulse"></span></div>
+        <ol class="arc-steps">
+          <li class="arc-step" style="--i:0">
+            <span class="arc-dot" aria-hidden="true"></span>
+            <span class="arc-year">2022 &rarr; 2024</span>
+            <b>Identity &amp; Access</b>
+            <span class="arc-desc">Keycloak, OIDC and OAuth 2.0 for <strong>4M+ users</strong> in banking and public sector. Where I learned what &ldquo;who are you&rdquo; actually costs at scale.</span>
+          </li>
+          <li class="arc-step" style="--i:1">
+            <span class="arc-dot" aria-hidden="true"></span>
+            <span class="arc-year">2024 &rarr; 2026</span>
+            <b>Backend Engineering</b>
+            <span class="arc-desc">Java and Go services under real load, and the first time the bill, the roadmap and the on-call rota were all mine to argue about.</span>
+          </li>
+          <li class="arc-step" style="--i:2">
+            <span class="arc-dot" aria-hidden="true"></span>
+            <span class="arc-year">2026 &rarr; now</span>
+            <b>Cloud &amp; Platform</b>
+            <span class="arc-desc">A multi-tenant Kubernetes platform across <strong>six clouds</strong>, with identity back at the centre &mdash; this time between the services rather than in front of them.</span>
+          </li>
+        </ol>
+        <p class="arc-tag">Each step needed the one before it. You cannot put Zero Trust between services until you have had to run those services at three in the morning.</p>
       </div>
 
       <div class="role reveal">
@@ -148,7 +175,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           <h3>Strategy <span class="role-aka">(formerly MicroStrategy)</span></h3>
           <span class="role-meta mono">Software Engineer, IC3 &nbsp;·&nbsp; March 2026 — present</span>
         </div>
-        <p class="role-what">I build and operate a <strong>Kubernetes-based multi-tenant cloud platform</strong> that provisions customer analytics environments across GCP, AWS, Azure, StackIT, IBM Cloud and self-hosted &mdash; a Spring Boot control plane driving Temporal workflows, Helm and Terraform.</p>
+        <p class="role-what">I build and operate a <strong>Kubernetes-based multi-tenant cloud platform</strong> that provisions <strong>AI and BI environments</strong> across GCP, AWS, Azure, StackIT, IBM Cloud and self-hosted &mdash; a Spring Boot control plane driving Temporal workflows, Helm and Terraform.</p>
         <p class="role-also">Six target platforms with six different ideas of what a network, a disk and an identity are, reconciled behind one control plane. Every environment has to come up isolated from its neighbours, reproducible from the spec, and recoverable when a provision dies halfway through.</p>
       </div>
 
