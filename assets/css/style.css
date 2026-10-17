@@ -5,11 +5,12 @@
    purpose, so a visitor with no stored choice and no OS preference
    still gets the intended ground.
 
-   Colour is signal, never decoration. It is only allowed to mean:
+   Black and white carry the page. Colour is signal, never decoration,
+   and is only ever allowed to mean:
 
-     sig     amber    holding · within objective · the accent
-     breach  red      over the objective
-     fg/bg   neutral  everything else
+     sig     green    holding · within objective · the accent
+     warm    brown    the earlier state · secondary data
+     breach  rust     over the objective
 
    That contract is what lets the latency panel in the hero teach
    itself without a legend.
@@ -20,25 +21,27 @@
 
 :root {
   /* ---- ground & ink (dark is the default) ---- */
-  --bg:      #0A0A0C;
-  --bg-2:    #121216;
-  --bg-3:    #1A1A20;
-  --fg:      #F2F1ED;
-  --fg-2:    #9B9BA3;
-  --fg-3:    #82828C;
-  --line:    rgba(242,241,237,0.10);
-  --line-2:  rgba(242,241,237,0.17);
+  --bg:      #0A0A0B;
+  --bg-2:    #131315;
+  --bg-3:    #1B1B1E;
+  --fg:      #F4F3EF;
+  --fg-2:    #9D9D9B;
+  --fg-3:    #85857F;
+  --line:    rgba(244,243,239,0.10);
+  --line-2:  rgba(244,243,239,0.17);
 
   /* ---- signal ---- */
-  --sig:       #F2B53C;   /* text-safe on this ground */
-  --sig-graph: #F2B53C;   /* strokes & fills only */
-  --sig-wash:  rgba(242,181,60,0.12);
-  --breach:       #FF6B5A;
-  --breach-graph: #FF6B5A;
-  --breach-wash:  rgba(255,107,90,0.13);
-  --on-sig:   #0A0A0C;    /* ink laid on a signal-coloured block */
+  --sig:       #7FBE94;   /* text-safe on this ground */
+  --sig-graph: #7FBE94;   /* strokes, fills, filled blocks */
+  --sig-wash:  rgba(127,190,148,0.13);
+  --warm:      #C6A382;
+  --warm-wash: rgba(198,163,130,0.13);
+  --breach:       #E58066;
+  --breach-graph: #E58066;
+  --breach-wash:  rgba(229,128,102,0.13);
+  --on-sig:   #0A0A0B;    /* ink laid on a signal-coloured block */
 
-  --sel-bg: rgba(242,181,60,0.26);
+  --sel-bg: rgba(127,190,148,0.26);
   --sel-fg: #FFFFFF;
 
   /* ---- type ---- */
@@ -66,47 +69,51 @@
 
 :root[data-theme="light"] {
   --bg:      #FBFAF7;
-  --bg-2:    #F3F1EA;
-  --bg-3:    #E9E6DD;
-  --fg:      #0A0A0C;
-  --fg-2:    #52525A;
-  --fg-3:    #6A6A73;
-  --line:    rgba(10,10,12,0.12);
-  --line-2:  rgba(10,10,12,0.20);
+  --bg-2:    #F2F0EA;
+  --bg-3:    #E7E4DB;
+  --fg:      #0F0F0E;
+  --fg-2:    #52524E;
+  --fg-3:    #6B6B66;
+  --line:    rgba(15,15,14,0.12);
+  --line-2:  rgba(15,15,14,0.20);
 
-  --sig:       #8A5600;
-  --sig-graph: #BE7A00;
-  --sig-wash:  rgba(190,122,0,0.13);
-  --breach:       #C02E12;
-  --breach-graph: #D93A1C;
-  --breach-wash:  rgba(217,58,28,0.11);
-  --on-sig:   #0A0A0C;
+  --sig:       #2D6A45;
+  --sig-graph: #2F6E47;
+  --sig-wash:  rgba(47,110,71,0.12);
+  --warm:      #7A5230;
+  --warm-wash: rgba(122,82,48,0.12);
+  --breach:       #B23A1C;
+  --breach-graph: #C8441F;
+  --breach-wash:  rgba(200,68,31,0.11);
+  --on-sig:   #FFFFFF;
 
-  --sel-bg: rgba(190,122,0,0.20);
-  --sel-fg: #0A0A0C;
+  --sel-bg: rgba(47,110,71,0.17);
+  --sel-fg: #0F0F0E;
 }
 
 @media (prefers-color-scheme: light) {
   :root:not([data-theme="dark"]) {
-    --bg:      #FBFAF7;
-    --bg-2:    #F3F1EA;
-    --bg-3:    #E9E6DD;
-    --fg:      #0A0A0C;
-    --fg-2:    #52525A;
-    --fg-3:    #6A6A73;
-    --line:    rgba(10,10,12,0.12);
-    --line-2:  rgba(10,10,12,0.20);
+  --bg:      #FBFAF7;
+  --bg-2:    #F2F0EA;
+  --bg-3:    #E7E4DB;
+  --fg:      #0F0F0E;
+  --fg-2:    #52524E;
+  --fg-3:    #6B6B66;
+  --line:    rgba(15,15,14,0.12);
+  --line-2:  rgba(15,15,14,0.20);
 
-    --sig:       #8A5600;
-    --sig-graph: #BE7A00;
-    --sig-wash:  rgba(190,122,0,0.13);
-    --breach:       #C02E12;
-    --breach-graph: #D93A1C;
-    --breach-wash:  rgba(217,58,28,0.11);
-    --on-sig:   #0A0A0C;
+  --sig:       #2D6A45;
+  --sig-graph: #2F6E47;
+  --sig-wash:  rgba(47,110,71,0.12);
+  --warm:      #7A5230;
+  --warm-wash: rgba(122,82,48,0.12);
+  --breach:       #B23A1C;
+  --breach-graph: #C8441F;
+  --breach-wash:  rgba(200,68,31,0.11);
+  --on-sig:   #FFFFFF;
 
-    --sel-bg: rgba(190,122,0,0.20);
-    --sel-fg: #0A0A0C;
+  --sel-bg: rgba(47,110,71,0.17);
+  --sel-fg: #0F0F0E;
   }
 }
 
@@ -345,6 +352,30 @@ section + section { border-top: 1px solid var(--line); }
 .hero h1 .sur {
   font-weight: 400;
   color: var(--fg-2);
+}
+
+/* The familiar name, kept close to the formal one. */
+.hero-alias {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: -10px;
+  margin-bottom: 24px;
+  font-family: var(--display);
+  font-size: var(--step-1);
+  font-weight: 600;
+  font-variation-settings: "wdth" 96, "opsz" 20;
+  color: var(--sig);
+  letter-spacing: -0.02em;
+}
+.hero-alias span {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--fg-3);
 }
 
 .hero-lede {
@@ -593,7 +624,11 @@ section + section { border-top: 1px solid var(--line); }
   font-size: var(--step-2);
   font-variation-settings: "wdth" 94, "opsz" 24;
 }
+/* nowrap keeps it beside the company name on a wide screen; on a phone
+   the longer titles ("Software Engineer II -> III") must be allowed to
+   wrap or they push the whole page sideways. */
 .role-meta { color: var(--fg-3); white-space: nowrap; }
+@media (max-width: 560px) { .role-meta { white-space: normal; } }
 .role-tag {
   font-family: var(--mono);
   font-size: var(--step--2);
@@ -726,7 +761,9 @@ section + section { border-top: 1px solid var(--line); }
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   background: var(--bg-3);
-  color: var(--fg-3);
+  /* --fg-3 on --bg-3 is only 4.21:1 in the light theme; these are small
+     and need the darker ink to clear AA. */
+  color: var(--fg-2);
 }
 .sys-link {
   font-family: var(--mono);
@@ -853,6 +890,7 @@ section + section { border-top: 1px solid var(--line); }
   margin-bottom: 5px;
 }
 .signal span { display: block; font-size: var(--step--1); color: var(--fg-2); text-wrap: pretty; }
+.signal span em { font-style: normal; color: var(--warm); }
 .signal a { color: var(--fg-2); border-bottom: 1px solid var(--line-2); }
 .signal a:hover { color: var(--sig); border-color: var(--sig-graph); }
 
@@ -869,24 +907,31 @@ section + section { border-top: 1px solid var(--line); }
 .music-copy p { color: var(--fg-2); max-width: 46ch; text-wrap: pretty; }
 .music-copy h2 { font-size: var(--step-2); margin-bottom: 14px; }
 
-.spotify {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg-2);
-  padding: 14px;
+/* ---- the Now card ----
+   Same panel chrome as the hero, so the two read as one family. */
+.nowcard { }
+.nowlist { list-style: none; }
+.nowlist li {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  gap: 14px;
+  padding: 13px 16px;
+  align-items: baseline;
 }
-.spotify iframe { width: 100%; height: 124px; border: 0; border-radius: var(--radius-sm); }
-.spotify-foot {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
+.nowlist li + li { border-top: 1px solid var(--line); }
+.nowlist .nk {
   font-family: var(--mono);
   font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
   color: var(--fg-3);
 }
-.spotify-foot a { color: var(--fg-2); border-bottom: 1px solid var(--line-2); margin-left: auto; }
-.spotify-foot a:hover { color: var(--sig); border-color: var(--sig-graph); }
+.nowlist .nv { font-size: var(--step--1); color: var(--fg); text-wrap: pretty; }
+.nowlist .nv a { color: var(--sig); border-bottom: 1px solid var(--sig-graph); }
+.nowlist .nv a:hover { color: var(--fg); }
+@media (max-width: 520px) {
+  .nowlist li { grid-template-columns: 1fr; gap: 3px; }
+}
 
 /* ============================= contact ============================= */
 
@@ -973,4 +1018,55 @@ footer a:hover { color: var(--sig); }
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+
+/* ============================= strategy =============================
+   Numbered because the order is the argument: direction first, then
+   what it cost, then what came back, then the people, then what's next. */
+
+.moves { list-style: none; counter-reset: none; }
+
+.move {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 20px;
+  padding: 24px 0;
+  border-top: 1px solid var(--line);
+}
+.move:last-child { border-bottom: 1px solid var(--line); }
+
+.move-n {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--warm);
+  letter-spacing: 0.04em;
+  padding-top: 3px;
+}
+
+.move b {
+  display: block;
+  font-family: var(--display);
+  font-size: var(--step-1);
+  font-weight: 600;
+  font-variation-settings: "wdth" 96, "opsz" 20;
+  letter-spacing: -0.018em;
+  margin-bottom: 8px;
+  text-wrap: balance;
+}
+/* Scoped through the div on purpose: a bare `.move span` is 0,1,1 and
+   would outrank `.move-n` at 0,1,0, quietly repainting the number. */
+.move > div > span {
+  display: block;
+  color: var(--fg-2);
+  max-width: var(--measure);
+  font-size: var(--step--1);
+  text-wrap: pretty;
+}
+.move > div > span a { color: var(--sig); border-bottom: 1px solid var(--sig-graph); }
+.move > div > span a:hover { color: var(--fg); }
+
+@media (max-width: 620px) {
+  .move { grid-template-columns: 1fr; gap: 6px; padding: 20px 0; }
+  .move-n { padding-top: 0; }
 }
