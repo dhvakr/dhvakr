@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikat</title>
+<meta name="description" content="Ikat is the control plane between your AI and your real systems: scoped identity, policy in the path, cost attribution, and a full record of every tool call.">
+<meta name="theme-color" content="#0B0B0D">
+<meta property="og:title" content="Ikat">
+<meta property="og:description" content="The control plane between your AI and your real systems. Scoped identity per agent, policy enforced in the path, and the bill broken down by who spent it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dhvakr.me/ikat/">
+<link rel="canonical" href="https://dhvakr.me/ikat/">
+<link rel="icon" type="image/png" href="/assets/img/favicons/dk.png">
+<!-- BRAND SWAP: the trading name appears as "Ikat"/"ikat" in the <title>, the nav
+     logotype, the hero, the name section, the diagram, the footer and the mailto link.
+     sed -i '' 's/Ikat/Yourname/g; s/ikat/yourname/g; s/ikat\.dev/yourdomain.com/g' index.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..200,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+/* Applied before first paint: a stored choice wins, otherwise the page stays
+   on its dark default. Kept tiny and inline on purpose — a deferred script
+   here would show one frame of the wrong theme. */
+(function(){try{var t=localStorage.getItem('dhvakr-theme');
+if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<style>
+/* ---------------------------------------------------------------
+   Two dyes and their crossing.
+
+   The 1-bit skeleton stays: paper and ink, emphasis by inversion,
+   edges that dissolve into dither. Colour is dye, not decoration —
+   it is only ever allowed to mean one of three things:
+
+     warp   indigo     the standing thread · identity · allow
+     weft   vermilion  the thread the shuttle carries · deny
+     cross  violet     the overprint where the two meet · the call
+
+   Inverted blocks flip ground, so the dyes have -inv variants that
+   are mixed for the opposite surface.
+   --------------------------------------------------------------- */
+/* Dark is the default ground — an unstamped page renders dark on purpose.
+   Light is an explicit opt-in: the toggle stamps data-theme="light" on the
+   root and remembers it. Every colour is defined in both blocks. */
+:root{
+  --paper:     #0B0B0D;
+  --paper-2:   #141417;
+  --paper-3:   #1D1D21;
+  --ink:       #F2F1ED;
+  --ink-2:     #9B9BA3;
+  --ink-3:     #82828C;
+  --rule:      rgba(242,241,237,0.16);
+  --rule-2:    rgba(242,241,237,0.36);
+  --inv-bg:    #F2F1ED;
+  --inv-ink:   #0B0B0D;
+
+  --warp:      #7E7BFF;
+  --weft:      #FF7051;
+  --weft-deep: #FF7051;
+  --cross:     #BC72FF;
+
+  --warp-inv:  #2B2AE8;
+  --weft-inv:  #C4300F;
+  --cross-inv: #7D22C4;
+
+  --scrim:     rgba(11,11,13,0);
+  --scrim-on:  rgba(11,11,13,0.93);
+
+  --sel-bg:    rgba(126,123,255,0.32);
+  --sel-ink:   #FFFFFF;
+  --on-dye:    #0B0B0D;
+
+  --loom-warp-a:  0.52;
+  --loom-weft-a:  0.36;
+  --loom-cross-a: 0.72;
+
+  /* shared, theme-independent */
+  --step--2: 0.6875rem;
+  --step--1: 0.875rem;
+  --step-0:  1.0625rem;
+  --step-1:  1.1875rem;
+  --step-2:  1.5rem;
+  --step-3:  2.125rem;
+  --step-4:  3rem;
+  --step-5:  clamp(2.85rem, 6.6vw, 5.4rem);
+  --step-6:  clamp(4rem, 15vw, 12rem);
+
+  --measure: 62ch;
+  --gutter: clamp(20px, 4vw, 46px);
+  --maxw: 1160px;
+  --ease: cubic-bezier(.22,.72,.2,1);
+  --ease-soft: cubic-bezier(.32,.72,0,1);
+}
+:root[data-theme="light"]{
+  --paper:     #FBFAF7;
+  --paper-2:   #F2F0EA;
+  --paper-3:   #E7E4DC;
+  --ink:       #0B0B0D;
+  --ink-2:     #52525A;
+  --ink-3:     #6F6F78;
+  --rule:      rgba(11,11,13,0.15);
+  --rule-2:    rgba(11,11,13,0.34);
+  --inv-bg:    #0B0B0D;
+  --inv-ink:   #FBFAF7;
+
+  --warp:      #2B2AE8;
+  --weft:      #E23C1E;
+  --weft-deep: #B82D12;
+  --cross:     #7D22C4;
+
+  --warp-inv:  #7E7BFF;
+  --weft-inv:  #FF7051;
+  --cross-inv: #BC72FF;
+
+  --scrim:     rgba(251,250,247,0);
+  --scrim-on:  rgba(251,250,247,0.94);
+
+  --sel-bg:    rgba(43,42,232,0.16);
+  --sel-ink:   #0B0B0D;
+  --on-dye:    #FFFFFF;
+
+  --loom-warp-a:  0.44;
+  --loom-weft-a:  0.34;
+  --loom-cross-a: 0.58;
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Instrument Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size:var(--step-0);
+  line-height:1.6;
+  letter-spacing:-0.001em;
+  font-kerning:normal;
+  font-feature-settings:"kern" 1, "liga" 1, "calt" 1;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+/* no single-word last lines in running copy */
+p, li{ text-wrap:pretty; }
+a{ color:inherit; }
+.vh{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+::selection{ background:var(--sel-bg); color:var(--sel-ink); }
+:focus-visible{ outline:2px solid var(--warp); outline-offset:3px; }
+
+.display{
+  font-family:'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  font-variation-settings:'wdth' 100, 'opsz' 48;
+  font-weight:700;
+  letter-spacing:-0.024em;
+  line-height:1.05;
+  text-wrap:balance;
+  margin:0;
+}
+.mono{
+  font-family:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric:tabular-nums;
+}
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--gutter); }
+
+.above{ position:relative; z-index:1; }
+
+/* the ikat signature: a hard edge dissolving into dither, dyed */
+.dither{
+  height:52px; margin:0;
+  background-image:radial-gradient(var(--cross) 0.9px, transparent 1px);
+  background-size:5px 5px;
+  -webkit-mask-image:linear-gradient(to bottom, #000 0%, transparent 100%);
+  mask-image:linear-gradient(to bottom, #000 0%, transparent 100%);
+  opacity:.5;
+}
+.dither.up{
+  background-image:radial-gradient(var(--weft) 0.9px, transparent 1px);
+  -webkit-mask-image:linear-gradient(to top, #000 0%, transparent 100%);
+  mask-image:linear-gradient(to top, #000 0%, transparent 100%);
+}
+
+.eyebrow{
+  font-family:'IBM Plex Mono', ui-monospace, monospace;
+  font-size:var(--step--1);
+  letter-spacing:0.16em; text-transform:uppercase;
+  color:var(--ink-2);
+  display:flex; align-items:center; gap:12px; margin:0;
+}
+.eyebrow::before{ content:""; width:26px; height:3px; background:var(--weft); flex:none; }
+/* Everywhere else the eyebrow sits inside a flex .sec-head, where `gap` opens
+   the space under it. These two blocks are bare, so they set it themselves —
+   and the name section needs more, because the wordmark's negative leading
+   pulls its glyphs up above their own line box. */
+.contact .eyebrow{ margin-bottom:20px; }
+.name .eyebrow{ margin-bottom:34px; }
+
+/* scroll reveal — class is added by script, so no-JS keeps everything visible */
+.reveal{ opacity:0; transform:translateY(20px); transition:opacity .9s var(--ease-soft), transform .9s var(--ease-soft); }
+.reveal.in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce){
+  .reveal, .reveal.in{ opacity:1; transform:none; transition:none; }
+}
+
+/* --- nav ------------------------------------------------------- */
+header.nav{
+  position:sticky; top:0; z-index:30;
+  background:color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--rule-2);
+}
+.nav .wrap{ display:flex; align-items:center; justify-content:space-between; gap:24px; height:66px; }
+.logo{ display:flex; align-items:center; gap:11px; text-decoration:none; }
+.logo svg{ display:block; height:20px; width:auto; }
+.logo .word{
+  font-family:'Bricolage Grotesque', sans-serif;
+  font-variation-settings:'wdth' 132;
+  font-weight:800; font-size:20px; letter-spacing:0.004em;
+}
+.navlinks{ display:flex; align-items:center; gap:20px; font-size:var(--step--1); color:var(--ink-2); flex-wrap:nowrap; }
+.navlinks a{ text-decoration:none; padding:3px 0; white-space:nowrap; border-bottom:2px solid transparent; transition:color .3s var(--ease-soft), border-color .3s var(--ease-soft); }
+.navlinks a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
+@media (max-width:1080px){ .navlinks{ display:none; } }
+
+.navtools{ display:flex; align-items:center; gap:14px; }
+/* Ikat lives at dhvakr.me/ikat, so the nav needs a way back up. */
+.uplink{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:var(--step--2); color:var(--ink-3); text-decoration:none;
+  white-space:nowrap; transition:color .3s var(--ease-soft); }
+.uplink:hover{ color:var(--ink); }
+@media (max-width:620px){ .uplink{ display:none; } }
+.themetoggle{
+  appearance:none; background:transparent; border:1px solid var(--rule-2);
+  color:var(--ink-2); width:34px; height:34px; padding:0; cursor:pointer;
+  display:grid; place-items:center; flex:none;
+  transition:border-color .3s var(--ease-soft), color .3s var(--ease-soft);
+}
+.themetoggle:hover{ border-color:var(--warp); color:var(--warp); }
+.themetoggle svg{ display:block; width:16px; height:16px; }
+/* one glyph, two states: the sun's rays retract and a crescent bites in */
+.themetoggle .rays{ transition:opacity .35s var(--ease-soft), transform .45s var(--ease-soft); transform-origin:center; }
+.themetoggle .bite{ transition:transform .45s var(--ease-soft); transform-origin:center; }
+:root[data-theme="light"] .themetoggle .rays{ opacity:1; transform:none; }
+:root[data-theme="light"] .themetoggle .bite{ transform:translate(11px,-11px); }
+:root:not([data-theme="light"]) .themetoggle .rays{ opacity:0; transform:scale(.4); }
+:root:not([data-theme="light"]) .themetoggle .bite{ transform:none; }
+@media (prefers-reduced-motion: reduce){
+  .themetoggle .rays, .themetoggle .bite{ transition:none; }
+}
+
+.btn{
+  font-size:var(--step--1); font-weight:500;
+  padding:9px 18px; border:1.5px solid var(--ink);
+  text-decoration:none; display:inline-block; white-space:nowrap;
+  transition:background .3s var(--ease-soft), color .3s var(--ease-soft), border-color .3s var(--ease-soft);
+}
+.btn:hover{ background:var(--ink); color:var(--paper); }
+.btn-solid{ background:var(--warp); border-color:var(--warp); color:var(--on-dye); font-weight:600; }
+.btn-solid:hover{ background:var(--cross); border-color:var(--cross); color:var(--on-dye); }
+
+/* --- hero ------------------------------------------------------ */
+.hero{ position:relative; overflow:hidden; border-bottom:1px solid var(--rule-2); }
+#loom{ position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+.hero-scrim{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(98deg, var(--scrim-on) 0%, var(--scrim-on) 40%, var(--scrim) 78%);
+}
+/* narrow: text runs the full width, so the loom gets a band at the top
+   instead of a column on the right, and the copy sits on clean ground */
+@media (max-width:860px){
+  .hero-scrim{
+    background:linear-gradient(180deg,
+      var(--scrim) 0%, color-mix(in srgb, var(--scrim-on) 45%, transparent) 12%,
+      var(--paper) 31%, var(--paper) 100%);
+  }
+}
+.hero .wrap{ position:relative; z-index:2; padding-top:clamp(40px,5vw,68px); padding-bottom:clamp(48px,6vw,84px); }
+.hero h1{
+  font-size:var(--step-5); max-width:15ch; margin:24px 0 0;
+  font-variation-settings:'wdth' 92,'opsz' 96;
+  letter-spacing:-0.034em; line-height:1.02;
+}
+.hero h1 u{
+  text-decoration:none; background:var(--warp); color:var(--on-dye);
+  padding:0 .16em; box-decoration-break:clone; -webkit-box-decoration-break:clone;
+}
+.hero p.lede{ font-size:var(--step-1); color:var(--ink-2); max-width:52ch; margin:26px 0 0; }
+.hero p.lede strong{ color:var(--ink); font-weight:600; }
+.hero .cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:34px; }
+.hero .sig{ margin-top:42px; padding-top:18px; border-top:1px solid var(--rule); font-size:var(--step--1); color:var(--ink-3); max-width:48ch; }
+
+/* --- sections -------------------------------------------------- */
+section{ border-bottom:1px solid var(--rule-2); }
+section > .wrap{ padding:clamp(62px,7.5vw,104px) var(--gutter); }
+.sec-head{ display:flex; flex-direction:column; gap:16px; margin-bottom:50px; }
+.sec-head h2{ font-size:var(--step-3); max-width:23ch; font-variation-settings:'wdth' 100,'opsz' 40; letter-spacing:-0.026em; line-height:1.1; }
+.sec-head p:not(.eyebrow){ color:var(--ink-2); max-width:var(--measure); margin:0; font-size:var(--step-1); }
+
+/* --- stats ----------------------------------------------------- */
+/* six figures — 3x2, never a widow row */
+.stats{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:var(--rule-2); border:1px solid var(--rule-2); }
+@media (max-width:900px){ .stats{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:560px){ .stats{ grid-template-columns:1fr; } }
+.stat{ background:var(--paper); padding:26px 24px 30px; display:flex; flex-direction:column; gap:12px; transition:background .4s var(--ease-soft); }
+.stat b{
+  font-family:'Bricolage Grotesque', sans-serif;
+  font-variation-settings:'wdth' 76;
+  font-weight:800; font-size:var(--step-4); line-height:.94;
+  font-variant-numeric:tabular-nums; letter-spacing:-0.03em;
+  color:var(--warp);
+}
+.stat span{ font-size:var(--step--1); color:var(--ink-2); line-height:1.55; }
+.stat span i{ font-style:normal; color:var(--ink); font-weight:600; }
+.stat.invert{ background:var(--inv-bg); }
+.stat.invert b{ color:var(--weft-inv); }
+.stat.invert span i{ color:var(--inv-ink); }
+.stat.invert span{ color:color-mix(in srgb, var(--inv-ink) 68%, transparent); }
+
+.pullquote{
+  margin:50px 0 0; padding-left:26px; border-left:3px solid var(--weft);
+  font-size:var(--step-2); font-family:'Bricolage Grotesque',sans-serif;
+  font-variation-settings:'wdth' 100; font-weight:600; line-height:1.3;
+  letter-spacing:-0.018em; max-width:34ch; text-wrap:balance;
+}
+.sources{ margin:32px 0 0; font-size:var(--step--2); color:var(--ink-3); line-height:1.8; }
+.sources a{ color:var(--ink-3); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px; }
+.sources a:hover{ color:var(--warp); }
+
+/* --- market map table ------------------------------------------ */
+.map-scroll{ overflow-x:auto; border:1px solid var(--rule-2); }
+table.map{ width:100%; min-width:720px; border-collapse:collapse; text-align:left; }
+table.map th{
+  font-family:'IBM Plex Mono',monospace; font-weight:500;
+  font-size:var(--step--2); letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--ink-3); padding:14px 20px; border-bottom:1px solid var(--rule-2);
+  vertical-align:bottom; white-space:nowrap;
+}
+table.map td{ padding:22px 20px; border-bottom:1px solid var(--rule); vertical-align:top; font-size:var(--step--1); color:var(--ink-2); }
+table.map tr:last-child td{ border-bottom:none; }
+table.map td.territory{ color:var(--ink); font-weight:600; font-size:var(--step-0); width:24%; }
+table.map td.territory::before{
+  content:""; display:block; width:22px; height:3px; background:var(--weft); margin-bottom:10px;
+}
+table.map td.holders{ width:30%; font-family:'IBM Plex Mono',monospace; font-size:var(--step--2); line-height:1.85; color:var(--ink); }
+.claim{
+  margin-top:52px; padding:34px clamp(24px,4vw,44px);
+  background:var(--inv-bg); color:var(--inv-ink);
+  border-left:5px solid var(--cross-inv);
+}
+.claim p{ margin:0; max-width:56ch; }
+.claim p + p{ margin-top:14px; }
+.claim .lead{
+  font-family:'Bricolage Grotesque',sans-serif; font-variation-settings:'wdth' 100;
+  font-weight:700; font-size:var(--step-2); line-height:1.24; letter-spacing:-0.02em;
+  max-width:26ch; text-wrap:balance;
+}
+.claim .lead em{ font-style:normal; color:var(--warp-inv); }
+.claim .body{ color:color-mix(in srgb, var(--inv-ink) 72%, transparent); font-size:var(--step-0); }
+
+/* --- planes ---------------------------------------------------- */
+/* four planes run at once, so they sit on one row wherever there is room */
+.planes{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; background:var(--rule-2); border:1px solid var(--rule-2); }
+@media (max-width:1080px){ .planes{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:620px){ .planes{ grid-template-columns:1fr; } }
+.plane{ background:var(--paper); padding:30px 28px 34px; display:flex; flex-direction:column; gap:14px; position:relative; }
+.plane{ transition:background .45s var(--ease-soft); }
+.plane:hover, .plane:focus-within{ background:var(--paper-2); }
+.plane::before{
+  content:""; position:absolute; left:0; top:0; width:100%; height:3px;
+  background:var(--dye, var(--warp)); transform:scaleX(0); transform-origin:left;
+  transition:transform .55s var(--ease-soft);
+}
+.plane:hover::before, .plane:focus-within::before{ transform:scaleX(1); }
+.plane .tag{ display:flex; align-items:baseline; gap:12px; }
+.plane h3{ margin:0; font-family:'Bricolage Grotesque',sans-serif; font-variation-settings:'wdth' 116; font-weight:700; font-size:var(--step-2); letter-spacing:-0.022em; color:var(--dye, var(--warp)); }
+.plane .kind{ font-family:'IBM Plex Mono',monospace; font-size:var(--step--2); letter-spacing:0.13em; text-transform:uppercase; color:var(--ink-3); }
+.plane p{ margin:0; color:var(--ink-2); font-size:var(--step--1); }
+.plane .eg{
+  margin-top:auto; padding-top:16px; border-top:1px dashed var(--rule-2);
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2); color:var(--ink); line-height:1.95;
+  overflow-wrap:anywhere;
+}
+.plane .eg .k{ color:var(--ink-3); }
+.plane .eg .ok{ color:var(--warp); font-weight:600; }
+.plane .eg .no{ color:var(--weft-deep); font-weight:600; }
+
+/* --- diagram --------------------------------------------------- */
+.diagram-scroll{ overflow-x:auto; padding-bottom:8px; }
+.diagram{ display:block; width:100%; min-width:840px; height:auto; }
+.d-box{ fill:var(--paper); stroke:var(--rule-2); stroke-width:1; }
+.d-core{ fill:var(--paper-2); stroke:var(--cross); stroke-width:2; }
+.d-row{ fill:none; stroke:var(--rule); stroke-width:1; }
+.d-label{ fill:var(--ink); font-family:'Instrument Sans',sans-serif; font-size:13px; }
+.d-core-label{ fill:var(--cross); font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:18px; letter-spacing:0.03em; }
+.d-cap{ fill:var(--ink-3); font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; }
+.d-line{ stroke:var(--warp); stroke-width:1.2; fill:none; opacity:.55; }
+.d-line-hot{ stroke:var(--weft); stroke-width:2; fill:none; }
+.d-dash{ stroke:var(--cross); stroke-width:1; fill:none; stroke-dasharray:3 4; opacity:.6; }
+.d-plane{ fill:var(--ink); font-family:'Instrument Sans',sans-serif; font-size:13px; font-weight:600; }
+.d-dot{ fill:var(--cross); }
+
+/* --- rule drawer ------------------------------------------------ */
+/* Reachable from the demo without stacking a code block under it.
+   Content is cloned from the policy tab at open time, so the file has
+   exactly one source of truth on the page. */
+.rulebtn{
+  appearance:none; cursor:pointer; background:transparent; margin-left:auto;
+  border:1px solid var(--warp); color:var(--warp);
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  letter-spacing:0.04em; padding:7px 12px;
+  transition:background-color .3s var(--ease-soft), color .3s var(--ease-soft);
+}
+.rulebtn:hover{ background:var(--warp); color:var(--on-dye); }
+@media (max-width:620px){ .rulebtn{ margin-left:0; } }
+
+.drawer[hidden]{ display:none; }
+.drawer{ position:fixed; inset:0; z-index:60; }
+.drawer-scrim{
+  position:absolute; inset:0; background:rgba(0,0,0,0.55);
+  opacity:0; transition:opacity .32s var(--ease-soft);
+}
+.drawer.open .drawer-scrim{ opacity:1; }
+.drawer-panel{
+  position:absolute; top:0; right:0; height:100%; width:min(640px,100%);
+  background:var(--paper); border-left:1px solid var(--rule-2);
+  display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .4s var(--ease-soft);
+}
+.drawer.open .drawer-panel{ transform:none; }
+.drawer-head{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding:16px clamp(18px,3vw,26px); border-bottom:1px solid var(--rule-2); flex:none;
+}
+.drawer-title{
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  letter-spacing:0.06em; color:var(--ink);
+}
+.drawer-close{
+  appearance:none; cursor:pointer; background:transparent;
+  border:1px solid var(--rule-2); color:var(--ink-2);
+  width:32px; height:32px; display:grid; place-items:center; flex:none;
+  font-family:'IBM Plex Mono',monospace; font-size:15px; line-height:1;
+  transition:border-color .3s var(--ease-soft), color .3s var(--ease-soft);
+}
+.drawer-close:hover{ border-color:var(--weft); color:var(--weft); }
+.drawer-body{ overflow:auto; flex:1; }
+.drawer-body .codepane{ display:block; }
+.drawer-foot{
+  padding:14px clamp(18px,3vw,26px); border-top:1px solid var(--rule-2); flex:none;
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  color:var(--ink-3); line-height:1.7;
+}
+@media (prefers-reduced-motion: reduce){
+  .drawer-scrim, .drawer-panel{ transition:none; }
+}
+
+/* --- adoption code ---------------------------------------------- */
+/* Three tabs, because "one line of config" is a claim until someone
+   can see the line. The policy tab deliberately contains the exact rule
+   that refuses the call in the inspector above. */
+.codetabs{ border:1px solid var(--rule-2); background:var(--paper-2); }
+.codetabs-bar{
+  display:flex; flex-wrap:wrap; gap:0; border-bottom:1px solid var(--rule-2);
+}
+.codetab{
+  appearance:none; cursor:pointer; background:transparent; border:0;
+  border-right:1px solid var(--rule-2); border-bottom:2px solid transparent;
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  letter-spacing:0.06em; color:var(--ink-3); padding:13px 16px;
+  transition:color .3s var(--ease-soft), border-color .3s var(--ease-soft);
+}
+.codetab:hover{ color:var(--ink); }
+.codetab[aria-selected="true"]{ color:var(--ink); border-bottom-color:var(--warp); }
+.codepane{ display:none; margin:0; padding:20px clamp(16px,3vw,24px); overflow-x:auto; }
+.codepane[data-open]{ display:block; }
+.codepane code{
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  line-height:1.95; color:var(--ink); white-space:pre; display:block;
+}
+/* ink-3 lands at 4.37:1 on paper-2 — just under AA, so comments sit
+   between the two greys rather than on the lighter one */
+.codepane .c{ color:color-mix(in srgb, var(--ink-2) 65%, var(--ink-3)); }
+.codepane .kw{ color:var(--ink-2); }             /* keyword  */
+.codepane .ok{ color:var(--warp); font-weight:600; }
+.codepane .no{ color:var(--weft-deep); font-weight:600; }
+.codepane .str{ color:var(--cross); }
+.codepane .add{ color:var(--warp); }
+.codepane .del{ color:var(--weft-deep); opacity:.75; }
+.code-note{
+  margin:16px 0 0; font-family:'IBM Plex Mono',monospace;
+  font-size:var(--step--2); color:var(--ink-3); line-height:1.8;
+}
+
+/* --- the request inspector ------------------------------------- */
+/* A real call moving through the four planes. Everything here is a
+   token-driven DOM element rather than canvas, so the labels stay
+   crisp, selectable, and legible to a screen reader. */
+.rig{ border:1px solid var(--rule-2); background:var(--paper-2); }
+.rig-head{
+  display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px;
+  padding:18px clamp(18px,3vw,28px);
+  border-bottom:1px solid var(--rule-2);
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+}
+.rig-head .k{ color:var(--ink-3); letter-spacing:0.12em; text-transform:uppercase; }
+.rig-head .v{ color:var(--ink); font-weight:600; }
+.rig-head .arrow{ color:var(--cross); }
+.rig-head .call{ color:var(--ink-2); }
+
+/* clips the token as it leaves the frame — without this the exiting
+   token grows the track's scroll width and pushes the page sideways */
+.rig-track{ position:relative; overflow:hidden; padding:34px clamp(18px,3vw,28px) 8px; }
+.rig-rail{
+  position:absolute; left:clamp(18px,3vw,28px); right:clamp(18px,3vw,28px);
+  top:60px; height:1px; background:var(--rule-2);
+}
+.rig-token{
+  position:absolute; top:60px; left:0; width:11px; height:11px;
+  transform:translate(-50%,-50%); background:var(--ink-3);
+  transition:left .5s var(--ease-soft), background-color .3s linear, opacity .3s linear;
+  z-index:2;
+}
+.rig-token.deny{ background:var(--weft); }
+.rig-token.pass{ background:var(--warp); }
+.rig-token.gone{ opacity:0; }
+
+.rig-gates{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.gate{ display:flex; flex-direction:column; align-items:center; gap:9px; text-align:center; }
+.gate-box{
+  width:52px; height:52px; flex:none; display:grid; place-items:center;
+  background:var(--paper); border:1px solid var(--rule-2);
+  transition:border-color .3s var(--ease-soft), background-color .3s var(--ease-soft);
+}
+.gate.active .gate-box{ border-color:var(--cross); }
+.gate.ok .gate-box{ border-color:var(--warp); }
+.gate.no .gate-box{ border-color:var(--weft); background:var(--weft); }
+/* masked, not background-image, so the glyph takes a theme token
+   instead of a hex baked into the data URI */
+.gate-mark{
+  width:13px; height:13px; display:block;
+  -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+  -webkit-mask-position:center;  mask-position:center;
+  -webkit-mask-size:contain;     mask-size:contain;
+  opacity:0; transition:opacity .25s linear;
+}
+.gate.ok .gate-mark, .gate.no .gate-mark{ opacity:1; }
+.gate.ok .gate-mark{
+  background-color:var(--warp);
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1 6.5L4.4 10 11 2' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+          mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1 6.5L4.4 10 11 2' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+}
+.gate.no .gate-mark{
+  background-color:var(--on-dye);
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 2l8 8M10 2l-8 8' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+          mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 2l8 8M10 2l-8 8' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+}
+.gate-name{
+  font-family:'Instrument Sans',sans-serif; font-size:var(--step--1);
+  font-weight:600; color:var(--ink); letter-spacing:-0.01em;
+}
+.gate-detail{
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  color:var(--ink-3); min-height:2.6em; line-height:1.3; white-space:pre-line;
+  opacity:0; transition:opacity .3s linear; max-width:19ch;
+}
+.gate.ok .gate-detail, .gate.no .gate-detail{ opacity:1; }
+.gate.no .gate-detail{ color:var(--weft-deep); }
+
+.rig-controls{
+  display:flex; flex-wrap:wrap; gap:8px;
+  padding:4px clamp(18px,3vw,28px) 20px;
+}
+.scn{
+  appearance:none; cursor:pointer; background:transparent;
+  border:1px solid var(--rule-2); color:var(--ink-2);
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  letter-spacing:0.04em; padding:7px 11px;
+  transition:border-color .3s var(--ease-soft), color .3s var(--ease-soft);
+}
+.scn:hover{ border-color:var(--warp); color:var(--warp); }
+.scn[aria-pressed="true"]{ border-color:var(--ink); color:var(--ink); }
+
+.rig-log{
+  border-top:1px solid var(--rule-2); padding:16px clamp(18px,3vw,28px) 18px;
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  line-height:1.5; min-height:8.4em;
+  display:flex; flex-direction:column-reverse; justify-content:flex-end; gap:7px;
+  overflow:hidden;
+}
+.rig-log .row{
+  display:flex; gap:12px; align-items:baseline; white-space:nowrap;
+  animation:logIn .35s var(--ease-soft) both;
+}
+.rig-log .t{ color:var(--ink-3); flex:none; }
+.rig-log .who{ color:var(--ink); flex:none; }
+.rig-log .verdict-tag{ font-weight:600; flex:none; }
+.rig-log .verdict-tag.allow{ color:var(--warp); }
+.rig-log .verdict-tag.deny{ color:var(--weft-deep); }
+.rig-log .why{ color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; }
+@keyframes logIn{ from{ opacity:0; transform:translateY(5px); } to{ opacity:1; transform:none; } }
+
+@media (max-width:640px){
+  .rig-gates{ gap:4px; }
+  .gate-box{ width:42px; height:42px; }
+  .rig-rail, .rig-token{ top:55px; }
+  .gate-name{ font-size:var(--step--2); }
+  .gate-detail{ font-size:10px; max-width:13ch; }
+  /* let the reason drop to its own line instead of being clipped */
+  .rig-log .row{ white-space:normal; flex-wrap:wrap; gap:4px 10px; }
+  .rig-log .why{ flex:1 0 100%; }
+}
+@media (prefers-reduced-motion: reduce){
+  .rig-token{ transition:none; }
+  .rig-log .row{ animation:none; }
+}
+
+/* prose beside the demo: the inspector shows the mechanism, these two
+   paragraphs carry the consequence, which no animation can state */
+.rig-read{ margin-top:44px; }
+/* wants to hold one line. It fits comfortably down to ~640px, so it is
+   pinned there and allowed to break — balanced — only below that, where
+   one line would mean an unreadable type size. */
+.rig-read .lead-in{
+  margin:0 0 22px; padding-bottom:18px; border-bottom:1px solid var(--rule);
+  font-family:'Bricolage Grotesque',sans-serif; font-variation-settings:'wdth' 100;
+  font-weight:700; letter-spacing:-0.018em; color:var(--ink);
+  font-size:clamp(0.9375rem, 2.35vw, 1.1875rem);
+  line-height:1.3; text-wrap:balance;
+}
+@media (min-width:640px){
+  .rig-read .lead-in{ white-space:nowrap; }
+}
+.rig-read-cols{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:26px clamp(32px,5vw,64px);
+}
+@media (max-width:820px){ .rig-read-cols{ grid-template-columns:1fr; } }
+.rig-read-cols p{ margin:0; color:var(--ink-2); font-size:var(--step--1); max-width:52ch; }
+.rig-read-cols strong{ color:var(--ink); font-weight:600; }
+
+/* --- versus ---------------------------------------------------- */
+.vs-head{
+  display:grid; grid-template-columns:1fr 1.35fr 1.35fr; gap:0 clamp(20px,3vw,40px);
+  padding-bottom:12px; border-bottom:1px solid var(--rule-2);
+}
+.vs-head span{
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3);
+}
+.vs-head span:last-child{ color:var(--warp); }
+.vs{
+  display:grid; grid-template-columns:1fr 1.35fr 1.35fr; gap:0 clamp(20px,3vw,40px);
+  padding:28px 0; border-bottom:1px solid var(--rule);
+}
+.vs:last-of-type{ border-bottom:none; }
+.vs h3{
+  margin:0 0 6px; font-family:'Bricolage Grotesque',sans-serif;
+  font-variation-settings:'wdth' 112; font-weight:700;
+  font-size:var(--step-1); letter-spacing:-0.02em;
+}
+.vs .kind{
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3);
+  display:block; line-height:1.6;
+}
+.vs p{ margin:0; font-size:var(--step--1); color:var(--ink-2); }
+.vs .ours{
+  padding-left:18px; border-left:2px solid var(--warp); color:var(--ink);
+}
+@media (max-width:880px){
+  .vs-head{ display:none; }
+  .vs{ grid-template-columns:1fr; gap:14px; padding:26px 0; }
+  .vs .ours{ border-left-width:3px; }
+  .vs .theirs::before, .vs .ours::before{
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:var(--step--2);
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3);
+    margin-bottom:6px;
+  }
+  .vs .theirs::before{ content:"What they do well"; }
+  .vs .ours::before{ content:"Where ikat differs"; color:var(--warp); }
+}
+
+/* --- the name -------------------------------------------------- */
+.name{ background:var(--paper-2); }
+.wordmark{
+  display:flex; align-items:flex-end; flex-wrap:wrap; gap:clamp(16px,3vw,40px);
+  margin:0 0 12px; padding-bottom:26px; border-bottom:1px solid var(--rule-2);
+}
+.wordmark .big{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-variation-settings:'wdth' 152,'opsz' 96;
+  font-weight:800; font-size:var(--step-6); line-height:.78;
+  letter-spacing:-0.052em; margin:0;
+  background:linear-gradient(96deg, var(--warp) 0%, var(--cross) 52%, var(--weft) 100%);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+}
+.wordmark .gloss{ font-family:'IBM Plex Mono',monospace; font-size:var(--step--1); color:var(--ink-2); line-height:1.9; padding-bottom:.5em; }
+.wordmark .gloss b{ color:var(--ink); font-weight:600; }
+.name .intro{ color:var(--ink-2); max-width:var(--measure); margin:26px 0 46px; }
+.name .intro strong{ color:var(--ink); font-weight:600; }
+
+/* four beats, one per plane — held as a 2x2 so it reads as a weave, not a list */
+.beats{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:40px clamp(32px,5vw,72px); }
+@media (max-width:720px){ .beats{ grid-template-columns:1fr; } }
+.beat{ display:flex; flex-direction:column; gap:12px; }
+.beat .cross{ width:26px; height:26px; flex:none; }
+.beat h3{
+  margin:0; font-family:'Bricolage Grotesque',sans-serif;
+  font-variation-settings:'wdth' 110; font-weight:700;
+  font-size:var(--step-1); letter-spacing:-0.018em;
+}
+.beat p{ margin:0; color:var(--ink-2); font-size:var(--step--1); }
+.beat .maps{
+  margin-top:4px; font-family:'IBM Plex Mono',monospace;
+  font-size:var(--step--2); letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--dye, var(--cross));
+}
+
+/* --- why now --------------------------------------------------- */
+.whynow{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(32px,5vw,64px); align-items:start; }
+@media (max-width:860px){ .whynow{ grid-template-columns:1fr; } }
+.whynow p:not(.gaplist-cap):not(.sources){ color:var(--ink-2); max-width:var(--measure); }
+.whynow p:first-child{ margin-top:0; }
+.gaplist{ list-style:none; margin:0; padding:0; border-top:1px solid var(--rule-2); }
+.gaplist li{ border-bottom:1px solid var(--rule); padding:15px 0 15px 32px; position:relative; font-size:var(--step--1); color:var(--ink-2); }
+.gaplist li::before{ content:""; position:absolute; left:4px; top:22px; width:14px; height:3px; background:var(--warp); }
+.gaplist li b{ color:var(--ink); font-weight:600; }
+.gaplist-cap{ font-family:'IBM Plex Mono',monospace; font-size:var(--step--2); letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-3); margin:0 0 14px; }
+
+/* --- principles ------------------------------------------------ */
+.principles{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:36px 44px; }
+@media (max-width:820px){ .principles{ grid-template-columns:1fr; } }
+.principle h3{ margin:0 0 10px; font-size:var(--step-1); font-family:'Bricolage Grotesque',sans-serif; font-variation-settings:'wdth' 108; font-weight:700; letter-spacing:-0.018em; }
+.principle p{ margin:0; color:var(--ink-2); font-size:var(--step--1); }
+.principle .bar{ width:34px; height:3px; background:var(--dye, var(--warp)); margin-bottom:16px; }
+
+/* --- contact --------------------------------------------------- */
+.contact .wrap{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:clamp(32px,5vw,72px); align-items:end; }
+@media (max-width:860px){ .contact .wrap{ grid-template-columns:1fr; align-items:start; } }
+.contact h2{ font-size:var(--step-4); max-width:15ch; font-variation-settings:'wdth' 90,'opsz' 60; letter-spacing:-0.03em; line-height:1.06; }
+.contact p:not(.eyebrow):not(.direct){ color:var(--ink-2); max-width:46ch; font-size:var(--step-1); }
+.direct{
+  margin:20px 0 0; font-family:'IBM Plex Mono',monospace;
+  font-size:var(--step--1); letter-spacing:0.04em; color:var(--ink-3);
+}
+.direct a{
+  color:var(--ink); text-decoration:none;
+  border-bottom:1px solid var(--rule-2); padding-bottom:2px;
+  transition:color .3s var(--ease-soft), border-color .3s var(--ease-soft);
+}
+.direct a:hover{ color:var(--warp); border-bottom-color:var(--warp); }
+.direct .sep{ margin:0 8px; color:var(--ink-3); }
+.mailrow{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.verdict{
+  font-family:'IBM Plex Mono',monospace; font-size:var(--step--2); font-weight:600;
+  letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--on-dye); background:var(--warp); padding:4px 9px; flex:none;
+}
+.mail{
+  font-family:'Bricolage Grotesque',sans-serif; font-variation-settings:'wdth' 100;
+  font-weight:700; font-size:var(--step-2); letter-spacing:-0.022em;
+  text-decoration:none; display:inline-block; color:var(--warp);
+  border-bottom:3px solid var(--warp); padding-bottom:3px;
+  transition:color .32s var(--ease-soft), background .32s var(--ease-soft), border-color .32s var(--ease-soft);
+}
+.mail:hover{ background:var(--cross); border-bottom-color:var(--cross); color:var(--on-dye); }
+
+footer{ padding:26px 0 36px; }
+footer .wrap{ display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:center; font-size:var(--step--2); color:var(--ink-3); letter-spacing:0.04em; }
+footer em{ font-style:normal; color:var(--cross); }
+footer a{ color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule-2);
+  transition:color .3s var(--ease-soft), border-color .3s var(--ease-soft); }
+footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
+</style>
+</head>
+<body>
+
+<div class="above">
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Ikat, home">
+      <svg viewBox="0 0 34 22" fill="none" aria-hidden="true">
+        <path d="M5 1V21M12 1V21M19 1V21M26 1V21" stroke="var(--warp)" stroke-width="1.6"/>
+        <path d="M1 8H34M1 15H34" stroke="var(--weft)" stroke-width="2.4"/>
+        <path d="M12 6.2V9.8M26 6.2V9.8M5 13.2V16.8M19 13.2V16.8" stroke="var(--paper)" stroke-width="3.6"/>
+        <path d="M12 6V10M26 6V10M5 13V17M19 13V17" stroke="var(--warp)" stroke-width="1.6"/>
+        <circle cx="12" cy="8" r="1.7" fill="var(--cross)"/>
+        <circle cx="19" cy="15" r="1.7" fill="var(--cross)"/>
+      </svg>
+      <span class="word">ikat</span>
+    </a>
+    <nav class="navlinks" aria-label="Sections">
+      <a href="#gap">The gap</a>
+      <a href="#map">Not building</a>
+      <a href="#product">What it does</a>
+      <a href="#flow">How it works</a>
+      <a href="#versus">Who else</a>
+      <a href="#name">The name</a>
+      <a href="#why">Why now</a>
+    </nav>
+    <div class="navtools">
+      <a class="uplink" href="/">&larr; dhvakr.me</a>
+      <button class="themetoggle" type="button" id="themetoggle" aria-pressed="false" aria-label="Switch to light mode">
+        <span class="vh">Switch to light mode</span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <g class="rays" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+            <path d="M12 1.6v2.6M12 19.8v2.6M22.4 12h-2.6M4.2 12H1.6M19.35 4.65l-1.84 1.84M6.49 17.51l-1.84 1.84M19.35 19.35l-1.84-1.84M6.49 6.49L4.65 4.65"/>
+          </g>
+          <mask id="crescent">
+            <rect x="0" y="0" width="24" height="24" fill="#fff"/>
+            <circle class="bite" cx="16.4" cy="7.6" r="6" fill="#000"/>
+          </mask>
+          <circle cx="12" cy="12" r="5.2" fill="currentColor" mask="url(#crescent)"/>
+        </svg>
+      </button>
+      <a class="btn btn-solid" href="#contact">Get early access</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <canvas id="loom" aria-hidden="true"></canvas>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">Infrastructure for agentic systems</p>
+    <h1 class="display">Your AI is only as useful as what it&rsquo;s <u>allowed to touch</u>.</h1>
+    <p class="lede">The model stopped being the bottleneck a while ago. What stalls AI inside a company is that <strong>nobody will hand an autonomous process the keys to production</strong>, so the agent gets a sandbox, a stale export, and a demo that never ships.</p>
+    <p class="lede">Ikat is the control plane between your AI and your real systems. Scoped identity per agent, policy enforced in the path, a full record of every call, and the bill broken down by who spent it.</p>
+    <div class="cta">
+      <a class="btn btn-solid" href="#contact">Get early access</a>
+      <a class="btn" href="#product">See what it does</a>
+    </div>
+    <p class="sig">Early stage, built in the open. We are working with a handful of teams who already point agents at systems that would hurt to lose.</p>
+  </div>
+</section>
+
+<!-- ============ THE GAP ============ -->
+<section id="gap">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">The gap</p>
+      <h2 class="display">Right now this is being solved privately, with a hardcoded token and some hope.</h2>
+      <p>The pattern repeats in every company that has moved past the pilot. The AI is capable, the integration is trivial, and the thing standing in the way is that nobody can answer what it touched, on whose behalf, or what it cost.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat invert">
+        <b>65%</b>
+        <span>of US employees use AI tools <i>their employer hasn&rsquo;t approved</i>. 71% of those have pasted sensitive data in.</span>
+      </div>
+      <div class="stat">
+        <b>21%</b>
+        <span>of organisations have a <i>mature governance model</i> for AI agents, while around 75% plan to deploy agents within two years.</span>
+      </div>
+      <div class="stat">
+        <b>89 / 52</b>
+        <span>Eighty-nine percent of teams running agents in production have observability. <i>Fifty-two percent have evals.</i> The gap is where quality dies.</span>
+      </div>
+      <div class="stat">
+        <b>56%</b>
+        <span>of CEOs report <i>zero measurable AI ROI</i> in the past twelve months. Capability was never the missing piece.</span>
+      </div>
+      <div class="stat invert">
+        <b>20&ndash;50&times;</b>
+        <span>the cost of a single-turn completion for a <i>multi-step agentic workflow</i>. A failed run bills twice: once to fail, once to retry.</span>
+      </div>
+      <div class="stat">
+        <b>+47%</b>
+        <span>year-over-year growth in AI spend. The <i>fastest-growing line</i> on the cloud bill, and the hardest to attribute to anyone.</span>
+      </div>
+    </div>
+
+    <p class="pullquote display">Security is not being unreasonable. They just have no way to say yes.</p>
+
+    <p class="sources">
+      Sources:
+      <a href="https://www.thomsonreuters.com/en/institute/articles/shadow-ai-unsanctioned-tools">Thomson Reuters Institute, shadow AI</a> ·
+      <a href="https://arjunjaggi.com/reports/state-of-enterprise-ai-2026">State of Enterprise AI 2026</a> ·
+      <a href="https://www.langchain.com/state-of-agent-engineering">LangChain, State of Agent Engineering</a> ·
+      <a href="https://www.marketscale.com/industries/software-and-technology/three-fault-lines-reshaping-enterprise-ai-in-2026-adoption-cost-and-security">MarketScale, enterprise AI fault lines</a> ·
+      <a href="https://www.vantage.sh/blog/finops-for-ai-token-costs">Vantage, FinOps for token costs</a>
+    </p>
+  </div>
+</section>
+
+<div class="dither" aria-hidden="true"></div>
+
+<!-- ============ MARKET MAP ============ -->
+<section id="map">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Where we&rsquo;re not building</p>
+      <h2 class="display">Three neighbouring markets we looked at and walked away from.</h2>
+      <p>We are a small studio in Chennai. Being clear about where we cannot win is the same discipline as being clear about where we can, so here is the map we drew before we picked anything.</p>
+    </div>
+
+    <div class="map-scroll">
+      <table class="map">
+        <thead>
+          <tr>
+            <th scope="col">Territory</th>
+            <th scope="col">Already held by</th>
+            <th scope="col">Why we&rsquo;re not there</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="territory">Agent observability &amp; evals</td>
+            <td class="holders">LangSmith, Braintrust, Arize, Langfuse, Datadog</td>
+            <td>Five well-funded platforms with converging feature sets, and the incumbent APM vendors moving in on top of them. The problem is real, the answer is being written, and a team our size would add nothing to it.</td>
+          </tr>
+          <tr>
+            <td class="territory">Portable AI memory</td>
+            <td class="holders">MemoryLake, MemoryBase, AI Context Flow</td>
+            <td>Mostly extension-shaped, sitting on surface area the model vendors can absorb into their own products at any time. We could not hold a position here long enough for it to matter.</td>
+          </tr>
+          <tr>
+            <td class="territory">Shadow-AI detection</td>
+            <td class="holders">Microsoft Entra, Wiz, Palo Alto Networks, BigID</td>
+            <td>This is a security-platform feature, and it is won on enterprise distribution rather than on engineering. The people who already sell the CASB and the CSPM will sell this in the same conversation.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="claim">
+      <p class="lead">Detection tells you the AI <em>touched</em> something. It never tells the AI what it&rsquo;s allowed to touch.</p>
+      <p class="body">All three of those markets sit beside the request rather than inside it. They watch, score and report after the fact, which is the right shape for a problem you are trying to understand and the wrong shape for a decision you have to make on every single call.</p>
+      <p class="body">The layer that has to be in the path, and that nobody has built for company scale yet, is the one that answers a much narrower question: this agent, this tool, these arguments, right now &mdash; yes or no, and on the record. That is the thing we are building.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRODUCT ============ -->
+<section id="product">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">What it does</p>
+      <h2 class="display">Four planes, running at once, on every call an agent makes.</h2>
+      <p>Not a sequence of steps, and not a dashboard bolted on afterwards. All four run on the same round trip, before the call reaches anything real &mdash; which is the only moment where saying no still costs nothing.</p>
+    </div>
+
+    <div class="planes">
+      <article class="plane" style="--dye:var(--warp)">
+        <div class="tag"><h3>Identity</h3><span class="kind">who</span></div>
+        <p>Every agent, and every human it is acting for, gets a short-lived scoped credential. No agent ever holds a raw API key, and revoking one takes effect on the next call rather than the next deploy.</p>
+        <p class="eg"><span class="k">agent:</span>support-triage<br><span class="k">on-behalf-of:</span> diva@<br><span class="k">expires:</span> 900s</p>
+      </article>
+      <article class="plane" style="--dye:var(--weft-deep)">
+        <div class="tag"><h3>Policy</h3><span class="kind">what</span></div>
+        <p>Rules written as code: which agent may call which tool, with which arguments, against whose rows. A denial comes back with a reason the agent can act on, not a silent failure it will retry forever.</p>
+        <p class="eg"><span class="ok">allow</span> db.read<br>&nbsp;&nbsp;<span class="k">where</span> tenant = caller.tenant<br><span class="no">deny</span>&nbsp; db.write<br>&nbsp;&nbsp;<span class="k">where</span> table = "payments"</p>
+      </article>
+      <article class="plane" style="--dye:var(--cross)">
+        <div class="tag"><h3>Ledger</h3><span class="kind">what it cost</span></div>
+        <p>Tokens, tool calls and GPU-seconds attributed to a team, a feature, a customer, a single conversation. Budgets are enforced in the path, so a runaway loop stops instead of showing up on the invoice.</p>
+        <p class="eg"><span class="k">team:</span>growth&nbsp;&nbsp;&nbsp;$1,284&nbsp;&nbsp;<span class="ok">+12%</span><br><span class="k">agent:</span>crawler&nbsp;&nbsp;&nbsp;&nbsp;$92&nbsp;&nbsp;<span class="no">capped</span></p>
+      </article>
+      <article class="plane" style="--dye:var(--ink)">
+        <div class="tag"><h3>Trace</h3><span class="kind">what happened</span></div>
+        <p>One structured record per tool call, with the arguments, the decision and the result, streamed to the SIEM and APM you already run. When something goes wrong you replay the chain instead of guessing at it.</p>
+        <p class="eg"><span class="k">&rarr;</span> splunk · datadog · s3<br>replayable · signed · 400d</p>
+      </article>
+    </div>
+
+    <p class="pullquote display">One round trip. Four answers: who asked, what they may touch, what it cost, and what actually happened.</p>
+  </div>
+</section>
+
+<!-- ============ THE INSPECTOR ============ -->
+<section id="flow">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">How it works</p>
+      <h2 class="display">Watch one call get decided.</h2>
+      <p>Every request an agent makes crosses four planes before it reaches anything real. Most go straight through. Some do not &mdash; and the interesting part is what happens to those. Pick a call and follow it.</p>
+    </div>
+
+    <div class="rig" id="rig">
+      <div class="rig-head">
+        <span class="k">agent</span>
+        <span class="v" data-agent>support-triage</span>
+        <span class="k">for</span>
+        <span class="v" data-onbehalf>diva@</span>
+        <span class="arrow">&rarr;</span>
+        <span class="call" data-call>db.read customers</span>
+        <span class="arrow">&rarr;</span>
+        <span class="v" data-target>postgres</span>
+      </div>
+
+      <div class="rig-track">
+        <div class="rig-rail" aria-hidden="true"></div>
+        <div class="rig-token" aria-hidden="true"></div>
+        <div class="rig-gates">
+          <div class="gate"><div class="gate-box"><span class="gate-mark"></span></div><span class="gate-name">Identity</span><span class="gate-detail"></span></div>
+          <div class="gate"><div class="gate-box"><span class="gate-mark"></span></div><span class="gate-name">Policy</span><span class="gate-detail"></span></div>
+          <div class="gate"><div class="gate-box"><span class="gate-mark"></span></div><span class="gate-name">Ledger</span><span class="gate-detail"></span></div>
+          <div class="gate"><div class="gate-box"><span class="gate-mark"></span></div><span class="gate-name">Trace</span><span class="gate-detail"></span></div>
+        </div>
+      </div>
+
+      <div class="rig-controls">
+        <button class="scn" type="button" data-i="0">read a customer row</button>
+        <button class="scn" type="button" data-i="1">write to payments</button>
+        <button class="scn" type="button" data-i="2">runaway crawler</button>
+        <button class="scn" type="button" data-i="3">query the warehouse</button>
+        <button class="rulebtn" type="button" id="ruleOpen">See the rules &rarr;</button>
+      </div>
+
+      <div class="rig-log" aria-live="off"></div>
+    </div>
+
+    <div class="rig-read">
+      <p class="lead-in">Two of those four planes are where the argument actually is.</p>
+      <div class="rig-read-cols">
+        <p><strong>The ledger runs before the spend, not after it.</strong> Cost is attributed while the call is still in the air rather than reconciled next month, so a team that is over budget stops at the gate instead of on the invoice. That is the difference between a bad afternoon and a bad quarter.</p>
+        <p><strong>The trace is the receipt.</strong> When a call does go through, the whole decision &mdash; who asked, what they sent, what we said, and what came back &mdash; lands in the SIEM and APM you already run. Not one more dashboard somebody has to remember to open.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT FITS ============ -->
+<section id="fit">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">How it fits</p>
+      <h2 class="display">One layer, in the path, speaking a protocol your tools already speak.</h2>
+      <p>Ikat talks MCP on both sides. Clients point at Ikat instead of at each server directly, and the servers you already run stay exactly as they are. It is one line of config, not a migration &mdash; and you can take it back out the same way.</p>
+    </div>
+
+    <div class="diagram-scroll">
+      <svg class="diagram" viewBox="0 0 900 420" role="img" aria-label="Diagram: AI clients connect through Ikat, which applies identity, policy, ledger and trace, to reach internal systems, while streaming records to SIEM, APM and billing.">
+        <text class="d-cap" x="0" y="14">Clients</text>
+        <rect class="d-box" x="0" y="30" width="176" height="42"/>
+        <text class="d-label" x="16" y="56">Claude &amp; ChatGPT</text>
+        <rect class="d-box" x="0" y="82" width="176" height="42"/>
+        <text class="d-label" x="16" y="108">Cursor &amp; coding agents</text>
+        <rect class="d-box" x="0" y="134" width="176" height="42"/>
+        <text class="d-label" x="16" y="160">Your own agents</text>
+        <rect class="d-box" x="0" y="186" width="176" height="42"/>
+        <text class="d-label" x="16" y="212">Internal copilots</text>
+
+        <path class="d-line" d="M176 51 C 240 51, 260 100, 322 118"/>
+        <path class="d-line" d="M176 103 C 240 103, 262 116, 322 126"/>
+        <path class="d-line" d="M176 155 C 240 155, 262 142, 322 134"/>
+        <path class="d-line" d="M176 207 C 240 207, 260 160, 322 142"/>
+
+        <rect class="d-core" x="322" y="30" width="230" height="230"/>
+        <text class="d-core-label" x="346" y="62">ikat</text>
+        <text class="d-cap" x="346" y="80">control plane</text>
+        <line class="d-row" x1="322" y1="96" x2="552" y2="96"/>
+        <circle class="d-dot" cx="334" cy="117" r="3"/>
+        <text class="d-plane" x="346" y="122">Identity</text>
+        <line class="d-row" x1="322" y1="136" x2="552" y2="136"/>
+        <circle class="d-dot" cx="334" cy="157" r="3"/>
+        <text class="d-plane" x="346" y="162">Policy</text>
+        <line class="d-row" x1="322" y1="176" x2="552" y2="176"/>
+        <circle class="d-dot" cx="334" cy="197" r="3"/>
+        <text class="d-plane" x="346" y="202">Ledger</text>
+        <line class="d-row" x1="322" y1="216" x2="552" y2="216"/>
+        <circle class="d-dot" cx="334" cy="237" r="3"/>
+        <text class="d-plane" x="346" y="242">Trace</text>
+
+        <path class="d-line-hot" d="M552 118 C 620 100, 640 51, 724 51"/>
+        <path class="d-line-hot" d="M552 126 C 620 116, 646 103, 724 103"/>
+        <path class="d-line-hot" d="M552 134 C 620 142, 646 155, 724 155"/>
+        <path class="d-line-hot" d="M552 142 C 620 160, 640 207, 724 207"/>
+
+        <text class="d-cap" x="724" y="14">Systems</text>
+        <rect class="d-box" x="724" y="30" width="176" height="42"/>
+        <text class="d-label" x="740" y="56">Postgres &amp; warehouses</text>
+        <rect class="d-box" x="724" y="82" width="176" height="42"/>
+        <text class="d-label" x="740" y="108">GitHub, Jira, Slack</text>
+        <rect class="d-box" x="724" y="134" width="176" height="42"/>
+        <text class="d-label" x="740" y="160">Stripe &amp; internal APIs</text>
+        <rect class="d-box" x="724" y="186" width="176" height="42"/>
+        <text class="d-label" x="740" y="212">Your MCP servers</text>
+
+        <path class="d-dash" d="M437 260 L 437 316"/>
+        <rect class="d-box" x="322" y="316" width="230" height="42"/>
+        <text class="d-label" x="346" y="342">SIEM · APM · billing</text>
+        <text class="d-cap" x="322" y="382">every call, structured, exported</text>
+      </svg>
+    </div>
+
+    <div class="codetabs" id="codetabs">
+      <div class="codetabs-bar" role="tablist" aria-label="What you write to adopt Ikat">
+        <button class="codetab" type="button" role="tab" aria-selected="true"  aria-controls="cp0" id="ct0">policy.ikat</button>
+        <button class="codetab" type="button" role="tab" aria-selected="false" aria-controls="cp1" id="ct1">client config</button>
+        <button class="codetab" type="button" role="tab" aria-selected="false" aria-controls="cp2" id="ct2">self-host</button>
+      </div>
+
+      
+
+      <pre class="codepane" id="cp0" role="tabpanel" aria-labelledby="ct0" data-open tabindex="0"><code><span class="c"># Who may do what. One file, checked into your repo,</span>
+<span class="c"># reviewed like any other code.</span>
+
+agent <span class="str">"support-triage"</span> {
+  <span class="ok">allow</span> db.read     <span class="kw">where</span> tenant == caller.tenant
+  <span class="ok">allow</span> search.web
+  <span class="no">deny</span>  db.write
+}
+
+agent <span class="str">"deploy-bot"</span> {
+  <span class="ok">allow</span> db.migrate  <span class="kw">where</span> env != <span class="str">"prod"</span>
+  <span class="no">deny</span>  db.write    <span class="kw">where</span> table == <span class="str">"payments"</span>
+}                                <span class="c">↑ this is what refuses deploy-bot in the demo above</span>
+
+budget <span class="str">"growth"</span> {
+  cap <span class="str">$90</span> / day
+  on_exceed <span class="no">deny</span>
+}</code></pre>
+
+      <pre class="codepane" id="cp1" role="tabpanel" aria-labelledby="ct1" tabindex="0"><code><span class="c">// Any MCP client. One line changes: the endpoint.</span>
+{
+  <span class="str">"mcpServers"</span>: {
+    <span class="str">"company"</span>: {
+<span class="del">-     "url": "https://internal-tools.acme.dev/mcp",</span>
+<span class="add">+     "url": "https://ikat.acme.dev/mcp",</span>
+      <span class="str">"headers"</span>: { <span class="str">"Authorization"</span>: <span class="str">"Bearer ${IKAT_TOKEN}"</span> }
+    }
+  }
+}
+
+<span class="c">// Your servers stay where they are. Nothing in the agent</span>
+<span class="c">// code changes. Point it back and Ikat is out of the path.</span></code></pre>
+
+      <pre class="codepane" id="cp2" role="tabpanel" aria-labelledby="ct2" tabindex="0"><code><span class="c"># One container, your network, your policy file.</span>
+
+docker run -p 8080:8080 \
+  -v ./policy.ikat:/etc/ikat/policy.ikat \
+  -e IKAT_TRACE_SINK=<span class="str">"splunk://…"</span> \
+  ghcr.io/ikat/gateway:latest
+
+<span class="c"># No traffic leaves your network. The hosted version is</span>
+<span class="c"># a convenience, never a condition.</span></code></pre>
+    </div>
+
+    <p class="code-note">The gateway and the policy engine are being built in the open. When Ikat refuses a call, you will be able to read the rule that refused it &mdash; and the code that evaluated the rule. None of it is published yet; this is the shape we are building to.</p>
+  </div>
+</section>
+
+<!-- ============ VERSUS ============ -->
+<section id="versus">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Who else is here</p>
+      <h2 class="display">Four teams are already in this space. Here is what each of them has that we don&rsquo;t.</h2>
+      <p>We are not the first people to notice that agents need a gateway. Every one of these is a real product built by people who know what they are doing, so the useful question is not who is better &mdash; it is what each of them optimised for, and what that left on the table.</p>
+    </div>
+
+    <div class="vs-head" aria-hidden="true">
+      <span>Who</span>
+      <span>What they do well</span>
+      <span>Where ikat differs</span>
+    </div>
+
+    <div class="vs">
+      <div>
+        <h3>Obot</h3>
+        <span class="kind">open-source gateway, agent platform</span>
+      </div>
+      <p class="theirs">The closest thing to a direct competitor, and genuinely open. An MCP gateway with auth and a server catalogue, wrapped inside a broader platform for building and running agents.</p>
+      <p class="ours">We are not selling a platform. Ikat is one layer you put in front of the agents and servers you already have, and it never asks you to build your agents our way.</p>
+    </div>
+
+    <div class="vs">
+      <div>
+        <h3>Docker MCP Gateway</h3>
+        <span class="kind">packaging, distribution</span>
+      </div>
+      <p class="theirs">The best answer to &ldquo;how do I run and share MCP servers without trusting a stranger&rsquo;s npm package&rdquo;: signed catalogues, containerised servers, excellent local developer ergonomics.</p>
+      <p class="ours">That governs how servers are <em>shipped</em>. It does not answer which agent may call which tool, on whose behalf, against whose rows &mdash; the question that actually blocks the security review.</p>
+    </div>
+
+    <div class="vs">
+      <div>
+        <h3>Cloudflare AI Gateway</h3>
+        <span class="kind">edge proxy, model endpoints</span>
+      </div>
+      <p class="theirs">Enormous scale and effectively free. Caching, rate limiting, retries and analytics sitting in front of the model providers, on infrastructure nobody else can match.</p>
+      <p class="ours">It sits in front of the <em>model</em>. The thing that frightens your security team is not the completion &mdash; it is the tool call into Postgres, Stripe and GitHub. And it runs in their cloud; Ikat runs in yours.</p>
+    </div>
+
+    <div class="vs">
+      <div>
+        <h3>Solo.io</h3>
+        <span class="kind">Envoy lineage, Kubernetes-native</span>
+      </div>
+      <p class="theirs">Serious proxy engineering with a decade of Envoy behind it, and the right answer for an organisation that already runs a service mesh and has a platform team to operate it.</p>
+      <p class="ours">Ikat is a single binary that runs without adopting a mesh. It is shaped for the team with ten agents and no platform org, which is almost everyone right now.</p>
+    </div>
+
+    <div class="claim">
+      <p class="lead">The <em>ledger</em> is the part none of them put in the path.</p>
+      <p class="body">Identity, policy and tracing are converging. Everyone on this list will have a credible version of all three within a year, and we are not going to win by claiming otherwise. What every one of them treats as a reporting problem is cost: a dashboard you read next month, after the money is gone.</p>
+      <p class="body">In an agentic system that is the same problem twice. The runaway loop that burns nine thousand dollars is the runaway loop that hammered your production database, and both are decisions you can only make while the call is still in flight. Ikat makes them one decision, enforced in one place, on the record.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE NAME ============ -->
+<section class="name" id="name">
+  <div class="wrap">
+    <p class="eyebrow">The name</p>
+
+    <div class="wordmark">
+      <p class="big">ikat</p>
+      <p class="gloss">
+        <b>/ˈiː.kɑːt/</b> &nbsp; EE-kaht<br>
+        Malay, <i>ikat</i> &mdash; <b>to tie, to bind</b><br>
+        a resist-dye technique, c. 11th century
+      </p>
+    </div>
+
+    <p class="intro">In ikat, the threads are bound and dyed <strong>before</strong> anything is woven. The pattern already exists in the thread while the cloth is still an intention. Every other patterned textile does the opposite: weave the cloth, then print the design onto the finished surface. <strong>That distinction is the entire product argument</strong>, which is why the name is the mechanism rather than a metaphor laid on top of it.</p>
+
+    <div class="beats">
+      <div class="beat" style="--dye:var(--warp)">
+        <svg class="cross" viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M13 1V25" stroke="var(--warp)" stroke-width="2.5"/>
+          <path d="M1 13H25" stroke="var(--warp)" stroke-width="2.5"/>
+        </svg>
+        <h3>It already means &ldquo;to bind&rdquo;</h3>
+        <p>Not a metaphor we bolted on afterwards. The word is a verb, and it is the verb for what the product does: bind a credential to an agent, bind a policy to a call, bind a cost to a team.</p>
+        <p class="maps">Identity</p>
+      </div>
+
+      <div class="beat" style="--dye:var(--weft-deep)">
+        <svg class="cross" viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M7 1V25M19 1V25" stroke="var(--rule-2)" stroke-width="2"/>
+          <path d="M1 13H25" stroke="var(--weft)" stroke-width="3"/>
+        </svg>
+        <h3>The pattern is in the thread</h3>
+        <p>Dye first, weave second. A policy that lives in the call before it executes is a different object from a rule reconstructed out of logs an hour later &mdash; the same way dyed thread is a different object from printed cloth.</p>
+        <p class="maps">Policy</p>
+      </div>
+
+      <div class="beat" style="--dye:var(--cross)">
+        <svg class="cross" viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M13 1V25" stroke="var(--warp)" stroke-width="2.5"/>
+          <path d="M1 13H25" stroke="var(--weft)" stroke-width="2.5"/>
+          <circle cx="13" cy="13" r="4" fill="var(--cross)"/>
+        </svg>
+        <h3>Warp &times; weft</h3>
+        <p>Every call is a crossing of two threads: which agent, and which tool. Ikat is what sits at the crossing and decides. Everything else in this market sits politely beside it and takes notes.</p>
+        <p class="maps">Ledger</p>
+      </div>
+
+      <div class="beat" style="--dye:var(--ink)">
+        <svg class="cross" viewBox="0 0 26 26" aria-hidden="true">
+          <path d="M1 13H14" stroke="var(--ink)" stroke-width="3"/>
+          <circle cx="17" cy="13" r="1.3" fill="var(--ink)"/>
+          <circle cx="21" cy="13" r="1.1" fill="var(--ink)" opacity=".7"/>
+          <circle cx="24.5" cy="13" r="1" fill="var(--ink)" opacity=".4"/>
+          <circle cx="19" cy="8" r="1" fill="var(--ink)" opacity=".5"/>
+          <circle cx="23" cy="18" r="1" fill="var(--ink)" opacity=".45"/>
+        </svg>
+        <h3>The blur is the proof</h3>
+        <p>Real ikat has a feathered edge where warp and weft never quite align. It is how you tell a woven piece from a printed imitation &mdash; the honest record of how the thing was actually made.</p>
+        <p class="maps">Trace</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY NOW ============ -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">Why now</p>
+      <h2 class="display">Connecting AI to your systems got easy. Controlling it did not.</h2>
+    </div>
+    <div class="whynow">
+      <div>
+        <p>Two years ago, every AI tool talked to your systems its own private way. Now they all speak one language &mdash; Model Context Protocol &mdash; and this year it moved under the Linux Foundation, which is the software world&rsquo;s way of saying this is settled, you can build on it.</p>
+        <p>Wiring an agent into your production database is now about a five-minute job. <strong>That is the problem.</strong> A five-minute job just got the same reach as a senior engineer with a company laptop, and nobody agreed on who watches it, what it may touch, or who pays for what it burns.</p>
+        <p>The people writing the standard published a list of what is still missing. It reads like a job description for the thing we are building, and not one item on it needs a breakthrough &mdash; it needs somebody to sit down and build the unglamorous part properly.</p>
+      </div>
+      <div>
+        <p class="gaplist-cap">Still missing, in their own words</p>
+        <ul class="gaplist">
+          <li><b>A real record of every call</b>, in the format the security tools you already own can read</li>
+          <li><b>Company logins</b>, instead of every developer pasting their own key into a config file</li>
+          <li><b>One gateway in front of everything</b>, that still knows which human the request is really for</li>
+          <li><b>Write a rule once</b>, not once per tool and again per app</li>
+          <li><b>Room to grow</b>, without every server having to remember who is who</li>
+        </ul>
+        <p class="sources"><a href="https://blog.modelcontextprotocol.io/posts/2026-mcp-roadmap/">blog.modelcontextprotocol.io &mdash; the 2026 MCP roadmap</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRINCIPLES ============ -->
+<section id="principles">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow">How we build</p>
+      <h2 class="display">Three things we will not trade away.</h2>
+    </div>
+    <div class="principles">
+      <div class="principle" style="--dye:var(--warp)">
+        <div class="bar"></div>
+        <h3>Self-hostable by default</h3>
+        <p>Ikat sits in the path of your most sensitive traffic. That traffic should not have to leave your network for us to be useful, and the hosted version should be a convenience rather than a condition.</p>
+      </div>
+      <div class="principle" style="--dye:var(--weft)">
+        <div class="bar"></div>
+        <h3>Readable, not magic</h3>
+        <p>The gateway and the policy engine are open. If Ikat denies a call, you can read the rule that denied it and the code that evaluated the rule. Trust in this layer has to be verifiable.</p>
+      </div>
+      <div class="principle" style="--dye:var(--cross)">
+        <div class="bar"></div>
+        <h3>Boring where it counts</h3>
+        <p>This is a proxy in a hot path. It should be dull, fast and predictable under load, and it should fail in ways an on-call engineer can reason about at three in the morning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dither up" aria-hidden="true"></div>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">One call we never deny</p>
+      <h2 class="display">If your AI is stuck behind a security review, we want to hear about it.</h2>
+      <p>We are looking for a few teams to build this with. If you run agents against systems that matter, and you have already cobbled together your own answer to who-can-do-what, we want to see it. Tell us what you had to build before your security team would say yes.</p>
+    </div>
+    <div>
+      <div class="mailrow">
+        <span class="verdict">allow</span>
+        <a class="mail" href="mailto:hello@dhvakr.me">hello@dhvakr.me</a>
+      </div>
+      <p class="direct">Or come straight to me &mdash; I&rsquo;m Divakaran, a backend engineer in Chennai (<a href="/">dhvakr.me</a>) &mdash;
+        <a href="https://www.linkedin.com/in/dhvakr/" target="_blank" rel="noopener noreferrer">LinkedIn</a><span class="sep" aria-hidden="true">/</span><a href="https://x.com/dhvakr" target="_blank" rel="noopener noreferrer">X</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">&copy; 2026 ikat &nbsp;/&nbsp; built by <a href="/">Divakaran</a></span>
+    <span class="mono"><em>ikat</em> &nbsp;/&nbsp; threads bound and dyed before the weaving, so the pattern is in the thread itself</span>
+  </div>
+</footer>
+
+</div>
+
+<div class="drawer" id="ruleDrawer" hidden>
+  <div class="drawer-scrim" data-close></div>
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="drawer-head">
+      <span class="drawer-title" id="drawerTitle">policy.ikat</span>
+      <button class="drawer-close" type="button" id="ruleClose" aria-label="Close">&times;</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <p class="drawer-foot">These rules are what the gateway evaluates on every call. Same file you would check into your repo.</p>
+  </div>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   The gate.
+
+   This is the product, not the name. Calls arrive from the left —
+   agents reaching for something — and every one of them meets a
+   line before it reaches anything real. That line is Ikat.
+
+   A call in flight has no colour, because it has no verdict yet.
+   It only earns one at the line: indigo passes through and carries
+   on to the systems on the right, vermilion is stopped dead and
+   dissolves. Colour here means a decision has been made, which is
+   the one thing a gateway actually does — say yes or no while the
+   call is still in the air. Violet is reserved for the line itself.
+
+   The dissolve is an ordered Bayer dither — the same feathered edge
+   that tells woven ikat from a print, and the same trick a 1-bit
+   display uses to fake a gradient.
+   --------------------------------------------------------------- */
+(function(){
+  var canvas = document.getElementById('loom');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var host = canvas.parentNode;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  var BAYER = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+  var CELL = 3;
+  var DENY_RATE = 0.3;       // a refusal every couple of seconds — it is the point
+  var W = 0, H = 0, dpr = 1, gateX = 0;
+  var calls = [];
+  var C = {};
+  var raf = null;
+
+  function rand(){ return Math.random(); }
+
+  function readTokens(){
+    var s = getComputedStyle(document.documentElement);
+    C.warp  = s.getPropertyValue('--warp').trim();
+    C.weft  = s.getPropertyValue('--weft').trim();
+    C.cross = s.getPropertyValue('--cross').trim();
+    C.rule  = s.getPropertyValue('--ink-3').trim();
+    C.aWarp  = parseFloat(s.getPropertyValue('--loom-warp-a'))  || 0.34;
+    C.aWeft  = parseFloat(s.getPropertyValue('--loom-weft-a'))  || 0.22;
+    C.aCross = parseFloat(s.getPropertyValue('--loom-cross-a')) || 0.50;
+  }
+
+  function makeCall(startInside){
+    var len = 95 + rand() * 150;
+    return {
+      y: 18 + rand() * Math.max(1, H - 36),
+      x: startInside ? rand() * gateX : -len - rand() * 90,
+      speed: 0.85 + rand() * 1.5,
+      len: len,
+      deny: rand() < DENY_RATE,
+      stopped: 0            // frames of the refusal flare, counts up once blocked
+    };
+  }
+
+  function seed(){
+    calls = [];
+    var n = W < 700 ? 11 : (W < 1050 ? 22 : 34);
+    for (var i = 0; i < n; i++) calls.push(makeCall(true));
+  }
+
+  // solid at the head, dissolving backwards through the dither
+  function trail(x, y, len, colour, alpha, thickness){
+    var start = Math.max(0, x - len);
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = colour;
+    for (var px = start; px < x; px += CELL){
+      var t = (px - start) / len;
+      var p = t * t;
+      var gx = Math.round(px / CELL);
+      for (var dy = -thickness; dy <= thickness; dy++){
+        var gy = Math.round(y / CELL) + dy;
+        var weight = dy === 0 ? p : p * 0.4;
+        var thr = (BAYER[((gx % 4) + 4) % 4][((gy % 4) + 4) % 4] + 0.5) / 16;
+        if (weight > thr) ctx.fillRect(gx * CELL, gy * CELL, CELL - 1, CELL - 1);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // the control plane itself: a line that is woven, not welded
+  function drawGate(){
+    ctx.globalAlpha = C.aCross * 0.85;
+    ctx.fillStyle = C.cross;
+    ctx.fillRect(gateX, 0, 1.5, H);
+
+    ctx.globalAlpha = C.aCross * 0.5;
+    for (var gy = 0; gy < Math.ceil(H / CELL); gy++){
+      for (var d = 1; d <= 4; d++){
+        var thr = (BAYER[(d % 4)][((gy % 4) + 4) % 4] + 0.5) / 16;
+        if ((1 - d / 5) <= thr) continue;
+        ctx.fillRect(gateX - d * CELL, gy * CELL, CELL - 1, CELL - 1);
+        ctx.fillRect(gateX + d * CELL, gy * CELL, CELL - 1, CELL - 1);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function frame(){
+    ctx.clearRect(0, 0, W, H);
+    drawGate();
+
+    for (var i = 0; i < calls.length; i++){
+      var c = calls[i];
+
+      if (c.stopped > 0){
+        // refused: a vermilion bar across the gate, fading as it dissolves
+        var f = 1 - c.stopped / 72;
+        if (f <= 0){ calls[i] = makeCall(false); continue; }
+        c.stopped++;
+        trail(gateX, c.y, c.len * 0.8, C.weft, Math.min(1, C.aWeft * f * 2.1), 1);
+        ctx.globalAlpha = f;
+        ctx.fillStyle = C.weft;
+        ctx.fillRect(gateX - 1.5, c.y - 11 * f, 4, 22 * f);
+        ctx.globalAlpha = 1;
+        continue;
+      }
+
+      c.x += c.speed;
+
+      if (c.deny && c.x >= gateX){ c.x = gateX; c.stopped = 1; continue; }
+      if (c.x - c.len > W){ calls[i] = makeCall(false); continue; }
+
+      var through = c.x > gateX;
+      var colour = through ? C.warp : C.rule;
+      var alpha = through ? C.aWarp * 1.5 : 0.5;
+
+      trail(c.x, c.y, c.len, colour, alpha, 1);
+
+      // the head of the call
+      ctx.globalAlpha = Math.min(1, alpha * 1.9);
+      ctx.fillStyle = colour;
+      ctx.fillRect(c.x - 2, c.y - 1.5, 5, 3);
+      ctx.globalAlpha = 1;
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  function paintStatic(){
+    ctx.clearRect(0, 0, W, H);
+    drawGate();
+    for (var i = 0; i < calls.length; i++){
+      var c = calls[i];
+      var through = c.x > gateX;
+      trail(c.x, c.y, c.len, through ? C.warp : C.rule,
+            through ? C.aWarp * 1.5 : 0.5, 1);
+    }
+  }
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = host.offsetWidth;
+    H = host.offsetHeight;
+    if (!W || !H) return;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // on a phone the copy runs full width, so the gate sits further out
+    gateX = Math.round(W * (W < 700 ? 0.78 : 0.70));
+    readTokens();
+    seed();
+    if (reduce.matches) paintStatic();
+  }
+
+  function start(){
+    if (raf) cancelAnimationFrame(raf);
+    raf = null;
+    if (reduce.matches){ paintStatic(); return; }
+    raf = requestAnimationFrame(frame);
+  }
+
+  window.__ikatRepaintLoom = function(){
+    readTokens();
+    if (reduce.matches) paintStatic();
+  };
+  if (reduce.addEventListener) reduce.addEventListener('change', start);
+
+  var rt;
+  window.addEventListener('resize', function(){
+    clearTimeout(rt);
+    rt = setTimeout(function(){ resize(); start(); }, 160);
+  });
+
+  resize();
+  start();
+
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){ resize(); });
+  }
+})();
+
+/* ---------------------------------------------------------------
+   The request inspector.
+
+   Four scripted calls, each chosen to fail (or pass) at a different
+   plane, so the four planes teach themselves in rotation. A timeline
+   of setTimeouts drives it; every one is tracked so that clicking a
+   scenario mid-run cancels the old one instead of interleaving two.
+   --------------------------------------------------------------- */
+(function(){
+  var rig = document.getElementById('rig');
+  if (!rig) return;
+
+  var track  = rig.querySelector('.rig-track');
+  var token  = rig.querySelector('.rig-token');
+  var gates  = [].slice.call(rig.querySelectorAll('.gate'));
+  var logEl  = rig.querySelector('.rig-log');
+  var btns   = [].slice.call(rig.querySelectorAll('.scn'));
+  var fAgent = rig.querySelector('[data-agent]');
+  var fFor   = rig.querySelector('[data-onbehalf]');
+  var fCall  = rig.querySelector('[data-call]');
+  var fTgt   = rig.querySelector('[data-target]');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  var SCN = [
+    { agent:'support-triage', on:'diva@', call:'db.read customers', target:'postgres',
+      steps:[
+        { ok:true, detail:'scoped token\n900s left' },
+        { ok:true, detail:'tenant = caller\n42 rows' },
+        { ok:true, detail:'$0.004\nteam: support' },
+        { ok:true, detail:'written\nsplunk + s3' }
+      ],
+      verdict:'ALLOW', why:'2.1 ms' },
+
+    { agent:'deploy-bot', on:'ci-runner', call:'db.write payments', target:'postgres',
+      steps:[
+        { ok:true,  detail:'scoped token\n300s left' },
+        { ok:false, detail:'payments is\nread-only' }
+      ],
+      verdict:'DENY', why:'policy: no agent writes to payments' },
+
+    { agent:'crawler', on:'rekha@', call:'search.web ×2,140', target:'internal api',
+      steps:[
+        { ok:true,  detail:'scoped token\n900s left' },
+        { ok:true,  detail:'tool allowed\nargs ok' },
+        { ok:false, detail:'$92 of $90\ncap reached' }
+      ],
+      verdict:'DENY', why:'ledger: growth is over budget, loop stopped' },
+
+    { agent:'analytics', on:'kavya@', call:'warehouse.query', target:'snowflake',
+      steps:[
+        { ok:true, detail:'scoped token\n900s left' },
+        { ok:true, detail:'read-only\nscope' },
+        { ok:true, detail:'$0.11\nteam: data' },
+        { ok:true, detail:'written\ndatadog' }
+      ],
+      verdict:'ALLOW', why:'3.4 ms' }
+  ];
+
+  var timers = [];
+  var idx = 0;
+  var auto = true;
+
+  function cancel(){ timers.forEach(clearTimeout); timers = []; }
+  function at(ms, fn){ timers.push(setTimeout(fn, ms)); }
+
+  function centre(el){
+    var a = el.getBoundingClientRect(), b = track.getBoundingClientRect();
+    return (a.left + a.width / 2) - b.left;
+  }
+
+  function reset(){
+    gates.forEach(function(g){
+      g.className = 'gate';
+      g.querySelector('.gate-detail').textContent = '';
+    });
+    token.className = 'rig-token gone';
+    token.style.left = '0px';
+  }
+
+  function stamp(){
+    var d = new Date();
+    return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);
+  }
+
+  function log(scn){
+    var row = document.createElement('div');
+    row.className = 'row';
+    var allow = scn.verdict === 'ALLOW';
+    row.innerHTML =
+      '<span class="t"></span>' +
+      '<span class="who"></span>' +
+      '<span class="verdict-tag ' + (allow ? 'allow' : 'deny') + '"></span>' +
+      '<span class="why"></span>';
+    row.children[0].textContent = stamp();
+    row.children[1].textContent = scn.agent + ' → ' + scn.call;
+    row.children[2].textContent = scn.verdict;
+    row.children[3].textContent = scn.why;
+    logEl.insertBefore(row, logEl.firstChild);
+    while (logEl.children.length > 4) logEl.removeChild(logEl.lastChild);
+  }
+
+  function run(i){
+    cancel();
+    reset();
+    idx = i;
+    var scn = SCN[i];
+
+    btns.forEach(function(b, n){ b.setAttribute('aria-pressed', n === i ? 'true' : 'false'); });
+    fAgent.textContent = scn.agent;
+    fFor.textContent   = scn.on;
+    fCall.textContent  = scn.call;
+    fTgt.textContent   = scn.target;
+
+    var LEG = reduce.matches ? 0 : 500;
+    var HOLD = reduce.matches ? 0 : 420;
+    var t = 60;
+
+    at(t, function(){ token.className = 'rig-token'; });
+
+    scn.steps.forEach(function(step, n){
+      at(t, function(){
+        token.style.left = centre(gates[n]) + 'px';
+        gates[n].classList.add('active');
+      });
+      t += LEG;
+      at(t, function(){
+        gates[n].classList.remove('active');
+        gates[n].classList.add(step.ok ? 'ok' : 'no');
+        gates[n].querySelector('.gate-detail').textContent = step.detail;
+        if (!step.ok) token.classList.add('deny');
+        else if (n === scn.steps.length - 1 && scn.verdict === 'ALLOW') token.classList.add('pass');
+      });
+      t += HOLD;
+    });
+
+    if (scn.verdict === 'ALLOW'){
+      at(t, function(){ token.style.left = track.clientWidth + 'px'; });
+      t += LEG;
+    } else {
+      at(t, function(){ token.classList.add('gone'); });
+      t += 300;
+    }
+
+    at(t, function(){ log(scn); });
+
+    if (auto) at(t + (reduce.matches ? 2600 : 1900), function(){ run((i + 1) % SCN.length); });
+  }
+
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      auto = false;                      // a click takes over; no more rotation
+      run(parseInt(b.getAttribute('data-i'), 10));
+    });
+  });
+
+  window.addEventListener('resize', function(){
+    // keep the token on its gate if the row reflows mid-run
+    var active = rig.querySelector('.gate.active');
+    if (active) token.style.left = centre(active) + 'px';
+  });
+
+  // only start once it is actually on screen, so the first call is not
+  // already three scenarios deep by the time anyone scrolls to it
+  reset();
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        run(0);
+      });
+    }, { threshold: 0.35 });
+    io.observe(rig);
+  } else {
+    run(0);
+  }
+})();
+
+/* The rule drawer. Opens the policy file beside the demo without giving
+   that section the weight of an inline code block. The content is cloned
+   from the policy tab rather than duplicated in the markup, so there is
+   one copy of the file on the page. */
+(function(){
+  var openBtn = document.getElementById('ruleOpen');
+  var drawer  = document.getElementById('ruleDrawer');
+  var body    = document.getElementById('drawerBody');
+  var closeBtn= document.getElementById('ruleClose');
+  var source  = document.getElementById('cp0');
+  if (!openBtn || !drawer || !source) return;
+
+  var lastFocus = null;
+  // `hidden` lags a close by one transition, so it cannot be the state flag —
+  // reopening inside that window would silently no-op
+  var isOpen = false, hideTimer = null;
+
+  function focusables(){
+    return [].slice.call(drawer.querySelectorAll('button, [tabindex="0"]'))
+             .filter(function(el){ return el.offsetParent !== null; });
+  }
+
+  function open(){
+    if (isOpen) return;
+    isOpen = true;
+    clearTimeout(hideTimer);
+    if (!body.firstChild){
+      var pre = document.createElement('pre');
+      pre.className = 'codepane';
+      pre.setAttribute('tabindex', '0');
+      pre.innerHTML = source.innerHTML;
+      body.appendChild(pre);
+    }
+    lastFocus = document.activeElement;
+    drawer.hidden = false;
+    // nothing else on the page writes body overflow, so restore to '' rather
+    // than a captured value — a captured value can only ever leak
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function(){ drawer.classList.add('open'); });
+    closeBtn.focus();
+  }
+
+  function close(){
+    if (!isOpen) return;
+    isOpen = false;
+    drawer.classList.remove('open');
+    document.body.style.overflow = '';
+    // move focus out before the panel is hidden, and never leave it on <body>
+    var back = (lastFocus && lastFocus.focus && lastFocus !== document.body) ? lastFocus : openBtn;
+    back.focus();
+    var done = function(){ if (!isOpen) drawer.hidden = true; };
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();
+    else hideTimer = setTimeout(done, 380);
+  }
+
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  drawer.addEventListener('click', function(e){
+    if (e.target.hasAttribute('data-close')) close();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (!isOpen) return;
+    if (e.key === 'Escape'){ e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+    // keep focus inside while the dialog is modal
+    var f = focusables();
+    if (!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+})();
+
+/* Code tabs. Real tablist semantics: arrow keys move between tabs and
+   the panel is focusable, so the snippet is reachable by keyboard. */
+(function(){
+  var root = document.getElementById('codetabs');
+  if (!root) return;
+  var tabs  = [].slice.call(root.querySelectorAll('.codetab'));
+  var panes = tabs.map(function(t){ return document.getElementById(t.getAttribute('aria-controls')); });
+
+  function select(i, focus){
+    tabs.forEach(function(t, n){
+      t.setAttribute('aria-selected', n === i ? 'true' : 'false');
+      t.setAttribute('tabindex', n === i ? '0' : '-1');
+      if (panes[n]) panes[n].toggleAttribute('data-open', n === i);
+    });
+    if (focus) tabs[i].focus();
+  }
+
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ select(i); });
+    t.addEventListener('keydown', function(e){
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      select((i + d + tabs.length) % tabs.length, true);
+    });
+  });
+
+  select(0);
+})();
+
+/* Theme toggle. Dark is the default; a choice is remembered per browser. */
+(function(){
+  var btn = document.getElementById('themetoggle');
+  if (!btn) return;
+  var root = document.documentElement;
+
+  function current(){ return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+
+  function apply(theme){
+    if (theme === 'light') root.setAttribute('data-theme', 'light');
+    else root.setAttribute('data-theme', 'dark');
+    try { localStorage.setItem('dhvakr-theme', theme); } catch (e) {}
+    btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+    var label = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+    btn.setAttribute('aria-label', label);
+    btn.querySelector('.vh').textContent = label;
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#FBFAF7' : '#0B0B0D');
+    if (window.__ikatRepaintLoom) window.__ikatRepaintLoom();
+  }
+
+  apply(current());
+  btn.addEventListener('click', function(){
+    apply(current() === 'light' ? 'dark' : 'light');
+  });
+})();
+
+/* Scroll reveal. The class is applied from script so that with JS off,
+   or if this block throws, every section stays visible. */
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var targets = document.querySelectorAll(
+    '.sec-head, .stats, .pullquote, .map-scroll, .claim, .planes, ' +
+    '.diagram-scroll, .codetabs, .code-note, .rig, .rig-read, .vs-head, ' +
+    
+    '.vs, .wordmark, ' +
+    '.name .intro, .beat, ' +
+    '.whynow > div, .principle, .contact .wrap > div'
+  );
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
+
+  Array.prototype.forEach.call(targets, function(el, i){
+    el.classList.add('reveal');
+    el.style.transitionDelay = ((i % 4) * 70) + 'ms';
+    io.observe(el);
+  });
+})();
+</script>
+
+</body>
+</html>

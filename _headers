@@ -1,0 +1,30 @@
+# Cloudflare Pages response headers.
+#
+# One global CSP on purpose. Path-scoped rules can emit two
+# Content-Security-Policy headers for a single response, and two policies
+# intersect rather than override — so a second, narrower rule silently
+# blocks whatever the first one allowed. The policy below is the union of
+# what both pages need: the portfolio frames the Spotify now-playing
+# widget, /ikat frames nothing, and nothing changes for /ikat by allowing it.
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src https://dhvakrsp.vercel.app; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'
+
+# HTML is revalidated every time so a deploy is visible immediately.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+/ikat/
+  Cache-Control: public, max-age=0, must-revalidate
+/ikat/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Assets are not content-hashed, so a day is the honest ceiling —
+# long enough to help, short enough that a CSS fix lands the next day.
+/assets/*
+  Cache-Control: public, max-age=86400
