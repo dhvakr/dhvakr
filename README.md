@@ -10,6 +10,7 @@ Two static pages, no build step. Deployed on Cloudflare Pages.
 /ikat/                ikat/index.html     Ikat — MCP control plane
 /404.html                                 served for unmatched paths
 /assets/css/style.css                     portfolio styles (Ikat is self-contained)
+résumé                Google Doc, linked live as export?format=pdf
 /_headers                                 security headers + caching
 ```
 
@@ -29,14 +30,19 @@ Pages at it.
 - **Both pages share one theme key** (`dhvakr-theme` in `localStorage`), so a
   visitor's choice carries between `/` and `/ikat/`. Changing the key in one
   page without the other silently breaks that.
-- **Colour means something.** On the portfolio, amber is "within objective"
-  and red is "over it" — that contract is what lets the hero latency panel
-  work without a legend. On `/ikat/`, indigo is allow and vermilion is deny.
+- **Colour means something.** Black and white carry the page. On the
+  portfolio, green is "within objective", rust is "over it", and brown marks
+  the earlier state — that contract is what lets the hero latency panel work
+  without a legend. On `/ikat/`, indigo is allow and vermilion is deny.
+- **The light tokens are duplicated** in `[data-theme="light"]` and the
+  `prefers-color-scheme` block, and the two are kept byte-identical on
+  purpose so one find/replace reaches both. Keep them that way.
 - **Scroll-revealed sections start at `opacity: 0`.** The head script arms a
   2.5 s failsafe that shows everything if the main script never reports in, so
   a JS error can't leave the page blank. Keep that failsafe.
-- **Every number on the portfolio is from the résumé in `/assets`.** If a
-  figure changes there, change it here too.
+- **Every number on the portfolio comes from the Google Doc résumé**, which
+  the résumé links hit live via `export?format=pdf`. There is no PDF in the
+  repo any more. If a figure changes in that doc, change it on the page too.
 - `assets/` is not content-hashed, so `_headers` caps its cache at one day.
 
 ## Local preview
