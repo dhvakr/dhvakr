@@ -43,7 +43,10 @@ Pages at it.
 - **Every number on the portfolio comes from the Google Doc résumé**, which
   the résumé links hit live via `export?format=pdf`. There is no PDF in the
   repo any more. If a figure changes in that doc, change it on the page too.
-- `assets/` is not content-hashed, so `_headers` caps its cache at one day.
+- `assets/` is not content-hashed, so `_headers` caps its cache at one day —
+  and the stylesheet is linked as `style.css?v=N`. **Bump that N whenever the
+  CSS changes**, in `index.html` and `404.html`, or returning visitors get new
+  markup against a day-old stylesheet.
 
 ## Local preview
 

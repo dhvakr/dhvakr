@@ -67,6 +67,7 @@
   --breach-graph: #E0674A;
   --breach-wash:  rgba(224,103,74,0.14);
   --on-sig:   #0A0A0B;    /* ink laid on a signal-coloured block */
+  --on-breach: #0A0A0B;   /* and on a rust one — white is 3.37:1 here */
 
   --sel-bg: rgba(var(--acc-d-rgb), 0.26);
   --sel-fg: #FFFFFF;
@@ -112,6 +113,7 @@
   --breach-graph: #B83A1E;
   --breach-wash:  rgba(184,58,30,0.10);
   --on-sig:   #FFFFFF;
+  --on-breach: #FFFFFF;
 
   --sel-bg: rgba(var(--acc-lg-rgb), 0.16);
   --sel-fg: #0F0F0E;
@@ -136,6 +138,7 @@
   --breach-graph: #B83A1E;
   --breach-wash:  rgba(184,58,30,0.10);
   --on-sig:   #FFFFFF;
+  --on-breach: #FFFFFF;
 
   --sel-bg: rgba(var(--acc-lg-rgb), 0.16);
   --sel-fg: #0F0F0E;
@@ -1373,3 +1376,123 @@ footer a:hover { color: var(--sig); }
 .accent-menu button[aria-checked="true"] span { box-shadow: 0 0 0 2px var(--bg-2), 0 0 0 3.5px var(--dot); }
 
 @media (max-width: 880px) { .accent-menu { right: -40px; } }
+
+/* ============================== the fleet ==============================
+   A crew of agents builds the page in front of you. Each is a labelled
+   cursor that travels to a real element, clicks it, and that element
+   appears. On arrival the whole crew works the hero; after that a single
+   scout is dispatched per section as it scrolls into view.
+
+   The page is the stage, so there is no intro screen to sit through — and
+   nothing here is ever allowed to gate content. See the escape hatches in
+   the script: any input reveals everything, a hard timeout fires
+   regardless, and reduced motion skips the layer entirely. */
+
+#fleet-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+.agent {
+  position: absolute;
+  top: 0; left: 0;
+  will-change: transform;
+  transform: translate(-120px, -120px);
+  color: var(--sig-graph);
+}
+.agent.deny { color: var(--breach-graph); }
+.agent svg {
+  width: 17px; height: 21px;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
+}
+.agent .tag {
+  position: absolute;
+  left: 14px; top: 17px;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.015em;
+  padding: 2.5px 7px;
+  border-radius: 4px;
+  color: var(--on-sig);
+  background: var(--sig-graph);
+}
+.agent.deny .tag { background: var(--breach-graph); color: var(--on-breach); }
+
+/* the click */
+.agent .ping {
+  position: absolute;
+  left: -13px; top: -13px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  opacity: 0;
+  transform: scale(.3);
+}
+.agent.click .ping { animation: agent-ping .5s ease-out; }
+@keyframes agent-ping {
+  from { opacity: .85; transform: scale(.3); }
+  to   { opacity: 0;   transform: scale(1.55); }
+}
+
+/* Elements waiting for an agent. Scoped under .fleet-on so that the moment
+   the class comes off the body — for any reason — everything is visible. */
+body.fleet-on .awaiting { opacity: 0; transform: translateY(8px); }
+body.fleet-on .awaiting.lit {
+  opacity: 1; transform: none;
+  transition: opacity .45s ease, transform .45s cubic-bezier(.2,.7,.3,1);
+}
+
+#fleet-bar {
+  position: fixed;
+  left: 50%; bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 91;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: color-mix(in srgb, var(--bg-2) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--fg-2);
+  box-shadow: 0 10px 30px rgba(0,0,0,.34);
+  transition: opacity .5s ease, transform .5s ease;
+}
+#fleet-bar b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+#fleet-bar .skip { color: var(--fg-3); }
+#fleet-bar.gone {
+  opacity: 0;
+  transform: translateX(-50%) translateY(16px);
+  pointer-events: none;
+}
+#fleet-bar .pulse { display: flex; gap: 3px; }
+#fleet-bar .pulse i {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--sig-graph);
+  animation: fleet-pulse 1.1s ease-in-out infinite;
+}
+#fleet-bar .pulse i:nth-child(2) { animation-delay: .14s; }
+#fleet-bar .pulse i:nth-child(3) { animation-delay: .28s; }
+#fleet-bar .pulse i:nth-child(4) { animation-delay: .42s; }
+@keyframes fleet-pulse { 0%,100% { opacity: .25 } 50% { opacity: 1 } }
+
+@media (max-width: 560px) {
+  #fleet-bar { font-size: 10.5px; gap: 10px; padding: 8px 13px; bottom: 16px; }
+  #fleet-bar .skip { display: none; }
+  .agent .tag { font-size: 9.5px; padding: 2px 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #fleet-layer, #fleet-bar { display: none !important; }
+  body.fleet-on .awaiting { opacity: 1; transform: none; }
+}
