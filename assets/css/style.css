@@ -564,8 +564,6 @@ section + section { border-top: 1px solid var(--line); }
 }
 
 .chart-hold { position: relative; }
-#latency { width: 100%; height: 232px; display: block; }
-@media (max-width: 520px) { #latency { height: 200px; } }
 
 /* the caption under the live note — what you are actually watching */
 .panel-note {
@@ -1556,3 +1554,42 @@ body.fleet-on .panel.drawing > *:not(.box-draw) { opacity: 0; }
 #fleet-bar .log em { font-style: normal; color: var(--fg-2); }
 #fleet-bar .log .ok { color: var(--sig); }
 @media (max-width: 680px) { #fleet-bar .log { display: none; } }
+
+/* ---- the load waterfall ----
+   Real phases from this page load. The dashed mark on each track is the
+   1s budget; a phase that ends past it is drawn in rust, same contract as
+   everywhere else on the page. */
+.chart-hold { padding: 16px; }
+.fall { display: grid; gap: 7px; }
+.fall-row { display: grid; grid-template-columns: 72px minmax(0,1fr) 62px; gap: 11px; align-items: center; }
+.fall-k {
+  font-family: var(--mono); font-size: var(--step--2);
+  color: var(--fg-3); text-transform: uppercase; letter-spacing: .07em;
+}
+.fall-track {
+  position: relative; height: 9px; border-radius: 3px;
+  background: var(--bg-3); overflow: visible;
+}
+.fall-track i {
+  position: absolute; top: 0; bottom: 0;
+  border-radius: 3px; background: var(--fg-2);
+  animation: fall-in .5s cubic-bezier(.2,.8,.3,1) both;
+}
+.fall-row.over i { background: var(--breach-graph); }
+@keyframes fall-in { from { transform: scaleX(0); transform-origin: left } to { transform: none } }
+/* the budget */
+.fall-track::after {
+  content: ""; position: absolute; top: -3px; bottom: -3px;
+  left: var(--budget, 100%); width: 1px;
+  background: repeating-linear-gradient(to bottom, var(--line-2) 0 2px, transparent 2px 4px);
+}
+.fall-v {
+  font-family: var(--mono); font-size: var(--step--2);
+  color: var(--fg); text-align: right; font-variant-numeric: tabular-nums;
+}
+.fall-row.over .fall-v { color: var(--breach); }
+.fall-none { font-family: var(--mono); font-size: var(--step--2); color: var(--fg-3); padding: 18px 2px; }
+@media (prefers-reduced-motion: reduce) { .fall-track i { animation: none; } }
+@media (max-width: 520px) {
+  .fall-row { grid-template-columns: 58px minmax(0,1fr) 54px; gap: 8px; }
+}

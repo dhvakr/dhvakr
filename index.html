@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..200,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=9">
+<link rel="stylesheet" href="/assets/css/style.css?v=16">
 <script>
 /* Applied before first paint: a stored choice wins, otherwise the page
    keeps its dark default. Inline and tiny on purpose — a deferred script
@@ -105,32 +105,32 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <div>
           <figure class="panel" aria-labelledby="panel-cap">
             <div class="panel-head">
-              <span class="panel-title">P95 latency &nbsp;·&nbsp; under rising load</span>
-              <span class="panel-badge">objective 1000&nbsp;ms</span>
+              <span class="panel-title">This page &nbsp;·&nbsp; measured in your browser</span>
+              <span class="panel-badge">budget 1000&nbsp;ms</span>
             </div>
             <div class="readouts">
               <div class="readout">
-                <span class="readout-k">Throughput</span>
-                <span class="readout-v" id="r-rps">—</span>
+                <span class="readout-k">TTFB</span>
+                <span class="readout-v" id="r-ttfb">—</span>
               </div>
               <div class="readout">
-                <span class="readout-k">P95</span>
-                <span class="readout-v" id="r-p95">—</span>
+                <span class="readout-k">Largest paint</span>
+                <span class="readout-v" id="r-lcp">—</span>
               </div>
               <div class="readout">
-                <span class="readout-k">vs objective</span>
-                <span class="readout-v" id="r-obj">—</span>
+                <span class="readout-k">Transferred</span>
+                <span class="readout-v" id="r-bytes">—</span>
               </div>
             </div>
             <div class="chart-hold">
-              <canvas id="latency" role="img" aria-label="A latency chart: P95 response time climbs past the one-second objective as load rises, then falls back under it as indexing, Redis caching and a move from Java to Go land in sequence."></canvas>
+              <div class="fall" id="fall" role="img" aria-label="A waterfall of this page's real load phases, measured by the browser's Navigation Timing API."></div>
             </div>
             <div class="panel-note" id="p-note">
               <span class="dot" aria-hidden="true"></span>
-              <span class="txt" id="p-note-txt">steady state</span>
+              <span class="txt" id="p-note-txt">measuring</span>
             </div>
           </figure>
-          <p class="panel-cap" id="panel-cap">Not a mock-up. This is the sequence from a production AI&nbsp;SaaS platform: <b>P95 pulled from 2s to under 1s</b> with indexing and Redis, then the notification path moved from Java to Go — <b>40% more throughput on 30% less AWS spend</b>.</p>
+          <p class="panel-cap" id="panel-cap">Not a mock-up &mdash; these are <b>this page’s real numbers</b>, read from your browser’s Navigation Timing as it loaded. The same instinct at work: in production I pulled a REST API’s <b>P95 from 2s to under 1s</b>, and took <b>$120K a year</b> off the cloud bill it ran on.</p>
         </div>
       </div>
     </div>
@@ -764,6 +764,18 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         caret.className = 'caret';
         var i = 0, timer = 0, ended = false;
         var step = opts.speed || 18;
+        var rider = opts.agent || null;   // the agent doing the writing
+
+        /* The cursor sits on the caret and moves with it. Without this the
+           agent points at a paragraph while text appears somewhere else,
+           which reads as indicating rather than writing. */
+        function ride(){
+          if (!rider || ended) return;
+          var r = caret.getBoundingClientRect();
+          if (!r.width && !r.height) return;
+          rider.el.style.transition = 'transform 90ms linear';
+          rider.el.style.transform = 'translate(' + (r.left + 1) + 'px,' + (r.top + r.height * 0.62) + 'px)';
+        }
 
         function finish(){
           if (ended) return;
@@ -781,6 +793,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           for (var k = 0; k < burst && i < tokens.length; k++, i++) tokens[i].classList.add('on');
           if (i < tokens.length) {
             tokens[i].parentNode.insertBefore(caret, tokens[i]);
+            ride();
             timer = setTimeout(tick, step + (opts.perChar ? Math.random()*22 : Math.random()*14));
           } else finish();
         }
@@ -793,7 +806,8 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       /* ---- drawing a box ----
          The panel gets its outline stroked on before anything appears
          inside it, so it reads as built rather than revealed. */
-      function drawBox(box, done){
+      function drawBox(box, opts, done){
+        opts = opts || {};
         if (halted) { box.classList.add('lit'); done && done(); return function(){}; }
         var ended = false;
         function finish(){
@@ -825,6 +839,26 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
             rect.style.transition = 'stroke-dashoffset 760ms cubic-bezier(.4,0,.2,1)';
             rect.style.strokeDashoffset = '0';
           });
+          /* the agent walks the outline as it is stroked on, so the box is
+             visibly being drawn by someone */
+          var pen = opts && opts.agent;
+          if (pen) {
+            var t0 = performance.now(), DUR = 760;
+            (function walk(){
+              if (ended) return;
+              var k = Math.min((performance.now() - t0) / DUR, 1);
+              var e = k < .5 ? 2*k*k : 1 - Math.pow(-2*k + 2, 2)/2;   // match the ease
+              var b = box.getBoundingClientRect();
+              var P = 2 * (b.width + b.height), d = e * P, x, y;
+              if (d < b.width)                    { x = b.left + d;                        y = b.top; }
+              else if (d < b.width + b.height)    { x = b.right;                           y = b.top + (d - b.width); }
+              else if (d < 2*b.width + b.height)  { x = b.right - (d - b.width - b.height); y = b.bottom; }
+              else                                { x = b.left;  y = b.bottom - (d - 2*b.width - b.height); }
+              pen.el.style.transition = 'transform 70ms linear';
+              pen.el.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+              if (k < 1) requestAnimationFrame(walk);
+            })();
+          }
           setTimeout(finish, 820);
         } catch (err) { finish(); }
         setTimeout(finish, 1400);
@@ -868,14 +902,15 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
   })();
 
   /* ---- how each thing gets built ---- */
-  function buildStepFor(el){
+  function buildStepFor(el, agent){
     if (!Fleet) return null;
-    if (el.classList.contains('panel'))  return function(cb){ Fleet.drawBox(el, cb); };
+    if (el.classList.contains('panel'))  return function(cb){ Fleet.drawBox(el, { agent: agent }, cb); };
     var txt = (el.textContent || '').trim().length;
     if (!txt || txt > 420) return function(cb){ el.classList.add('lit'); cb(); };
     var big = el.matches('h1,h2,h3,.hero-alias,.eyebrow,.arc-step b,.move b,.sys-top h3,.pstat b');
     return function(cb){
       Fleet.typeIn(el, {
+        agent:   agent,
         perChar: big || txt < 46,
         speed:   big ? 26 : (txt < 46 ? 20 : 15),
         budget:  big ? 1700 : 2400
@@ -883,9 +918,22 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     };
   }
 
-  /* ---------------- arrival ---------------- */
+  /* ---------------- arrival ----------------
+     Built once per tab. sessionStorage survives a reload but not a new
+     tab, which is exactly the rule asked for: refreshing does not make
+     you sit through it again, opening the site fresh does. */
   (function(){
     if (!Fleet) return;
+    var KEY = 'dhvakr-built';
+    var alreadyBuilt = false;
+    try { alreadyBuilt = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+    if (alreadyBuilt) {
+      // nothing to perform — tear the crew down and leave the page alone
+      if (Fleet.layer && Fleet.layer.parentNode) Fleet.layer.remove();
+      Fleet.ready = false;
+      return;
+    }
+    try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
     var PLAN = ['.hero .eyebrow','.hero h1','.hero-alias','.hero-lede','.hero-sub',
                 '.hero-actions','.hero-social','.panel','.panel-cap'];
     var targets = [];
@@ -931,7 +979,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     targets.forEach(function(el, i){
       var a = Fleet.crew[i % Fleet.crew.length];
       var t0 = performance.now();
-      Fleet.dispatch(a, el, buildStepFor(el), 180 + i * 150, function(){
+      Fleet.dispatch(a, el, buildStepFor(el, a), 180 + i * 150, function(){
         done++;
         if (fbT) fbT.textContent = done;
         logLine(a, el, Math.round(performance.now() - t0));
@@ -975,12 +1023,47 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           show();                                   // the block arrives
           var head = el.matches('h2,h3') ? el
                    : el.querySelector('.sec-head h2, h2, h3, .sys-top h3, .move b, .arc-step b');
-          if (head) Fleet.typeIn(head, { perChar: true, speed: 23, budget: 1500 }, cb);
+          if (head) Fleet.typeIn(head, { agent: a, perChar: true, speed: 23, budget: 1500 }, cb);
           else cb();
         }, 0, function(ag){ setTimeout(function(){ Fleet.park(ag); }, 220); });
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     items.forEach(function(n){ io.observe(n); });
+
+    /* Safety net. An IntersectionObserver samples at frame boundaries, so a
+       fast flick or a jump from a nav link can carry an element from below
+       the fold to above it inside one frame and it is never reported — the
+       section then stays invisible for good. This sweeps anything already
+       scrolled past and reveals it outright. */
+    var sweepAt = 0, sweepT = 0;
+    function sweep(){
+      sweepAt = Date.now();
+      items.forEach(function(n){
+        if (n.classList.contains('in')) return;
+        var r = n.getBoundingClientRect();
+        if (r.top < innerHeight * 0.95) { io.unobserve(n); n.classList.add('in'); }
+      });
+    }
+    /* Throttled, not debounced: during a long flick a debounce never fires
+       until the page stops, which can leave a section blank for a second
+       or more. This runs while the scrolling is still happening, with a
+       trailing call to catch the final position. */
+    function onScroll(){
+      var now = Date.now();
+      if (now - sweepAt > 150) sweep();
+      clearTimeout(sweepT);
+      sweepT = setTimeout(sweep, 160);
+    }
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    /* Last line of defence. Both the observer and the scroll handler need
+       the page to actually be rendering; a backgrounded or throttled tab
+       can starve both. This ticks for the first ten seconds so anything
+       already scrolled past is shown even if no event ever arrives. */
+    var ticks = 0, iv = setInterval(function(){
+      sweep();
+      if (++ticks > 12) clearInterval(iv);
+    }, 800);
   }
   window.__revealOK = true;
 
@@ -992,254 +1075,128 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
   }
 
   /* =====================================================================
-     The latency panel.
+     The panel, measured rather than imagined.
 
-     A strip chart of P95 under rising load. The phases are the real
-     sequence of interventions, in the order they shipped: load arrives,
-     P95 crosses the 1 s objective, then indexing, then Redis in front of
-     reads, then the notification path moved to Go. Inside the objective the
-     trace is drawn in ink; over it, in rust. No legend — the dashed rule is
-     the objective, and colour appearing at all is the verdict.
+     Every number here comes from this page load in this browser, via the
+     Navigation Timing and Paint Timing APIs. The waterfall is the real
+     sequence of phases — DNS, connect, TLS, server, download, DOM, paint —
+     and anything that overruns the budget is drawn in rust.
+
+     A portfolio claiming to care about latency should be willing to show
+     its own, including on a bad connection.
      ===================================================================== */
   var chart = (function(){
-    var cv = document.getElementById('latency');
-    if (!cv) return null;
-    var ctx = cv.getContext('2d');
+    var host = document.getElementById('fall');
+    if (!host) return null;
 
-    var OBJ = 1000;        // the objective, in ms
-    var Y_MAX = 2500;      // top of the scale
-    var N = 170;           // samples held on screen
+    var BUDGET = 1000;
+    var elT = document.getElementById('r-ttfb'),
+        elL = document.getElementById('r-lcp'),
+        elB = document.getElementById('r-bytes'),
+        note = document.getElementById('p-note'),
+        noteTxt = document.getElementById('p-note-txt');
 
-    // [seconds into the loop, req/s, target P95, note]
-    var PHASES = [
-      [0.0,  1200,  380, 'steady state'],
-      [2.6,  2600,  980, 'load ramping'],
-      [5.0,  3600, 2050, 'P95 over objective'],
-      [7.6,  3700, 1460, 'indexes + connection pooling'],
-      [10.2, 4300,  900, 'Redis in front of reads'],
-      [12.8, 5100,  610, 'notification path moved to Go'],
-      [16.0, 5200,  600, 'holding — 40% more throughput'],
-      [18.4, 1200,  380, 'steady state']
-    ];
-    var LOOP = PHASES[PHASES.length - 1][0];
+    var lcp = 0, redraw = 0;
+    try {
+      new PerformanceObserver(function(list){
+        var es = list.getEntries();
+        if (!es.length) return;
+        lcp = es[es.length - 1].startTime;
+        // LCP keeps moving while the page is still being built, so the
+        // panel re-reads rather than reporting whatever it saw first
+        clearTimeout(redraw);
+        redraw = setTimeout(function(){ try { render(); } catch (e) {} }, 200);
+      }).observe({ type: 'largest-contentful-paint', buffered: true });
+    } catch (e) {}
+    /* First paint can land after the first render — on a slow connection,
+       or any time the tab is not actually painting — so the panel listens
+       for it rather than reading once and hoping. */
+    try {
+      new PerformanceObserver(function(){
+        clearTimeout(redraw);
+        redraw = setTimeout(function(){ try { render(); } catch (e) {} }, 200);
+      }).observe({ type: 'paint', buffered: true });
+    } catch (e) {}
 
-    var samples = new Array(N).fill(380);
-    var clock = 0, last = 0, raf = 0, running = false;
-    var inView = false;   // the panel is only worth drawing while it is on screen
-    var C = {};
+    function ms(v){ return v < 1 ? '<1 ms' : (v < 1000 ? Math.round(v) + ' ms' : (v/1000).toFixed(2) + ' s'); }
+    function kb(v){ return v ? (v < 1024*1024 ? Math.round(v/1024) + ' KB' : (v/1048576).toFixed(2) + ' MB') : '—'; }
 
-    function readColours(){
-      var cs = getComputedStyle(document.documentElement);
-      C.sig    = cs.getPropertyValue('--trace').trim()        || '#F4F3EF';
-      C.breach = cs.getPropertyValue('--breach-graph').trim() || '#E0674A';
-      C.line   = cs.getPropertyValue('--line').trim()         || 'rgba(255,255,255,0.1)';
-      C.fg3    = cs.getPropertyValue('--fg-3').trim()         || '#82828C';
-      C.bg2    = cs.getPropertyValue('--bg-2').trim()         || '#121216';
-    }
+    function render(){
+      var nav;
+      try { nav = performance.getEntriesByType('navigation')[0]; } catch (e) {}
+      if (!nav) { host.innerHTML = '<p class="fall-none">Timing API unavailable in this browser.</p>'; return; }
 
-    var W = 0, H = 0, dpr = 1;
-    function size(){
-      var r = cv.getBoundingClientRect();
-      if (!r.width) return false;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      W = Math.round(r.width); H = Math.round(r.height);
-      cv.width = Math.round(W * dpr);
-      cv.height = Math.round(H * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      return true;
-    }
+      var fcp = 0;
+      try {
+        (performance.getEntriesByType('paint') || []).forEach(function(e){
+          if (e.name === 'first-contentful-paint') fcp = e.startTime;
+        });
+      } catch (e) {}
 
-    // linear interpolation across the phase table
-    function at(t){
-      t = t % LOOP;
-      for (var i = PHASES.length - 1; i >= 0; i--) {
-        if (t >= PHASES[i][0]) {
-          var a = PHASES[i], b = PHASES[Math.min(i + 1, PHASES.length - 1)];
-          var span = b[0] - a[0];
-          var k = span > 0 ? (t - a[0]) / span : 0;
-          // ease so each intervention lands as a curve, not a step
-          k = k < 0.5 ? 2*k*k : 1 - Math.pow(-2*k + 2, 2) / 2;
-          return { rps: a[1] + (b[1] - a[1]) * k, p95: a[2] + (b[2] - a[2]) * k, note: a[3] };
-        }
+      var phases = [
+        ['DNS',      nav.domainLookupStart, nav.domainLookupEnd],
+        ['Connect',  nav.connectStart,      nav.secureConnectionStart || nav.connectEnd],
+        ['TLS',      nav.secureConnectionStart || nav.connectEnd, nav.connectEnd],
+        ['Server',   nav.requestStart,      nav.responseStart],
+        ['Download', nav.responseStart,     nav.responseEnd],
+        ['DOM',      nav.responseEnd,       nav.domContentLoadedEventEnd],
+        ['Paint',    nav.domContentLoadedEventEnd, Math.max(lcp, fcp, nav.domContentLoadedEventEnd)]
+      ].filter(function(p){ return p[2] > p[1]; });
+
+      var total = Math.max(
+        nav.domContentLoadedEventEnd, lcp, fcp,
+        phases.length ? phases[phases.length-1][2] : 0
+      ) || 1;
+      var scale = Math.max(total, BUDGET * 0.55);
+
+      var budgetAt = Math.min((BUDGET / scale) * 100, 100);
+      var rows = phases.map(function(p){
+        var dur = p[2] - p[1];
+        var left = (p[1] / scale) * 100;
+        var w = Math.max((dur / scale) * 100, 0.8);
+        var over = p[2] > BUDGET;
+        return '<div class="fall-row' + (over ? ' over' : '') + '">' +
+                 '<span class="fall-k">' + p[0] + '</span>' +
+                 '<span class="fall-track" style="--budget:' + budgetAt.toFixed(2) + '%">' +
+                   '<i style="left:' + left.toFixed(2) + '%;width:' + w.toFixed(2) + '%"></i>' +
+                 '</span>' +
+                 '<span class="fall-v">' + ms(dur) + '</span>' +
+               '</div>';
+      }).join('');
+
+      host.innerHTML = rows;
+
+      if (elT) {
+        var ttfb = nav.responseStart - nav.requestStart;
+        elT.textContent = ms(ttfb);
+        elT.className = 'readout-v ' + (ttfb > 300 ? 'is-breach' : 'is-ok');
       }
-      return { rps: PHASES[0][1], p95: PHASES[0][2], note: PHASES[0][3] };
-    }
-
-    var yOf = function(ms){ return H - 14 - (Math.min(ms, Y_MAX) / Y_MAX) * (H - 28); };
-
-    function trace(){
-      ctx.beginPath();
-      for (var i = 0; i < N; i++) {
-        var x = (i / (N - 1)) * W;
-        var y = yOf(samples[i]);
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      if (elL) {
+        var paint = lcp || fcp;
+        elL.textContent = paint ? ms(paint) : 'n/a';
+        elL.className = 'readout-v ' + (paint && paint > BUDGET ? 'is-breach' : 'is-ok');
+        var lbl = elL.parentNode.querySelector('.readout-k');
+        if (lbl) lbl.textContent = lcp ? 'Largest paint' : (fcp ? 'First paint' : 'Paint');
       }
-    }
+      if (elB) elB.textContent = kb(nav.transferSize);
 
-    function draw(){
-      ctx.clearRect(0, 0, W, H);
-      var yObj = yOf(OBJ);
-
-      // the objective
-      ctx.save();
-      ctx.setLineDash([4, 5]);
-      ctx.strokeStyle = C.fg3;
-      ctx.globalAlpha = 0.55;
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(0, yObj); ctx.lineTo(W, yObj); ctx.stroke();
-      ctx.restore();
-
-      ctx.save();
-      ctx.font = '500 10px "IBM Plex Mono", monospace';
-      ctx.fillStyle = C.fg3;
-      ctx.fillText('1000 ms', 8, yObj - 7);
-      ctx.restore();
-
-      // fill under the trace, split at the objective so the breach reads red
-      var fillPath = function(){
-        trace();
-        ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
-      };
-      [[0, yObj, C.breach, 0.16], [yObj, H, C.sig, 0.07]].forEach(function(band){
-        ctx.save();
-        ctx.beginPath(); ctx.rect(0, band[0], W, band[1] - band[0]); ctx.clip();
-        ctx.globalAlpha = band[3];
-        ctx.fillStyle = band[2];
-        fillPath(); ctx.fill();
-        ctx.restore();
-      });
-
-      // the stroke, same split
-      [[0, yObj, C.breach], [yObj, H, C.sig]].forEach(function(band){
-        ctx.save();
-        ctx.beginPath(); ctx.rect(0, band[0], W, band[1] - band[0]); ctx.clip();
-        ctx.strokeStyle = band[2];
-        ctx.lineWidth = 2;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-        trace(); ctx.stroke();
-        ctx.restore();
-      });
-
-      // the head of the trace
-      var cur = samples[N - 1];
-      var over = cur > OBJ;
-      ctx.save();
-      ctx.fillStyle = over ? C.breach : C.sig;
-      ctx.beginPath(); ctx.arc(W - 1.5, yOf(cur), 3.2, 0, Math.PI * 2); ctx.fill();
-      ctx.globalAlpha = 0.22;
-      ctx.beginPath(); ctx.arc(W - 1.5, yOf(cur), 7.5, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    }
-
-    var rRps = document.getElementById('r-rps');
-    var rP95 = document.getElementById('r-p95');
-    var rObj = document.getElementById('r-obj');
-    var note = document.getElementById('p-note');
-    var noteTxt = document.getElementById('p-note-txt');
-    var lastNote = '';
-
-    function readout(s){
-      var over = s.p95 > OBJ;
-      if (rRps) rRps.textContent = Math.round(s.rps).toLocaleString('en-US') + '/s';
-      if (rP95) {
-        rP95.textContent = Math.round(s.p95) + ' ms';
-        rP95.className = 'readout-v ' + (over ? 'is-breach' : 'is-ok');
+      var worst = Math.max(lcp, fcp, nav.domContentLoadedEventEnd) || 0;
+      var what = lcp ? 'to largest paint' : (fcp ? 'to first paint' : 'to DOM ready');
+      var good = worst <= BUDGET;
+      if (note) note.classList.toggle('is-breach', !good);
+      if (noteTxt) {
+        noteTxt.textContent = (good ? 'inside budget — ' : 'over budget — ') + ms(worst) + ' ' + what;
       }
-      if (rObj) {
-        var d = Math.round((s.p95 - OBJ) / OBJ * 100);
-        rObj.textContent = (d > 0 ? '+' : '') + d + '%';
-        rObj.className = 'readout-v ' + (over ? 'is-breach' : 'is-ok');
-      }
-      if (note) note.classList.toggle('is-breach', over);
-      if (noteTxt && s.note !== lastNote) { noteTxt.textContent = s.note; lastNote = s.note; }
-    }
-
-    function step(ts){
-      if (!running) return;
-      if (!last) last = ts;
-      var dt = Math.min((ts - last) / 1000, 0.05);
-      last = ts;
-      clock += dt;
-
-      var s = at(clock);
-      // jitter stands in for real variance; proportional, so a quiet
-      // system looks quiet and a loaded one looks noisy
-      var jitter = (Math.random() - 0.5) * s.p95 * 0.09;
-      samples.push(Math.max(60, s.p95 + jitter));
-      samples.shift();
-
-      draw();
-      readout(s);
-      raf = requestAnimationFrame(step);
-    }
-
-    function start(){
-      if (running || reduce.matches || !inView || document.hidden) return;
-      running = true; last = 0;
-      raf = requestAnimationFrame(step);
-    }
-    function stop(){
-      running = false;
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
-    }
-
-    /* Reduced motion gets the finished argument instead of the
-       animation: the whole story drawn once, ending under the
-       objective, with the final readouts. */
-    function statically(){
-      for (var i = 0; i < N; i++) {
-        samples[i] = at((i / (N - 1)) * (LOOP - 2.4)).p95;
-      }
-      draw();
-      readout({ rps: 5200, p95: 600, note: 'held under the objective at 5.2k/s' });
     }
 
     function boot(){
-      readColours();
-      if (!size()) return;
-      if (reduce.matches) { statically(); return; }
-      // Draw the steady state immediately. The animation only starts once
-      // the panel is actually on screen, and an empty panel with three
-      // em-dashes in it looks broken rather than idle.
-      draw();
-      readout(at(0));
-      start();
+      // wait for the load event so loadEventEnd and LCP have settled
+      if (document.readyState === 'complete') setTimeout(render, 260);
+      else addEventListener('load', function(){ setTimeout(render, 260); });
     }
-
-    var rt;
-    window.addEventListener('resize', function(){
-      clearTimeout(rt);
-      rt = setTimeout(function(){
-        if (!size()) return;
-        if (reduce.matches) statically(); else draw();
-      }, 140);
-    });
-
-    // only animate while on screen, and never behind a hidden tab
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function(es){
-        es.forEach(function(e){
-          inView = e.isIntersecting;
-          if (inView) start(); else stop();
-        });
-      }, { threshold: 0.12 }).observe(cv);
-    } else {
-      inView = true;
-    }
-    document.addEventListener('visibilitychange', function(){
-      if (document.hidden) stop(); else start();
-    });
-    reduce.addEventListener('change', function(){
-      stop();
-      if (reduce.matches) statically(); else start();
-    });
-
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(boot); else boot();
     boot();
 
-    return { recolour: function(){ readColours(); if (reduce.matches) statically(); else draw(); } };
+    return { recolour: render, render: render };
   })();
 })();
 </script>
