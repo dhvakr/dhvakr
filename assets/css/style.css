@@ -1496,3 +1496,63 @@ body.fleet-on .awaiting.lit {
   #fleet-layer, #fleet-bar { display: none !important; }
   body.fleet-on .awaiting { opacity: 1; transform: none; }
 }
+
+/* ---- typing ----
+   Words stay whole so wrapping still happens between them, and the
+   original markup is restored the instant typing ends. */
+.wd { white-space: nowrap; }
+body.fleet-on .typing .tk,
+.typing .tk { opacity: 0; }
+.typing .tk.on { opacity: 1; }
+.typing .wd.tk { opacity: 0; }
+.typing .wd.tk.on { opacity: 1; }
+
+.caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-right: -0.5em;
+  vertical-align: -0.12em;
+  background: var(--sig-graph);
+  animation: caret-blink .8s steps(1) infinite;
+}
+@keyframes caret-blink { 0%,50% { opacity: 1 } 51%,100% { opacity: 0 } }
+
+/* an element being typed is itself visible — only its glyphs are pending */
+body.fleet-on .awaiting.typing { opacity: 1; transform: none; }
+
+/* ---- a box being drawn ----
+   The outline is stroked on before anything goes inside it. */
+.panel { position: relative; }
+body.fleet-on .panel.drawing {
+  opacity: 1;
+  transform: none;
+  border-color: transparent;
+  background: transparent;
+}
+body.fleet-on .panel.drawing > *:not(.box-draw) { opacity: 0; }
+.box-draw {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--sig-graph);
+}
+
+/* ---- the readout bar ---- */
+#fleet-bar .grp { white-space: nowrap; }
+#fleet-bar .dim { color: var(--fg-3); }
+#fleet-bar .log {
+  max-width: 34ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--fg-3);
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+#fleet-bar .log em { font-style: normal; color: var(--fg-2); }
+#fleet-bar .log .ok { color: var(--sig); }
+@media (max-width: 680px) { #fleet-bar .log { display: none; } }

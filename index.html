@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..200,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=5">
+<link rel="stylesheet" href="/assets/css/style.css?v=9">
 <script>
 /* Applied before first paint: a stored choice wins, otherwise the page
    keeps its dark default. Inline and tiny on purpose — a deferred script
@@ -664,13 +664,14 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 
 
   /* ======================= the fleet =======================
-     A crew of agents builds the page. On arrival all of them work the
-     hero; afterwards they park off-screen and one scout is sent per
-     section as it scrolls in.
+     Agents build the page rather than uncovering it. A cursor lands on a
+     target and the thing is made: text is typed in, the latency panel has
+     its outline drawn before anything goes inside it. When the work is
+     finished the crew leaves; a reload brings them back.
 
-     Everything here is wrapped so that any failure leaves the page fully
-     visible: Fleet is null on reduced motion or on any throw, and every
-     caller falls back to revealing immediately. */
+     Nothing here may gate content. The engine is wrapped, every step
+     carries its own completion timer, any input finishes everything at
+     once, and a hard ceiling ends it regardless. */
   var Fleet = (function(){
     if (reduce.matches) return null;
     try {
@@ -685,101 +686,210 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       layer.setAttribute('aria-hidden','true');
       document.body.appendChild(layer);
 
-      var vw = innerWidth;
+      var vw = innerWidth, crew = [];
+      var pending = [];            // in-flight typing/drawing finishers
+      var halted = false;          // once true, no new build may start
       var N = vw < 560 ? 10 : (vw < 900 ? 16 : 24);
 
-      var crew = [];
-      for (var i = 0; i < N; i++) {
-        var el = document.createElement('div');
-        el.className = 'agent' + (Math.random() < 0.14 ? ' deny' : '');
-        el.innerHTML =
-          '<span class="ping"></span>' +
-          '<svg viewBox="0 0 17 21" fill="none"><path d="M1 1l14 8.2-6.1 1.5-2.4 6.1L1 1z" ' +
-            'fill="currentColor" stroke="#0A0A0B" stroke-width="1.1" stroke-linejoin="round"/></svg>' +
-          '<span class="tag">' + NAMES[i % NAMES.length] + '</span>';
-        layer.appendChild(el);
-        var a = { el: el, busy: false, parked: false };
-        park(a, true);
-        crew.push(a);
+      function park(a, instant){
+        var x = Math.random() * innerWidth, y = innerHeight + 70 + Math.random() * 60;
+        if (instant) a.el.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+        else moveTo(a, x, y, 620);
+        a.busy = false;
       }
-
       function moveTo(a, x, y, ms){
         a.el.style.transition = 'transform ' + ms + 'ms cubic-bezier(.33,.9,.3,1)';
         a.el.style.transform = 'translate(' + x + 'px,' + y + 'px)';
       }
-      function park(a, instant){
-        a.parked = true;
-        var x = Math.random() * innerWidth;
-        var y = innerHeight + 70 + Math.random() * 60;
-        if (instant) { a.el.style.transform = 'translate(' + x + 'px,' + y + 'px)'; }
-        else moveTo(a, x, y, 620);
-      }
-      function aim(el){
-        var r = el.getBoundingClientRect();
-        return { x: r.left + Math.min(r.width * 0.5, 170) + (Math.random()*44 - 22),
-                 y: r.top  + r.height * 0.5 + (Math.random()*16 - 8) };
-      }
       function strike(a){
         a.el.classList.add('click');
-        setTimeout(function(){ a.el.classList.remove('click'); }, 520);
+        setTimeout(function(){ a.el.classList.remove('click'); }, 500);
       }
 
-      /* Send one agent to an element, reveal it on arrival. The reveal is
-         also on a timer, so a stalled transition can never strand it. */
-      function send(a, el, reveal, delay){
-        a.busy = true; a.parked = false;
-        var landed = false;
-        function land(){
-          if (landed) return;
-          landed = true;
-          strike(a);
-          if (reveal) reveal();
-          a.busy = false;
+      for (var i = 0; i < N; i++) {
+        var el = document.createElement('div');
+        el.className = 'agent' + (Math.random() < 0.14 ? ' deny' : '');
+        el.innerHTML = '<span class="ping"></span>' +
+          '<svg viewBox="0 0 17 21" fill="none"><path d="M1 1l14 8.2-6.1 1.5-2.4 6.1L1 1z" ' +
+            'fill="currentColor" stroke="#0A0A0B" stroke-width="1.1" stroke-linejoin="round"/></svg>' +
+          '<span class="tag">' + NAMES[i % NAMES.length] + '</span>';
+        layer.appendChild(el);
+        var a = { el: el, busy: false, name: NAMES[i % NAMES.length] };
+        park(a, true);
+        crew.push(a);
+      }
+
+      /* ---- typing ----
+         Text nodes are split into word spans (so wrapping still happens
+         between words) holding character spans. The original markup is
+         put back the moment typing ends, leaving no residue. */
+      function split(el, perChar){
+        var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null), nodes = [], n;
+        while ((n = w.nextNode())) if (n.nodeValue.trim()) nodes.push(n);
+        var tokens = [];
+        nodes.forEach(function(tn){
+          var frag = document.createDocumentFragment();
+          tn.nodeValue.split(/(\s+)/).forEach(function(word){
+            if (!word) return;
+            if (/^\s+$/.test(word)) { frag.appendChild(document.createTextNode(word)); return; }
+            var ws = document.createElement('span');
+            ws.className = 'wd';
+            if (perChar) {
+              word.split('').forEach(function(ch){
+                var cs = document.createElement('span');
+                cs.className = 'tk'; cs.textContent = ch;
+                ws.appendChild(cs); tokens.push(cs);
+              });
+            } else {
+              ws.className = 'wd tk'; ws.textContent = word;
+              tokens.push(ws);
+            }
+            frag.appendChild(ws);
+          });
+          tn.parentNode.replaceChild(frag, tn);
+        });
+        return tokens;
+      }
+
+      function typeIn(el, opts, done){
+        if (halted) { el.classList.add('lit'); done && done(); return function(){}; }
+        var orig = el.innerHTML;
+        var tokens;
+        try { tokens = split(el, !!opts.perChar); }
+        catch (err) { el.classList.add('lit'); done && done(); return function(){}; }
+        if (!tokens.length) { el.innerHTML = orig; el.classList.add('lit'); done && done(); return function(){}; }
+
+        el.classList.add('lit','typing');
+        var caret = document.createElement('span');
+        caret.className = 'caret';
+        var i = 0, timer = 0, ended = false;
+        var step = opts.speed || 18;
+
+        function finish(){
+          if (ended) return;
+          ended = true;
+          clearTimeout(timer);
+          var ix = pending.indexOf(finish); if (ix > -1) pending.splice(ix, 1);
+          el.innerHTML = orig;                 // exact markup restored
+          el.classList.remove('typing');
+          done && done();
         }
-        setTimeout(function(){
-          var p = aim(el);
-          var ms = 380 + Math.random() * 280;
-          moveTo(a, p.x, p.y, ms);
-          setTimeout(land, ms + 40);
-        }, delay || 0);
-        // belt and braces
-        setTimeout(land, (delay || 0) + 1200);
+        pending.push(finish);
+        function tick(){
+          if (ended) return;
+          var burst = opts.perChar ? 1 : 1;
+          for (var k = 0; k < burst && i < tokens.length; k++, i++) tokens[i].classList.add('on');
+          if (i < tokens.length) {
+            tokens[i].parentNode.insertBefore(caret, tokens[i]);
+            timer = setTimeout(tick, step + (opts.perChar ? Math.random()*22 : Math.random()*14));
+          } else finish();
+        }
+        tick();
+        // hard stop so a stalled tab can never leave half a sentence
+        setTimeout(finish, opts.budget || 2600);
+        return finish;
       }
 
-      function idle(a, delay){
-        setTimeout(function(){
-          if (a.busy) return;
-          moveTo(a, Math.random() * innerWidth,
-                    innerHeight * (0.12 + Math.random() * 0.72),
-                    500 + Math.random() * 400);
-          if (Math.random() < 0.5) setTimeout(function(){ strike(a); }, 460);
-        }, delay);
+      /* ---- drawing a box ----
+         The panel gets its outline stroked on before anything appears
+         inside it, so it reads as built rather than revealed. */
+      function drawBox(box, done){
+        if (halted) { box.classList.add('lit'); done && done(); return function(){}; }
+        var ended = false;
+        function finish(){
+          if (ended) return;
+          ended = true;
+          var ix = pending.indexOf(finish); if (ix > -1) pending.splice(ix, 1);
+          box.classList.remove('drawing');
+          box.classList.add('lit');
+          if (svg && svg.parentNode) svg.remove();
+          done && done();
+        }
+        pending.push(finish);
+        var svg;
+        try {
+          var r = box.getBoundingClientRect();
+          if (!r.width) { finish(); return finish; }
+          box.classList.add('drawing');
+          var rad = 14, w = r.width, h = r.height;
+          var per = 2 * (w + h) - 8 * rad + 2 * Math.PI * rad;
+          svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+          svg.setAttribute('class','box-draw');
+          svg.setAttribute('viewBox','0 0 ' + w + ' ' + h);
+          svg.innerHTML = '<rect x="0.75" y="0.75" width="' + (w-1.5) + '" height="' + (h-1.5) +
+            '" rx="' + rad + '" fill="none" stroke="currentColor" stroke-width="1.5" ' +
+            'stroke-dasharray="' + per + '" stroke-dashoffset="' + per + '"/>';
+          box.appendChild(svg);
+          var rect = svg.firstChild;
+          requestAnimationFrame(function(){
+            rect.style.transition = 'stroke-dashoffset 760ms cubic-bezier(.4,0,.2,1)';
+            rect.style.strokeDashoffset = '0';
+          });
+          setTimeout(finish, 820);
+        } catch (err) { finish(); }
+        setTimeout(finish, 1400);
+        return finish;
       }
 
       return {
-        ready: true,
-        crew: crew,
-        layer: layer,
-        send: send, idle: idle, park: park,
-        /* one scout per section, from wherever it is parked */
-        scout: function(el, reveal){
-          var a = null;
-          for (var i = 0; i < crew.length; i++) if (!crew[i].busy) { a = crew[i]; break; }
-          if (!a) { reveal(); return; }
-          send(a, el, function(){ reveal(); setTimeout(function(){ park(a); }, 260); }, 0);
+        ready: true, crew: crew, layer: layer,
+        park: park, strike: strike, moveTo: moveTo,
+        typeIn: typeIn, drawBox: drawBox,
+        /* finish every in-flight build at once: restores original markup,
+           removes carets and half-drawn outlines. Called on skip. */
+        flush: function(){ halted = true; while (pending.length) pending[0](); },
+        halted: function(){ return halted; },
+        /* the halt only covers the arrival teardown; the scroll layer
+           needs the engine live again afterwards */
+        resume: function(){ halted = false; },
+        free: function(){ for (var i=0;i<crew.length;i++) if(!crew[i].busy) return crew[i]; return null; },
+        /* fly an agent to an element, then run its build step */
+        dispatch: function(a, el, build, delay, onDone){
+          a.busy = true;
+          var landed = false;
+          function land(){
+            if (landed) return;
+            landed = true;
+            if (halted) { el.classList.add('lit','in'); a.busy = false; return; }
+            strike(a);
+            build(function(){ a.busy = false; onDone && onDone(a); });
+          }
+          setTimeout(function(){
+            var r = el.getBoundingClientRect();
+            var ms = 360 + Math.random() * 260;
+            moveTo(a, r.left + Math.min(r.width*0.45,160) + (Math.random()*36-18),
+                      r.top  + r.height*0.5 + (Math.random()*14-7), ms);
+            setTimeout(land, ms + 30);
+          }, delay || 0);
+          setTimeout(land, (delay || 0) + 1100);
         }
       };
     } catch (e) { return null; }
   })();
 
+  /* ---- how each thing gets built ---- */
+  function buildStepFor(el){
+    if (!Fleet) return null;
+    if (el.classList.contains('panel'))  return function(cb){ Fleet.drawBox(el, cb); };
+    var txt = (el.textContent || '').trim().length;
+    if (!txt || txt > 420) return function(cb){ el.classList.add('lit'); cb(); };
+    var big = el.matches('h1,h2,h3,.hero-alias,.eyebrow,.arc-step b,.move b,.sys-top h3,.pstat b');
+    return function(cb){
+      Fleet.typeIn(el, {
+        perChar: big || txt < 46,
+        speed:   big ? 26 : (txt < 46 ? 20 : 15),
+        budget:  big ? 1700 : 2400
+      }, cb);
+    };
+  }
+
   /* ---------------- arrival ---------------- */
   (function(){
     if (!Fleet) return;
-    var HERO = ['.hero .eyebrow','.hero h1','.hero-alias','.hero-lede','.hero-sub',
-                '.hero-actions','.hero-social','.panel-head','.readouts',
-                '.chart-hold','.panel-note','.panel-cap'];
+    var PLAN = ['.hero .eyebrow','.hero h1','.hero-alias','.hero-lede','.hero-sub',
+                '.hero-actions','.hero-social','.panel','.panel-cap'];
     var targets = [];
-    HERO.forEach(function(sel){ var el = document.querySelector(sel); if (el) targets.push(el); });
+    PLAN.forEach(function(sel){ var el = document.querySelector(sel); if (el) targets.push(el); });
     if (!targets.length) return;
 
     document.body.classList.add('fleet-on');
@@ -787,41 +897,63 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 
     var bar = document.createElement('div');
     bar.id = 'fleet-bar';
-    bar.innerHTML = '<span class="pulse"><i></i><i></i><i></i><i></i></span>' +
-      '<span>fleet <b id="fb-a">' + Fleet.crew.length + '</b></span>' +
-      '<span>tasks <b id="fb-t">0</b>/<b>' + targets.length + '</b></span>' +
-      '<span class="skip">click to skip</span>';
+    bar.innerHTML =
+      '<span class="pulse"><i></i><i></i><i></i><i></i></span>' +
+      '<span class="grp">fleet <b id="fb-a">' + Fleet.crew.length + '</b></span>' +
+      '<span class="grp">tasks <b id="fb-t">0</b><span class="dim">/' + targets.length + '</span></span>' +
+      '<span class="log" id="fb-log">booting workers</span>';
     document.body.appendChild(bar);
-    var fbT = bar.querySelector('#fb-t');
+    var fbT = bar.querySelector('#fb-t'), fbLog = bar.querySelector('#fb-log');
+
+    function logLine(a, el, ms){
+      if (!fbLog) return;
+      var what = el.tagName.toLowerCase() +
+        (el.className ? '.' + String(el.className).split(' ')[0].replace('awaiting','').replace('lit','') : '');
+      fbLog.innerHTML = '<em>' + a.name + '</em> &rarr; ' + what.replace(/\.$/,'') +
+                        ' <span class="ok">ok</span> ' + ms + 'ms';
+    }
 
     var done = 0, over = false;
-    function tick(){ done++; if (fbT) fbT.textContent = done; if (done >= targets.length) end(); }
-
     function end(){
       if (over) return;
       over = true;
+      Fleet.flush();                 // no caret or token span survives a skip
       targets.forEach(function(el){ el.classList.add('lit'); });
       bar.classList.add('gone');
-      Fleet.crew.forEach(function(a, i){ setTimeout(function(){ Fleet.park(a); }, i * 32); });
+      Fleet.crew.forEach(function(a,i){ setTimeout(function(){ Fleet.park(a); }, i*30); });
       setTimeout(function(){
         document.body.classList.remove('fleet-on');
         if (bar.parentNode) bar.remove();
+        Fleet.resume();            // scouts may build again on scroll
       }, 900);
     }
 
-    // the crew splits across the hero; whoever has no target looks busy anyway
     targets.forEach(function(el, i){
       var a = Fleet.crew[i % Fleet.crew.length];
-      Fleet.send(a, el, function(){ el.classList.add('lit'); tick(); }, 200 + i * 135);
+      var t0 = performance.now();
+      Fleet.dispatch(a, el, buildStepFor(el), 180 + i * 150, function(){
+        done++;
+        if (fbT) fbT.textContent = done;
+        logLine(a, el, Math.round(performance.now() - t0));
+        if (done >= targets.length) setTimeout(end, 320);
+      });
     });
+    // everyone else looks busy around the hero
     for (var j = targets.length; j < Fleet.crew.length; j++) {
-      Fleet.idle(Fleet.crew[j], 220 + j * 90);
+      (function(a, d){
+        setTimeout(function(){
+          if (a.busy) return;
+          Fleet.moveTo(a, Math.random()*innerWidth,
+                          innerHeight*(0.12 + Math.random()*0.66), 520 + Math.random()*400);
+          if (Math.random() < 0.55) setTimeout(function(){ Fleet.strike(a); }, 470);
+        }, d);
+      })(Fleet.crew[j], 200 + j * 85);
     }
 
     ['pointerdown','keydown','wheel','touchstart'].forEach(function(ev){
       window.addEventListener(ev, end, { passive: true, once: true });
     });
-    setTimeout(end, 4600);   // hard ceiling, whatever else happens
+    setTimeout(end, 6000);
   })();
 
   /* ---------------- scroll reveals ---------------- */
@@ -836,8 +968,16 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         var el = en.target;
         var show = function(){ el.classList.add('in'); };
         // A scout is decoration; if the fleet is absent or busy, just show it.
-        if (Fleet && Fleet.ready && !document.body.classList.contains('fleet-on')) Fleet.scout(el, show);
-        else show();
+        var a = (Fleet && Fleet.ready && !document.body.classList.contains('fleet-on'))
+                  ? Fleet.free() : null;
+        if (!a) { show(); return; }
+        Fleet.dispatch(a, el, function(cb){
+          show();                                   // the block arrives
+          var head = el.matches('h2,h3') ? el
+                   : el.querySelector('.sec-head h2, h2, h3, .sys-top h3, .move b, .arc-step b');
+          if (head) Fleet.typeIn(head, { perChar: true, speed: 23, budget: 1500 }, cb);
+          else cb();
+        }, 0, function(ag){ setTimeout(function(){ Fleet.park(ag); }, 220); });
       });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
     items.forEach(function(n){ io.observe(n); });
