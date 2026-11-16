@@ -5,6 +5,9 @@
 # intersect rather than override — so a second, narrower rule silently
 # blocks whatever the first one allowed.
 #
+# Cloudflare Web Analytics injects its beacon from static.cloudflareinsights.com
+# and reports to cloudflareinsights.com; both are allowed for that alone.
+#
 # Neither page frames anything any more (the Spotify widget is gone), so
 # frame-src is 'none'. Add a host here if an embed is ever reintroduced.
 
@@ -13,7 +16,7 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
-  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'none'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'
+  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; img-src 'self' data:; frame-src 'none'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'
 
 # HTML is revalidated every time so a deploy is visible immediately.
 /
