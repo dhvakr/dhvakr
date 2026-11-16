@@ -807,7 +807,7 @@ footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
   font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
   color:var(--ink-2); white-space:nowrap; opacity:0; pointer-events:none;
   transition:opacity .2s var(--ease-soft), transform .2s var(--ease-soft); }
-.rail a:hover span, .rail a.on span{ opacity:1; transform:translateY(-50%); }
+.rail a:hover span, .rail a:focus-visible span{ opacity:1; transform:translateY(-50%); }
 
 .menubtn{ display:none; width:36px; height:36px; flex:none; border:1px solid var(--rule-2); border-radius:6px;
   background:transparent; cursor:pointer; place-items:center; padding:0; }
