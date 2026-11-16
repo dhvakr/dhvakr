@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..200,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=21">
+<link rel="stylesheet" href="/assets/css/style.css?v=23">
 <script>
 /* Applied before first paint: a stored choice wins, otherwise the page
    keeps its dark default. Inline and tiny on purpose — a deferred script
@@ -117,11 +117,11 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <p class="eyebrow">Backend &amp; Cloud Engineering</p>
+          <p class="eyebrow">Software Engineer L3 &middot; Backend &amp; Cloud Platforms</p>
           <h1>Divakaran&nbsp;<span class="sur">T</span></h1>
           <p class="hero-alias"><span>most people call me</span> Diva</p>
           <p class="hero-lede">I build backends that stay fast <em>when the traffic actually arrives.</em></p>
-          <p class="hero-sub"><span data-years>Five</span> years of backend and cloud engineering in production — a multi-tenant platform across six clouds, identity for 4M+ users, pipelines carrying 100K+ events an hour, and $120K a year taken off the cloud bill.</p>
+          <p class="hero-sub"><span data-years>Five</span> years running backends in production. Today: a multi-tenant platform across six clouds, and the MCP servers that let AI agents operate it. Before that: identity for 4M+ users, 100K+ events an hour, and $120K a year off the cloud bill.</p>
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="mailto:hello@dhvakr.me">Start a conversation</a>
@@ -163,7 +163,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
               <span class="txt" id="p-note-txt">measuring</span>
             </div>
           </figure>
-          <p class="panel-cap" id="panel-cap">How fast this page just loaded for you, measured live by your browser &mdash; and held to the same latency budget I&rsquo;d set for a service.</p>
+          <p class="panel-cap" id="panel-cap">How fast this page just loaded for you, measured live by your browser &mdash; and held to the same latency budget I design, build and observe every service against.</p>
         </div>
       </div>
     </div>
@@ -192,42 +192,82 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         <p><span data-years>Five</span> years, three companies, one direction of travel. Where there is a bar further down, it is something I measured before and after.</p>
       </div>
 
-      <!-- The arc: three phases, drawn in the order they happened. The rail
-           draws itself on reveal and each station lights as it is reached. -->
-      <div class="arc reveal" id="arc">
-        <div class="arc-rail" aria-hidden="true"><i></i><span class="arc-pulse"></span></div>
-        <ol class="arc-steps">
-          <li class="arc-step" style="--i:0">
-            <span class="arc-dot" aria-hidden="true"></span>
-            <span class="arc-year">2022 &rarr; 2024</span>
-            <b>Identity &amp; Access</b>
-            <span class="arc-desc">Keycloak, OIDC and OAuth 2.0 for <strong>4M+ users</strong> in banking and public sector. Where I learned what &ldquo;who are you&rdquo; actually costs at scale.</span>
-          </li>
-          <li class="arc-step" style="--i:1">
-            <span class="arc-dot" aria-hidden="true"></span>
-            <span class="arc-year">2024 &rarr; 2026</span>
-            <b>Backend Engineering</b>
-            <span class="arc-desc">Java and Go services under real load, and the first time the bill, the roadmap and the on-call rota were all mine to argue about.</span>
-          </li>
-          <li class="arc-step" style="--i:2">
-            <span class="arc-dot" aria-hidden="true"></span>
-            <span class="arc-year">2026 &rarr; now</span>
-            <b>Cloud &amp; Platform</b>
-            <span class="arc-desc">A multi-tenant Kubernetes platform across <strong>six clouds</strong>, with identity back at the centre &mdash; this time between the services rather than in front of them.</span>
-          </li>
-        </ol>
+<!-- The career, drawn as a system. Each stage is a service boundary, each
+           chip a component actually run there, and the wires are what carried
+           forward into the next stage. Hover a component to light its lineage. -->
+      <div class="arch reveal" id="arch">
+        <div class="arch-bar">
+          <span class="arch-title"><i aria-hidden="true"></i>career.architecture</span>
+          <span class="arch-hint">hover a component &middot; open a stage</span>
+        </div>
+        <div class="arch-body">
+          <svg class="arch-wires" aria-hidden="true"></svg>
+          <div class="arch-grid">
+        <div class="arch-zone" data-zone="grootan">
+          <button type="button" class="arch-zone-top" data-role="grootan" aria-label="Open the Grootan role"><span class="arch-year">2022 &rarr; 2024</span><span class="arch-org">Grootan &rarr;</span></button>
+          <b class="arch-name">Identity &amp; Access</b>
+          <p class="arch-desc">Keycloak, OIDC and OAuth 2.0 for <strong>4M+ users</strong> in banking and public sector. Where I learned what &ldquo;who are you&rdquo; actually costs at scale.</p>
+          <ul class="arch-nodes">
+            <li><button type="button" class="arch-node" data-node="keycloak" data-note="Custom authenticators on the Keycloak SPI &mdash; QR login, passkeys, magic links &mdash; for 4M+ users.">Keycloak SPI</button></li>
+            <li><button type="button" class="arch-node" data-node="oidc" data-note="Standards-compliant OIDC and OAuth 2.0 for banking and public sector; the auth route went from 1.8s to 420ms.">OIDC &middot; OAuth 2.0</button></li>
+            <li><button type="button" class="arch-node" data-node="rbac" data-note="Multi-tenant RBAC over Keycloak: P95 authorisation down 80%, and 75% fewer support tickets.">RBAC policy</button></li>
+            <li><button type="button" class="arch-node" data-node="outbox" data-note="An audit pipeline on Kafka and the outbox pattern, 100K+ events an hour; queries from 3s to under 800ms.">Kafka outbox</button></li>
+            <li><button type="button" class="arch-node" data-node="otel" data-note="OpenTelemetry, Sentry and Jaeger tracing cut debugging time by 40%.">OpenTelemetry</button></li>
+          </ul>
+        </div>
+        <div class="arch-zone" data-zone="solinas">
+          <button type="button" class="arch-zone-top" data-role="solinas" aria-label="Open the Solinas role"><span class="arch-year">2024 &rarr; 2026</span><span class="arch-org">Solinas &rarr;</span></button>
+          <b class="arch-name">Backend Engineering</b>
+          <p class="arch-desc">Java and Go services under real load, and the first time the bill, the roadmap and the on-call rota were all mine to argue about.</p>
+          <ul class="arch-nodes">
+            <li><button type="button" class="arch-node" data-node="java" data-note="Four Java services designed from scratch; REST API P95 held under 1s, down from 2s.">Java services</button></li>
+            <li><button type="button" class="arch-node" data-node="redis" data-note="Redis in front of reads, plus indexing &mdash; the main levers on that P95.">Redis cache</button></li>
+            <li><button type="button" class="arch-node" data-node="go" data-note="The notification path rewritten from Java to Go: 40% more throughput on 30% less AWS spend.">Go notifier</button></li>
+            <li><button type="button" class="arch-node" data-node="redshift" data-note="A Kafka pipeline into Redshift; dashboard queries from 8s to under 2s.">Kafka &rarr; Redshift</button></li>
+            <li><button type="button" class="arch-node" data-node="cost" data-note="Consolidated services and removed redundant auth calls: $120K a year off the cloud bill.">&minus;$120K / year</button></li>
+          </ul>
+        </div>
+        <div class="arch-zone" data-zone="strategy">
+          <button type="button" class="arch-zone-top" data-role="strategy" aria-label="Open the Strategy role"><span class="arch-year">2026 &rarr; now</span><span class="arch-org">Strategy &rarr;</span></button>
+          <b class="arch-name">Cloud &amp; Platform</b>
+          <p class="arch-desc">A multi-tenant Kubernetes platform across <strong>six clouds</strong>, with identity back at the centre &mdash; this time between the services rather than in front of them.</p>
+          <ul class="arch-nodes">
+            <li><button type="button" class="arch-node" data-node="k8s" data-note="A Kubernetes-based multi-tenant platform provisioning AI and BI environments.">Kubernetes</button></li>
+            <li><button type="button" class="arch-node" data-node="ctrl" data-note="A Spring Boot control plane driving every provision, end to end.">Spring control plane</button></li>
+            <li><button type="button" class="arch-node" data-node="temporal" data-note="Temporal workflows, so a provision that dies halfway resumes instead of stranding a tenant.">Temporal</button></li>
+            <li><button type="button" class="arch-node" data-node="tf" data-note="Terraform and Helm across GCP, AWS, Azure, StackIT, IBM Cloud and self-hosted.">Terraform &middot; Helm</button></li>
+            <li><button type="button" class="arch-node" data-node="mtls" data-note="Per-environment mTLS from a multi-tenant private root CA &mdash; identity again, now between services.">mTLS &middot; private CA</button></li>
+            <li><button type="button" class="arch-node" data-node="mcp" data-note="MCP servers that let AI agents operate the platform, with scoped access and every call on the record.">MCP for agents</button></li>
+          </ul>
+        </div>
+        <div class="arch-zone arch-next" data-zone="ikat">
+          <a class="arch-zone-top" href="/ikat/"><span class="arch-year">next</span><span class="arch-org">Ikat &rarr;</span></a>
+          <b class="arch-name">Agent control plane</b>
+          <p class="arch-desc">The same problems one layer up: what an AI agent is allowed to touch, on whose behalf, and what it cost.</p>
+          <ul class="arch-nodes">
+            <li><button type="button" class="arch-node" data-node="aid" data-note="Scoped, short-lived identity per agent &mdash; the identity problem, one layer up.">Agent identity</button></li>
+            <li><button type="button" class="arch-node" data-node="pol" data-note="Rules as code, enforced on every agent call before it reaches anything real.">Policy in the path</button></li>
+            <li><button type="button" class="arch-node" data-node="led" data-note="The cost of each call attributed before it is spent, not reconciled next month.">Ledger</button></li>
+            <li><button type="button" class="arch-node" data-node="trc" data-note="One structured record per call, exported to the tools you already run.">Trace</button></li>
+          </ul>
+        </div>
+          </div>
+        </div>
+        <p class="arch-readout" id="arch-readout" aria-live="polite">Identity in front of users, then the services behind them, then the platform they run on &mdash; and next, the agents.</p>
       </div>
 
-      <div class="role reveal">
+<div class="roles" id="roles">
+      <div class="role reveal" data-role="strategy" data-tab="Strategy">
         <div class="role-head">
           <h3>Strategy <span class="role-aka">(formerly MicroStrategy)</span></h3>
           <span class="role-meta mono">Software Engineer, IC3 &nbsp;·&nbsp; March 2026 — present</span>
         </div>
         <p class="role-what">I build and operate a <strong>Kubernetes-based multi-tenant cloud platform</strong> that provisions <strong>AI and BI environments</strong> across GCP, AWS, Azure, StackIT, IBM Cloud and self-hosted &mdash; a Spring Boot control plane driving Temporal workflows, Helm and Terraform.</p>
         <p class="role-also">Six target platforms with six different ideas of what a network, a disk and an identity are, reconciled behind one control plane. Every environment has to come up isolated from its neighbours, reproducible from the spec, and recoverable when a provision dies halfway through.</p>
+        <p class="role-also">I also build <strong>MCP servers</strong> that let AI agents work with the platform directly &mdash; with scoped access and every call on the record, held to the same rules as any other client.</p>
       </div>
 
-      <div class="role reveal">
+      <div class="role reveal" data-role="solinas" data-tab="Solinas">
         <div class="role-head">
           <h3>Solinas Integrity</h3>
           <span class="role-meta mono">Software Engineer II &nbsp;·&nbsp; Sept 2024 — Mar 2026</span>
@@ -263,7 +303,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         </ul>
       </div>
 
-      <div class="role reveal">
+      <div class="role reveal" data-role="grootan" data-tab="Grootan">
         <div class="role-head">
           <h3>Grootan Technologies</h3>
           <span class="role-meta mono">Software Engineer I &nbsp;·&nbsp; Feb 2022 — Aug 2024</span>
@@ -297,6 +337,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
             <span class="d-nums"><em>&minus;40%</em></span>
           </li>
         </ul>
+      </div>
       </div>
     </div>
   </section>
@@ -467,7 +508,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         </div>
         <div class="tier">
           <div class="tier-k"><b>Shipped &amp; operated</b><span>in production, under load</span></div>
-          <div class="tier-v"><span>Terraform</span><span>Helm</span><span>Temporal</span><span>GCP</span><span>EKS</span><span>Keycloak</span><span>OIDC</span><span>OAuth 2.0</span><span>JWT</span><span>mTLS</span><span>Hibernate/JPA</span><span>MongoDB</span><span>Redshift</span><span>OpenTelemetry</span><span>Jaeger</span><span>Sentry</span></div>
+          <div class="tier-v"><span>Terraform</span><span>Helm</span><span>Temporal</span><span>GCP</span><span>EKS</span><span>Keycloak</span><span>OIDC</span><span>OAuth 2.0</span><span>JWT</span><span>mTLS</span><span>MCP</span><span>AI agents</span><span>Hibernate/JPA</span><span>MongoDB</span><span>Redshift</span><span>OpenTelemetry</span><span>Jaeger</span><span>Sentry</span></div>
         </div>
         <div class="tier">
           <div class="tier-k"><b>Working knowledge</b><span>useful, not claiming depth</span></div>
@@ -475,8 +516,9 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
         </div>
         <div class="tier">
           <div class="tier-k"><b>Reading up on</b><span>right now</span></div>
-          <div class="tier-v"><span>Kubernetes operators</span><span>eBPF &amp; Cilium</span><span>Service mesh</span><span>Crossplane</span><span>OpenTofu</span><span>GraalVM native-image</span><span>MCP &amp; agent infrastructure</span></div>
+          <div class="tier-v"><span>Kubernetes operators</span><span>eBPF &amp; Cilium</span><span>Service mesh</span><span>Crossplane</span><span>OpenTofu</span><span>GraalVM native-image</span><span>Agent infrastructure</span></div>
         </div>
+      <p class="stack-readout" id="stack-readout" aria-live="polite">Point at any tool to see where it ran in production.</p>
       </div>
     </div>
   </section>
@@ -1365,6 +1407,244 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     function tickClock(){ var t = fmt.format(new Date()); if (clk) clk.textContent = t; if (mclk) mclk.textContent = 'Chennai ' + t + ' IST'; }
     tickClock(); setInterval(tickClock, 20000);
   } catch (e) { /* chrome is optional */ }
+})();
+</script>
+<script>
+/* ---- career diagram, role tabs, show-more, stack lookups ----
+   Progressive enhancement throughout: without this script every role,
+   every move and every chip is simply on the page. Isolated and wrapped. */
+(function(){
+  'use strict';
+  try {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function reveal(el){ el.classList.add('in'); el.querySelectorAll('.reveal').forEach(function(n){ n.classList.add('in'); }); }
+
+    /* ================= role tabs ================= */
+    var roles = document.getElementById('roles');
+    var openRole = function(){};
+    if (roles) {
+      var panes = [].slice.call(roles.querySelectorAll('.role[data-tab]'));
+      var bar = document.createElement('div');
+      bar.className = 'role-tabs'; bar.setAttribute('role','tablist'); bar.setAttribute('aria-label','Roles');
+      var tabs = panes.map(function(p, i){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'role-tab'; b.setAttribute('role','tab');
+        b.id = 'tab-' + p.dataset.role; p.id = p.id || ('pane-' + p.dataset.role);
+        b.setAttribute('aria-controls', p.id); p.setAttribute('role','tabpanel'); p.setAttribute('aria-labelledby', b.id);
+        var yrs = (p.querySelector('.role-meta') || {}).textContent || '';
+        var m = yrs.match(/(\w+ \d{4})\s*[—-]\s*(\w+(?: \d{4})?)/);
+        var mon = function(t){ return /^present$/i.test(t) ? 'now' : t.replace(/^(\w{3})\w*/, '$1'); };
+        b.innerHTML = '<b>' + p.dataset.tab + '</b><span>' + (m ? mon(m[1]) + ' – ' + mon(m[2]) : '') + '</span>';
+        b.addEventListener('click', function(){ select(i, true); });
+        b.addEventListener('keydown', function(e){
+          var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+          if (!d) return; e.preventDefault();
+          var n = (i + d + panes.length) % panes.length; select(n, true); tabs[n].focus();
+        });
+        bar.appendChild(b); return b;
+      });
+      roles.parentNode.insertBefore(bar, roles);
+      roles.classList.add('tabbed');
+      function select(n, fromUser){
+        panes.forEach(function(p, i){
+          var on = i === n;
+          p.hidden = !on;
+          tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
+          tabs[i].tabIndex = on ? 0 : -1;
+          if (on) reveal(p);
+        });
+      }
+      select(0, false);
+      openRole = function(id){
+        var n = panes.findIndex(function(p){ return p.dataset.role === id; });
+        if (n < 0) return;
+        select(n, true);
+        bar.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      };
+    }
+
+    /* ================= ownership: first four, then the rest ================= */
+    var moves = document.querySelector('.moves');
+    if (moves) {
+      var items = [].slice.call(moves.querySelectorAll('.move'));
+      var SHOW = 4;
+      if (items.length > SHOW + 1) {
+        items.slice(SHOW).forEach(function(li){ li.classList.add('more-hidden'); });
+        var more = document.createElement('button');
+        more.type = 'button'; more.className = 'more-btn';
+        more.setAttribute('aria-expanded', 'false');
+        more.innerHTML = '<span>Show ' + (items.length - SHOW) + ' more</span><i aria-hidden="true">+</i>';
+        more.addEventListener('click', function(){
+          var open = more.getAttribute('aria-expanded') === 'true';
+          items.slice(SHOW).forEach(function(li){ li.classList.toggle('more-hidden', open); });
+          more.setAttribute('aria-expanded', open ? 'false' : 'true');
+          more.querySelector('span').textContent = open ? 'Show ' + (items.length - SHOW) + ' more' : 'Show fewer';
+        });
+        moves.parentNode.insertBefore(more, moves.nextSibling);
+      }
+    }
+
+    /* ================= stack: where each tool actually ran ================= */
+    var USED = {
+      'Java': 'Grootan, Solinas and Strategy — every role so far',
+      'Spring Boot': 'Grootan on the Keycloak SPI, Solinas services, Strategy’s control plane',
+      'Go': 'Solinas — the notification path rewrite, +40% throughput',
+      'Kubernetes': 'Strategy — the multi-tenant platform itself',
+      'PostgreSQL': 'Solinas — the core services, indexed down to a sub-second P95',
+      'Redis': 'Solinas — the cache in front of reads',
+      'Kafka': 'Grootan’s audit outbox, then Solinas’ pipeline into Redshift',
+      'Docker': 'Every role — the unit everything ships in',
+      'AWS': 'Solinas on EC2, EKS and MSK; Strategy as one of six clouds',
+      'Azure': 'Strategy — including the SSO session fix behind Application Gateway',
+      'Shell': 'Every role — the glue nobody lists',
+      'Terraform': 'Strategy — environments across six clouds',
+      'Helm': 'Strategy — how every tenant environment is installed',
+      'Temporal': 'Strategy — provisions that resume instead of stranding',
+      'GCP': 'Strategy — one of the six targets',
+      'EKS': 'Solinas — where the services ran',
+      'Keycloak': 'Grootan — custom authenticators for 4M+ users',
+      'OIDC': 'Grootan — the standard behind every login',
+      'OAuth 2.0': 'Grootan — banking and public-sector flows',
+      'JWT': 'Grootan’s tokens; Strategy’s licence validation at the gateway',
+      'mTLS': 'Strategy — per-environment, from a private root CA',
+      'MCP': 'Strategy — MCP servers that let AI agents operate the platform',
+      'AI agents': 'Strategy — agents working the platform through MCP, scoped and on the record',
+      'Hibernate/JPA': 'Every Java role; at Strategy, startup DDL cut from 383 statements to 3',
+      'MongoDB': 'Grootan — the audit store, queries under 800ms',
+      'Redshift': 'Solinas — dashboards from 8s to under 2s',
+      'OpenTelemetry': 'Grootan and Solinas — debugging time down 40%',
+      'Jaeger': 'Grootan — profiling a 2s response down to 1.2s',
+      'Sentry': 'Grootan — production errors, triaged by trace',
+      'Python': 'Solinas — the inference callback service',
+      'Flask': 'Solinas — inference APIs',
+      'Gunicorn': 'Solinas — 10K+ notifications a second',
+      'React': 'Grootan — operational dashboards',
+      'TypeScript': 'Grootan — the same dashboards'
+    };
+    var sro = document.getElementById('stack-readout');
+    var sDefault = sro ? sro.textContent : '';
+    document.querySelectorAll('#stack .tier-v span').forEach(function(chip){
+      var name = chip.textContent.trim();
+      var where = USED[name];
+      if (!where) { chip.classList.add('chip-plain'); return; }
+      chip.tabIndex = 0; chip.classList.add('chip-live');
+      function on(){ if (sro) sro.innerHTML = '<b>' + name + '</b> &rarr; ' + where; chip.classList.add('lit'); }
+      function off(){ if (sro) sro.textContent = sDefault; chip.classList.remove('lit'); }
+      chip.addEventListener('mouseenter', on); chip.addEventListener('focus', on);
+      chip.addEventListener('mouseleave', off); chip.addEventListener('blur', off);
+    });
+
+    /* ================= the career diagram ================= */
+    var arch = document.getElementById('arch');
+    if (!arch) return;
+    var svg = arch.querySelector('.arch-wires');
+    var body = arch.querySelector('.arch-body');
+    var readout = document.getElementById('arch-readout');
+    var rDefault = readout ? readout.innerHTML : '';
+    var NS = 'http://www.w3.org/2000/svg';
+
+    /* what carried forward: [from, to] */
+    var EDGES = [
+      ['keycloak','mtls'], ['oidc','mtls'], ['mtls','aid'], ['mcp','aid'], ['mcp','trc'],
+      ['rbac','pol'], ['outbox','redshift'], ['otel','trc'],
+      ['java','ctrl'], ['redis','java'], ['go','k8s'], ['cost','led'],
+      ['ctrl','temporal'], ['tf','k8s']
+    ];
+    var nodes = {};
+    arch.querySelectorAll('.arch-node').forEach(function(n){ nodes[n.dataset.node] = n; });
+
+    function centreOut(el, side){
+      var b = body.getBoundingClientRect(), r = el.getBoundingClientRect();
+      return { x: (side === 'r' ? r.right : side === 'l' ? r.left : r.left + r.width/2) - b.left,
+               y: r.top + r.height/2 - b.top, top: r.top - b.top, bottom: r.bottom - b.top };
+    }
+    var paths = [];
+    function draw(){
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      paths = [];
+      var b = body.getBoundingClientRect();
+      svg.setAttribute('viewBox', '0 0 ' + b.width + ' ' + b.height);
+      svg.setAttribute('width', b.width); svg.setAttribute('height', b.height);
+      var stacked = getComputedStyle(arch.querySelector('.arch-grid')).gridTemplateColumns.split(' ').length < 2;
+      if (stacked) return;              // one column: wires would cross the cards, so leave them out
+      EDGES.forEach(function(e, i){
+        var a = nodes[e[0]], z = nodes[e[1]];
+        if (!a || !z) return;
+        var sameZone = a.closest('.arch-zone') === z.closest('.arch-zone');
+        var p1, p2, d;
+        if (sameZone) {
+          p1 = centreOut(a, 'r'); p2 = centreOut(z, 'r');
+          var bend = Math.max(p1.x, p2.x) + 22;
+          d = 'M' + p1.x + ' ' + p1.y + ' C' + bend + ' ' + p1.y + ' ' + bend + ' ' + p2.y + ' ' + p2.x + ' ' + p2.y;
+        } else {
+          var fwd = a.getBoundingClientRect().left < z.getBoundingClientRect().left;
+          p1 = centreOut(a, fwd ? 'r' : 'l'); p2 = centreOut(z, fwd ? 'l' : 'r');
+          var mx = (p1.x + p2.x) / 2;
+          d = 'M' + p1.x + ' ' + p1.y + ' C' + mx + ' ' + p1.y + ' ' + mx + ' ' + p2.y + ' ' + p2.x + ' ' + p2.y;
+        }
+        var path = document.createElementNS(NS, 'path');
+        path.setAttribute('d', d); path.setAttribute('class', 'arch-wire');
+        path.dataset.a = e[0]; path.dataset.z = e[1];
+        path.id = 'wire-' + i;
+        svg.appendChild(path); paths.push(path);
+        if (!reduce && !sameZone) {
+          var dot = document.createElementNS(NS, 'circle');
+          dot.setAttribute('r', '2.6'); dot.setAttribute('class', 'arch-packet');
+          var mo = document.createElementNS(NS, 'animateMotion');
+          mo.setAttribute('dur', (2.4 + (i % 4) * 0.45) + 's');
+          mo.setAttribute('repeatCount', 'indefinite');
+          mo.setAttribute('begin', (i * 0.37 % 2.2).toFixed(2) + 's');
+          var mp = document.createElementNS(NS, 'mpath');
+          mp.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + path.id);
+          mp.setAttribute('href', '#' + path.id);
+          mo.appendChild(mp); dot.appendChild(mo); svg.appendChild(dot);
+        }
+      });
+    }
+
+    /* light a component's whole lineage: everything it connects to, both ways */
+    function lineage(id){
+      var seen = {}, stack = [id];
+      while (stack.length) {
+        var c = stack.pop(); if (seen[c]) continue; seen[c] = true;
+        EDGES.forEach(function(e){ if (e[0] === c) stack.push(e[1]); if (e[1] === c) stack.push(e[0]); });
+      }
+      return seen;
+    }
+    function light(id){
+      var set = lineage(id);
+      arch.classList.add('focus');
+      Object.keys(nodes).forEach(function(k){ nodes[k].classList.toggle('lit', !!set[k]); });
+      nodes[id].classList.add('here');
+      paths.forEach(function(p){ p.classList.toggle('lit', !!(set[p.dataset.a] && set[p.dataset.z])); });
+      if (readout) readout.innerHTML = '<b>' + nodes[id].textContent + '</b> &mdash; ' + nodes[id].dataset.note;
+    }
+    function clear(){
+      arch.classList.remove('focus');
+      Object.keys(nodes).forEach(function(k){ nodes[k].classList.remove('lit','here'); });
+      paths.forEach(function(p){ p.classList.remove('lit'); });
+      if (readout) readout.innerHTML = rDefault;
+    }
+    Object.keys(nodes).forEach(function(k){
+      var n = nodes[k];
+      n.addEventListener('mouseenter', function(){ light(k); });
+      n.addEventListener('focus', function(){ light(k); });
+      n.addEventListener('mouseleave', clear);
+      n.addEventListener('blur', clear);
+      n.addEventListener('click', function(){ light(k); });   // touch
+    });
+    arch.querySelectorAll('.arch-zone-top[data-role]').forEach(function(b){
+      b.addEventListener('click', function(){ openRole(b.dataset.role); });
+    });
+
+    var rt = 0;
+    function redraw(){ clearTimeout(rt); rt = setTimeout(draw, 120); }
+    addEventListener('resize', redraw);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+    draw();
+    // the block slides 14px on reveal; redraw once it has settled
+    setTimeout(draw, 900); setTimeout(draw, 2600);
+  } catch (e) { /* enhancement only */ }
 })();
 </script>
 </body>
