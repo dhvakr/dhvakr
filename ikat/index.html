@@ -791,9 +791,114 @@ footer b{ font-weight:500; color:var(--ink-2); }
 footer a{ color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule-2);
   transition:color .3s var(--ease-soft), border-color .3s var(--ease-soft); }
 footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
+
+/* ============ page chrome: progress, rail, mobile menu ============ */
+.progress{ position:fixed; top:0; left:0; right:0; height:2px; z-index:66; pointer-events:none; }
+.progress i{ display:block; height:100%; background:var(--warp); transform:scaleX(0); transform-origin:left; }
+
+.rail{ position:fixed; right:22px; top:50%; transform:translateY(-50%); z-index:40;
+  display:none; flex-direction:column; gap:13px; }
+@media (min-width:1280px){ .rail{ display:flex; } }
+.rail a{ position:relative; width:8px; height:8px; border-radius:50%; background:var(--rule-2);
+  transition:background .3s var(--ease-soft), transform .3s var(--ease-soft); }
+.rail a:hover, .rail a.on{ background:var(--warp); }
+.rail a.on{ transform:scale(1.35); box-shadow:0 0 0 3px color-mix(in srgb, var(--warp) 22%, transparent); }
+.rail a span{ position:absolute; right:18px; top:50%; transform:translateY(-50%) translateX(6px);
+  font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--ink-2); white-space:nowrap; opacity:0; pointer-events:none;
+  transition:opacity .2s var(--ease-soft), transform .2s var(--ease-soft); }
+.rail a:hover span, .rail a.on span{ opacity:1; transform:translateY(-50%); }
+
+.menubtn{ display:none; width:36px; height:36px; flex:none; border:1px solid var(--rule-2); border-radius:6px;
+  background:transparent; cursor:pointer; place-items:center; padding:0; }
+.menubtn i{ display:block; width:15px; height:1.5px; background:var(--ink); margin:2.5px auto; }
+@media (max-width:1080px){ .menubtn{ display:grid; } }
+@media (max-width:560px){ .navtools .btn-solid{ padding-inline:12px; } }
+
+.menu{ position:fixed; inset:0; z-index:65; background:color-mix(in srgb, var(--paper) 94%, transparent);
+  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  display:flex; flex-direction:column; padding:0 var(--gutter) 28px; opacity:0; transition:opacity .3s var(--ease-soft); }
+.menu[hidden]{ display:none; }
+.menu.open{ opacity:1; }
+.menu-head{ height:66px; display:flex; align-items:center; justify-content:space-between; }
+.menu-word{ font-family:'Bricolage Grotesque', sans-serif; font-weight:700; font-size:1.5rem; letter-spacing:-.04em;
+  font-variation-settings:'wdth' 82; }
+.menu-close{ width:38px; height:38px; border-radius:6px; border:1px solid var(--rule-2); background:transparent;
+  color:var(--ink); font-size:24px; line-height:1; cursor:pointer; }
+.menu-links{ display:flex; flex-direction:column; margin-top:18px; }
+.menu-links a{ display:flex; align-items:baseline; gap:16px; padding:14px 0; border-top:1px solid var(--rule);
+  font-family:'Bricolage Grotesque', sans-serif; font-weight:600; font-size:clamp(1.7rem,7vw,2.4rem);
+  letter-spacing:-.03em; line-height:1; text-decoration:none; color:var(--ink);
+  font-variation-settings:'wdth' 94,'opsz' 48;
+  transform:translateY(8px); opacity:0; transition:transform .45s var(--ease-soft), opacity .45s var(--ease-soft); }
+.menu-links a:last-child{ border-bottom:1px solid var(--rule); }
+.menu.open .menu-links a{ transform:none; opacity:1; }
+.menu-links a:nth-child(2){ transition-delay:.04s } .menu-links a:nth-child(3){ transition-delay:.08s }
+.menu-links a:nth-child(4){ transition-delay:.12s } .menu-links a:nth-child(5){ transition-delay:.16s }
+.menu-links a:nth-child(6){ transition-delay:.20s } .menu-links a:nth-child(7){ transition-delay:.24s }
+.menu-links a:nth-child(8){ transition-delay:.28s }
+.menu-links a i{ font-family:'IBM Plex Mono', ui-monospace, monospace; font-style:normal; font-size:12px; color:var(--ink-3); width:28px; flex:none; }
+.menu-links a.menu-cta{ color:var(--warp); }
+.menu-foot{ margin-top:auto; padding-top:18px; border-top:1px solid var(--rule); display:flex; justify-content:space-between;
+  flex-wrap:wrap; gap:8px; font-family:'IBM Plex Mono', ui-monospace, monospace; font-size:var(--step--2); color:var(--ink-2); }
+.menu-foot a{ color:var(--ink-2); text-decoration:none; }
+
+/* ============ the thread: one warp line, one weft crossing ============
+   The rule between sections is where the two dyes meet — a single warp
+   thread with a short weft mark through it. A motif, not a grid. */
+section{ position:relative; }
+section::after{ content:""; position:absolute; left:max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter)));
+  bottom:-1px; width:34px; height:1px; background:var(--warp); }
+section::before{ content:""; position:absolute; left:calc(max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter))) + 16px);
+  bottom:-5px; width:1px; height:9px; background:var(--weft); }
+section:last-of-type::after, section:last-of-type::before{ display:none; }
+
+/* ============ focus on the row you are reading ============ */
+.vs{ transition:background .3s var(--ease-soft); }
+.vs:hover{ background:color-mix(in srgb, var(--paper-2) 70%, transparent); }
+.vs:hover .ours{ border-left-color:var(--cross); }
+.principle .bar{ transition:transform .4s var(--ease-soft); transform-origin:left; }
+.principle:hover .bar{ transform:scaleX(1.6); }
+
+@media (prefers-reduced-motion:reduce){
+  .menu, .menu-links a, .rail a, .rail a span, .principle .bar{ transition:none; }
+}
 </style>
 </head>
 <body>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+<nav class="rail" id="rail" aria-label="Sections">
+  <a href="#gap" data-for="gap"><span>The gap</span></a>
+  <a href="#map" data-for="map"><span>Not building</span></a>
+  <a href="#product" data-for="product"><span>What it does</span></a>
+  <a href="#flow" data-for="flow"><span>How it works</span></a>
+  <a href="#fit" data-for="fit"><span>How it fits</span></a>
+  <a href="#versus" data-for="versus"><span>Who else</span></a>
+  <a href="#name" data-for="name"><span>The name</span></a>
+  <a href="#why" data-for="why"><span>Why now</span></a>
+  <a href="#principles" data-for="principles"><span>How we build</span></a>
+  <a href="#contact" data-for="contact"><span>Early access</span></a>
+</nav>
+<div class="menu" id="menu" hidden>
+  <div class="menu-head">
+    <span class="menu-word">ikat</span>
+    <button class="menu-close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  </div>
+  <nav class="menu-links" aria-label="Sections">
+    <a href="#gap"><i>01</i>The gap</a>
+    <a href="#map"><i>02</i>Not building</a>
+    <a href="#product"><i>03</i>What it does</a>
+    <a href="#flow"><i>04</i>How it works</a>
+    <a href="#versus"><i>05</i>Who else</a>
+    <a href="#name"><i>06</i>The name</a>
+    <a href="#why"><i>07</i>Why now</a>
+    <a href="#contact" class="menu-cta"><i>&rarr;</i>Get early access</a>
+  </nav>
+  <div class="menu-foot">
+    <a href="/">&larr; dhvakr.me</a>
+    <span>a product of Inibee</span>
+  </div>
+</div>
 
 <div class="above">
 
@@ -836,6 +941,7 @@ footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
         </svg>
       </button>
       <a class="btn btn-solid" href="#contact">Get early access</a>
+      <button class="menubtn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
     </div>
   </div>
 </header>
@@ -868,11 +974,11 @@ footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
 
     <div class="stats">
       <div class="stat invert">
-        <b>65%</b>
+        <b data-n="65" data-suf="%">65%</b>
         <span>of US employees use AI tools <i>their employer hasn&rsquo;t approved</i>. 71% of those have pasted sensitive data in.</span>
       </div>
       <div class="stat">
-        <b>21%</b>
+        <b data-n="21" data-suf="%">21%</b>
         <span>of organisations have a <i>mature governance model</i> for AI agents, while around 75% plan to deploy agents within two years.</span>
       </div>
       <div class="stat">
@@ -880,7 +986,7 @@ footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
         <span>Eighty-nine percent of teams running agents in production have observability. <i>Fifty-two percent have evals.</i> The gap is where quality dies.</span>
       </div>
       <div class="stat">
-        <b>56%</b>
+        <b data-n="56" data-suf="%">56%</b>
         <span>of CEOs report <i>zero measurable AI ROI</i> in the past twelve months. Capability was never the missing piece.</span>
       </div>
       <div class="stat invert">
@@ -888,7 +994,7 @@ footer a:hover{ color:var(--ink); border-bottom-color:var(--weft); }
         <span>the cost of a single-turn completion for a <i>multi-step agentic workflow</i>. A failed run bills twice: once to fail, once to retry.</span>
       </div>
       <div class="stat">
-        <b>+47%</b>
+        <b data-pre="+" data-n="47" data-suf="%">+47%</b>
         <span>year-over-year growth in AI spend. The <i>fastest-growing line</i> on the cloud bill, and the hardest to attribute to anyone.</span>
       </div>
     </div>
@@ -1922,5 +2028,95 @@ docker run -p 8080:8080 \
 })();
 </script>
 
+<script>
+/* page chrome — progress, rail, menu, count-up. Isolated and wrapped. */
+(function(){
+  'use strict';
+  try {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var bar = document.getElementById('progress'), docH = 0;
+    function measure(){ docH = document.documentElement.scrollHeight - innerHeight; }
+    function onScroll(){ if (bar && docH > 0) bar.style.transform = 'scaleX(' + Math.min(scrollY / docH, 1).toFixed(4) + ')'; }
+    measure(); onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', function(){ measure(); onScroll(); });
+
+    /* rail fallback: the observer is the fast path, but a throttled tab can
+       starve it, so the active dot is also derived from scroll position */
+    var railEl = document.getElementById('rail'), railAt = 0;
+    function railPick(){
+      if (!railEl) return;
+      railAt = Date.now();
+      var mid = scrollY + innerHeight * 0.42, best = null, bestD = Infinity;
+      railEl.querySelectorAll('a[data-for]').forEach(function(a){
+        var el = document.getElementById(a.dataset.for); if (!el) return;
+        var d = Math.abs(el.offsetTop - mid);
+        if (el.offsetTop <= mid + innerHeight * 0.5 && d < bestD) { bestD = d; best = a; }
+      });
+      if (!best) return;
+      railEl.querySelectorAll('a.on').forEach(function(x){ x.classList.remove('on'); });
+      best.classList.add('on');
+    }
+    addEventListener('scroll', function(){ if (Date.now() - railAt > 140) railPick(); }, { passive: true });
+    railPick();
+
+    var rail = document.getElementById('rail');
+    if (rail && 'IntersectionObserver' in window) {
+      var links = {};
+      rail.querySelectorAll('a[data-for]').forEach(function(a){ links[a.dataset.for] = a; });
+      var rio = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          var a = links[e.target.id]; if (!a || !e.isIntersecting) return;
+          rail.querySelectorAll('a.on').forEach(function(x){ x.classList.remove('on'); });
+          a.classList.add('on');
+        });
+      }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+      Object.keys(links).forEach(function(id){ var el = document.getElementById(id); if (el) rio.observe(el); });
+    }
+
+    var menu = document.getElementById('menu'), mb = document.getElementById('menuBtn'), mc = document.getElementById('menuClose'), lastFocus = null;
+    function openMenu(){
+      if (!menu) return;
+      lastFocus = document.activeElement;
+      menu.hidden = false;
+      void menu.offsetWidth; menu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      mb && mb.setAttribute('aria-expanded', 'true');
+      mc && mc.focus();
+    }
+    function closeMenu(){
+      if (!menu || menu.hidden) return;
+      menu.classList.remove('open');
+      document.body.style.overflow = '';
+      mb && mb.setAttribute('aria-expanded', 'false');
+      var done = function(){ menu.hidden = true; };
+      if (reduce) done(); else setTimeout(done, 300);
+      (lastFocus && lastFocus.focus ? lastFocus : mb).focus();
+    }
+    mb && mb.addEventListener('click', openMenu);
+    mc && mc.addEventListener('click', closeMenu);
+    menu && menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMenu(); });
+
+    var nums = document.querySelectorAll('.stat b[data-n]');
+    function run(b){
+      if (reduce) return;
+      var to = parseFloat(b.dataset.n), from = parseFloat(b.dataset.from || '0');
+      var pre = b.dataset.pre || '', suf = b.dataset.suf || '', final = b.innerHTML, t0 = performance.now(), D = 1100;
+      (function tick(now){
+        var k = Math.min((now - t0) / D, 1), e = 1 - Math.pow(1 - k, 3);
+        b.textContent = pre + Math.round(from + (to - from) * e) + suf;
+        if (k < 1) requestAnimationFrame(tick); else b.innerHTML = final;
+      })(t0);
+    }
+    if (nums.length && 'IntersectionObserver' in window) {
+      var cio = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if (e.isIntersecting) { cio.unobserve(e.target); run(e.target); } });
+      }, { threshold: 0.4 });
+      nums.forEach(function(b){ cio.observe(b); });
+    }
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>

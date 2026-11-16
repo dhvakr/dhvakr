@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..200,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=16">
+<link rel="stylesheet" href="/assets/css/style.css?v=18">
 <script>
 /* Applied before first paint: a stored choice wins, otherwise the page
    keeps its dark default. Inline and tiny on purpose — a deferred script
@@ -46,6 +46,36 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+<nav class="rail" id="rail" aria-label="Sections">
+  <a href="#work" data-for="work"><span>Work</span></a>
+  <a href="#ownership" data-for="ownership"><span>Ownership</span></a>
+  <a href="#systems" data-for="systems"><span>Systems</span></a>
+  <a href="#ikat-sec" data-for="ikat-sec"><span>Ikat</span></a>
+  <a href="#stack" data-for="stack"><span>Stack</span></a>
+  <a href="#signals" data-for="signals"><span>Signals</span></a>
+  <a href="#now" data-for="now"><span>Now</span></a>
+  <a href="#contact" data-for="contact"><span>Contact</span></a>
+</nav>
+<div class="menu" id="menu" hidden>
+  <div class="menu-head">
+    <span class="logo">dhvakr</span>
+    <button class="menu-close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  </div>
+  <nav class="menu-links" aria-label="Sections">
+    <a href="#work"><i>01</i>Work</a>
+    <a href="#ownership"><i>02</i>Ownership</a>
+    <a href="#systems"><i>03</i>Systems</a>
+    <a href="#stack"><i>04</i>Stack</a>
+    <a href="#signals"><i>05</i>Signals</a>
+    <a href="#contact"><i>06</i>Contact</a>
+    <a class="menu-ikat" href="/ikat/"><i>&rarr;</i>Ikat</a>
+  </nav>
+  <div class="menu-foot">
+    <a href="mailto:hello@dhvakr.me">hello@dhvakr.me</a>
+    <span id="menu-clock"></span>
+  </div>
+</div>
 
 <header id="site-head">
   <div class="wrap">
@@ -74,6 +104,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
     </button>
     <a class="nav-cta" href="https://docs.google.com/document/d/1FGPfNpRllyY2w-N4bXcPjC-UYmE3fA1iGxa6pdPCr3g/export?format=pdf" target="_blank" rel="noopener">Résumé</a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
   </div>
 </header>
 
@@ -140,12 +171,12 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
   <section class="proof" aria-label="Numbers">
     <div class="wrap">
       <div class="proof-grid reveal">
-        <div class="pstat hl"><b>4M+</b><span>users on the identity platform I built backend for — banking and public sector</span></div>
-        <div class="pstat"><b>70+</b><span>enterprise clients on the AI SaaS platform I own the roadmap for</span></div>
-        <div class="pstat hl"><b>&lt;1s</b><span>REST API P95, held as load rose — down from 2s</span></div>
-        <div class="pstat"><b>100K+</b><span>audit events an hour through Kafka and the outbox pattern</span></div>
-        <div class="pstat"><b>10K+</b><span>notifications a second, sustained on async Python workers</span></div>
-        <div class="pstat hl"><b>$120K</b><span>off the annual cloud bill — consolidated services, redundant auth calls removed</span></div>
+        <div class="pstat hl"><b data-n="4" data-suf="M+">4M+</b><span>users on the identity platform I built backend for — banking and public sector</span></div>
+        <div class="pstat"><b data-n="70" data-suf="+">70+</b><span>enterprise clients on the AI SaaS platform I own the roadmap for</span></div>
+        <div class="pstat hl"><b data-from="2" data-n="1" data-suf="s">&lt;1s</b><span>REST API P95, held as load rose — down from 2s</span></div>
+        <div class="pstat"><b data-n="100" data-suf="K+">100K+</b><span>audit events an hour through Kafka and the outbox pattern</span></div>
+        <div class="pstat"><b data-n="10" data-suf="K+">10K+</b><span>notifications a second, sustained on async Python workers</span></div>
+        <div class="pstat hl"><b data-n="120" data-pre="$" data-suf="K">$120K</b><span>off the annual cloud bill — consolidated services, redundant auth calls removed</span></div>
       </div>
     </div>
   </section>
@@ -271,8 +302,8 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 
   <!-- =========================== ownership =========================== -->
   <section id="ownership">
-    <div class="wrap">
-      <div class="sec-head reveal">
+    <div class="wrap own-grid">
+      <div class="sec-head own-pin reveal">
         <p class="eyebrow">Ownership</p>
         <h2>The half of the job that isn&rsquo;t writing code.</h2>
         <p>Owning what gets built and why, what it costs to run, and whether the people around it get better. This is the part that doesn&rsquo;t fit in a commit history.</p>
@@ -322,6 +353,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           </div>
         </li>
       </ol>
+
     </div>
   </section>
 
@@ -518,7 +550,10 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
           <p class="eyebrow">Contact</p>
           <h2>If you are building something that has to stay up, I want to hear about it.</h2>
           <p class="contact-lede">Backend and cloud work, system design arguments, agent infrastructure, or a talk. Mail is the fastest way to reach me.</p>
-          <a class="mail-big" href="mailto:hello@dhvakr.me">hello@dhvakr.me</a>
+          <div class="mail-row">
+            <a class="mail-big" href="mailto:hello@dhvakr.me">hello@dhvakr.me</a>
+            <button class="copy" id="copyMail" type="button" data-copy="hello@dhvakr.me" aria-label="Copy email address"><span>copy</span></button>
+          </div>
         </div>
         <div class="reach reveal">
           <a href="https://github.com/dhvakr" target="_blank" rel="noopener me"><span class="k">GitHub</span><span class="v">@dhvakr</span><span class="ext">&nearr;</span></a>
@@ -536,8 +571,9 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 <footer>
   <div class="wrap">
     <span class="sp">&copy; <span id="year">2026</span> Divakaran T</span>
+    <span class="clock"><i aria-hidden="true"></i>Chennai &nbsp;<b id="clock">--:--</b> IST</span>
     <a href="/ikat/">ikat</a>
-    <span>Writing software, telling stories, living curious.</span>
+    <a href="#main" class="totop">Top &uarr;</a>
   </div>
 </footer>
 
@@ -1198,6 +1234,129 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
 
     return { recolour: render, render: render };
   })();
+})();
+</script>
+<script>
+/* ---- page chrome: progress, rail, menu, count-up, copy, clock ----
+   Separate from the main script on purpose; if anything here throws the
+   page is unaffected. Everything is cheap: one scroll listener, one
+   observer, no layout reads in the hot path beyond scrollY. */
+(function(){
+  'use strict';
+  try {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* progress */
+    var bar = document.getElementById('progress');
+    var docH = 0;
+    function measure(){ docH = document.documentElement.scrollHeight - innerHeight; }
+    function onScroll(){
+      if (!bar || docH <= 0) return;
+      bar.style.transform = 'scaleX(' + Math.min(scrollY / docH, 1).toFixed(4) + ')';
+    }
+    measure(); onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', function(){ measure(); onScroll(); });
+
+    /* rail fallback: the observer is the fast path, but a throttled tab can
+       starve it, so the active dot is also derived from scroll position */
+    var railEl = document.getElementById('rail'), railAt = 0;
+    function railPick(){
+      if (!railEl) return;
+      railAt = Date.now();
+      var mid = scrollY + innerHeight * 0.42, best = null, bestD = Infinity;
+      railEl.querySelectorAll('a[data-for]').forEach(function(a){
+        var el = document.getElementById(a.dataset.for); if (!el) return;
+        var d = Math.abs(el.offsetTop - mid);
+        if (el.offsetTop <= mid + innerHeight * 0.5 && d < bestD) { bestD = d; best = a; }
+      });
+      if (!best) return;
+      railEl.querySelectorAll('a.on').forEach(function(x){ x.classList.remove('on'); });
+      best.classList.add('on');
+    }
+    addEventListener('scroll', function(){ if (Date.now() - railAt > 140) railPick(); }, { passive: true });
+    railPick();
+
+    /* rail: which section is in view */
+    var rail = document.getElementById('rail');
+    if (rail && 'IntersectionObserver' in window) {
+      var links = {};
+      rail.querySelectorAll('a[data-for]').forEach(function(a){ links[a.dataset.for] = a; });
+      var secs = Object.keys(links).map(function(id){ return document.getElementById(id); }).filter(Boolean);
+      var io = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          var a = links[e.target.id]; if (!a) return;
+          if (e.isIntersecting) {
+            rail.querySelectorAll('a.on').forEach(function(x){ x.classList.remove('on'); });
+            a.classList.add('on');
+          }
+        });
+      }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+      secs.forEach(function(s){ io.observe(s); });
+    }
+
+    /* mobile menu */
+    var menu = document.getElementById('menu'), mb = document.getElementById('menuBtn'), mc = document.getElementById('menuClose');
+    var lastFocus = null;
+    function openMenu(){
+      if (!menu) return;
+      lastFocus = document.activeElement;
+      menu.hidden = false;
+      void menu.offsetWidth; menu.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      mb && mb.setAttribute('aria-expanded', 'true');
+      mc && mc.focus();
+    }
+    function closeMenu(){
+      if (!menu || menu.hidden) return;
+      menu.classList.remove('open');
+      document.body.style.overflow = '';
+      mb && mb.setAttribute('aria-expanded', 'false');
+      var done = function(){ menu.hidden = true; };
+      if (reduce) done(); else setTimeout(done, 260);
+      (lastFocus && lastFocus.focus ? lastFocus : mb).focus();
+    }
+    mb && mb.addEventListener('click', openMenu);
+    mc && mc.addEventListener('click', closeMenu);
+    menu && menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMenu(); });
+
+    /* count-up: snaps to the exact original text when it lands */
+    var nums = document.querySelectorAll('.pstat b[data-n]');
+    function run(b){
+      var to = parseFloat(b.dataset.n), from = parseFloat(b.dataset.from || '0');
+      var pre = b.dataset.pre || '', suf = b.dataset.suf || '';
+      var final = b.innerHTML, t0 = performance.now(), D = 1100;
+      if (reduce) return;
+      (function tick(now){
+        var k = Math.min((now - t0) / D, 1), e = 1 - Math.pow(1 - k, 3);
+        var v = from + (to - from) * e;
+        b.textContent = pre + Math.round(v) + suf;
+        if (k < 1) requestAnimationFrame(tick); else b.innerHTML = final;
+      })(t0);
+    }
+    if (nums.length && 'IntersectionObserver' in window) {
+      var cio = new IntersectionObserver(function(es){
+        es.forEach(function(e){ if (e.isIntersecting) { cio.unobserve(e.target); run(e.target); } });
+      }, { threshold: 0.4 });
+      nums.forEach(function(b){ cio.observe(b); });
+    }
+
+    /* copy */
+    var cp = document.getElementById('copyMail');
+    if (cp) cp.addEventListener('click', function(){
+      var v = cp.dataset.copy, lbl = cp.querySelector('span');
+      function ok(){ cp.classList.add('did'); lbl.textContent = 'copied'; setTimeout(function(){ cp.classList.remove('did'); lbl.textContent = 'copy'; }, 1600); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(ok, ok);
+      else { var i = document.createElement('input'); i.value = v; document.body.appendChild(i); i.select(); try { document.execCommand('copy'); } catch(e){} i.remove(); ok(); }
+    });
+
+    /* Chennai clock — his time, not the reader's */
+    var clk = document.getElementById('clock'), mclk = document.getElementById('menu-clock');
+    var fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
+    function tickClock(){ var t = fmt.format(new Date()); if (clk) clk.textContent = t; if (mclk) mclk.textContent = 'Chennai ' + t + ' IST'; }
+    tickClock(); setInterval(tickClock, 20000);
+  } catch (e) { /* chrome is optional */ }
 })();
 </script>
 </body>

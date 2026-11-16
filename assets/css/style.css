@@ -339,8 +339,20 @@ header .wrap {
 
 /* ============================ sections ============================ */
 
-section { padding-block: clamp(64px, 9vw, 120px); }
+section { padding-block: clamp(64px, 9vw, 120px); position: relative; }
 section + section { border-top: 1px solid var(--line); }
+/* The hairline between sections carries a short accent tick, aligned to the
+   content edge — the same mark the delta ledger uses for "where it started".
+   One motif, used everywhere, instead of ten identical rules. */
+section + section::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  height: 1px;
+  width: 28px;
+  left: max(var(--gut), calc((100% - var(--wrap)) / 2 + var(--gut)));
+  background: var(--sig-graph);
+}
 
 .sec-head { margin-bottom: clamp(34px, 5vw, 56px); }
 .sec-head h2 { font-size: var(--step-3); max-width: 30ch; }
@@ -771,6 +783,14 @@ section + section { border-top: 1px solid var(--line); }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
   gap: 18px;
+}
+/* Three columns with the first card featured: 2+1 over 3, so five cards
+   never leave a lone card on the last row. */
+@media (min-width: 900px) {
+  .sys-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sys-grid .sys:first-child { grid-column: span 2; padding: 28px 30px; }
+  .sys-grid .sys:first-child h3 { font-size: var(--step-2); }
+  .sys-grid .sys:first-child p { max-width: 52ch; font-size: var(--step-0); }
 }
 
 .sys {
@@ -1592,4 +1612,145 @@ body.fleet-on .panel.drawing > *:not(.box-draw) { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .fall-track i { animation: none; } }
 @media (max-width: 520px) {
   .fall-row { grid-template-columns: 58px minmax(0,1fr) 54px; gap: 8px; }
+}
+
+
+/* ============================ page chrome ============================
+   Progress line, section rail, mobile menu. All fixed, all cheap. */
+
+.progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 65; pointer-events: none; }
+.progress i { display: block; height: 100%; background: var(--sig-graph); transform: scaleX(0); transform-origin: left; }
+
+.rail {
+  position: fixed; right: 22px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: none; flex-direction: column; gap: 14px;
+}
+@media (min-width: 1240px) { .rail { display: flex; } }
+.rail a {
+  position: relative; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--line-2);
+  transition: background .2s ease, transform .2s ease;
+}
+.rail a:hover, .rail a.on { background: var(--sig-graph); }
+.rail a.on { transform: scale(1.35); }
+.rail a span {
+  position: absolute; right: 18px; top: 50%;
+  transform: translateY(-50%) translateX(6px);
+  font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--fg-2); white-space: nowrap; opacity: 0; pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.rail a:hover span, .rail a.on span { opacity: 1; transform: translateY(-50%); }
+
+.menu-btn {
+  display: none; width: 34px; height: 34px; flex: none;
+  border: 1px solid var(--line); border-radius: 999px; background: transparent; cursor: pointer;
+  place-items: center; padding: 0;
+}
+.menu-btn i { display: block; width: 14px; height: 1.5px; background: var(--fg); margin: 2.5px auto; border-radius: 1px; }
+@media (max-width: 880px) { .menu-btn { display: grid; } }
+
+.menu {
+  position: fixed; inset: 0; z-index: 80;
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  display: flex; flex-direction: column;
+  padding: 0 var(--gut) 28px;
+  opacity: 0; transition: opacity .26s ease;
+}
+.menu[hidden] { display: none; }
+.menu.open { opacity: 1; }
+.menu-head { height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.menu-head .logo { margin-right: 0; }
+.menu-close {
+  width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--line-2);
+  background: transparent; color: var(--fg); font-size: 24px; line-height: 1; cursor: pointer;
+}
+.menu-links { display: flex; flex-direction: column; margin-top: 22px; }
+.menu-links a {
+  display: flex; align-items: baseline; gap: 16px;
+  padding: 15px 0; border-top: 1px solid var(--line);
+  font-family: var(--display); font-weight: 600;
+  font-size: clamp(1.9rem, 8vw, 2.6rem); letter-spacing: -.03em; line-height: 1;
+  font-variation-settings: "wdth" 92, "opsz" 48;
+  transform: translateY(8px); opacity: 0;
+  transition: transform .4s cubic-bezier(.2,.7,.3,1), opacity .4s ease;
+}
+.menu-links a:last-child { border-bottom: 1px solid var(--line); }
+.menu.open .menu-links a { transform: none; opacity: 1; }
+.menu-links a:nth-child(2) { transition-delay: .04s }
+.menu-links a:nth-child(3) { transition-delay: .08s }
+.menu-links a:nth-child(4) { transition-delay: .12s }
+.menu-links a:nth-child(5) { transition-delay: .16s }
+.menu-links a:nth-child(6) { transition-delay: .20s }
+.menu-links a:nth-child(7) { transition-delay: .24s }
+.menu-links a i { font-family: var(--mono); font-style: normal; font-size: 12px; color: var(--fg-3); width: 28px; flex: none; }
+.menu-links a.menu-ikat { color: var(--sig); }
+.menu-foot {
+  margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  font-family: var(--mono); font-size: var(--step--1); color: var(--fg-2);
+}
+
+/* ============================ micro-interactions ============================ */
+
+/* nav: an underline that grows from the left, not a colour swap */
+.nav-links a { position: relative; }
+.nav-links a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -5px; height: 1px;
+  background: var(--sig-graph); transform: scaleX(0); transform-origin: left;
+  transition: transform .22s cubic-bezier(.2,.7,.3,1);
+}
+.nav-links a:hover::after { transform: scaleX(1); }
+
+/* ledger rows: hovering shows the ghost of where the number started */
+.delta { transition: background .18s ease; }
+.delta:hover { background: color-mix(in srgb, var(--bg-2) 70%, transparent); }
+.d-bar::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: var(--base, 100%);
+  border-radius: 999px; background: var(--fg-3); opacity: 0; transition: opacity .2s ease;
+}
+.delta:hover .d-bar::before { opacity: .22; }
+.delta:hover .d-label { color: var(--fg); }
+
+/* cards: the link leads the way */
+.sys .sys-link { transition: color .18s ease, border-color .18s ease, transform .2s cubic-bezier(.2,.7,.3,1); }
+.sys:hover .sys-link { color: var(--sig); border-color: var(--sig-graph); transform: translateX(4px); }
+.sys:hover .sys-top h3 { color: var(--fg); }
+
+/* proof numbers take the accent on hover */
+.pstat b { transition: color .18s ease; }
+.pstat:hover b { color: var(--sig); }
+
+/* ============================ ownership: pinned opener ============================
+   The one section that reads as an essay rather than a grid: the heading
+   stays put while the moves scroll past it. */
+@media (min-width: 960px) {
+  .own-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(32px, 5vw, 80px); align-items: start; }
+  .own-pin { position: sticky; top: 96px; margin-bottom: 0; }
+  .own-grid .moves { margin-top: 6px; }
+}
+
+/* ============================ contact & footer ============================ */
+
+.mail-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+.mail-row .mail-big { margin-top: 0; }
+.copy {
+  font-family: var(--mono); font-size: var(--step--2); letter-spacing: .06em; text-transform: uppercase;
+  padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line-2);
+  background: transparent; color: var(--fg-2); cursor: pointer;
+  transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+.copy:hover { border-color: var(--sig-graph); color: var(--fg); }
+.copy.did { background: var(--sig-wash); border-color: var(--sig-graph); color: var(--sig); }
+
+footer .clock { display: inline-flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+footer .clock i { width: 6px; height: 6px; border-radius: 50%; background: var(--sig-graph); animation: beat 2.6s ease-out infinite; }
+footer .clock b { color: var(--fg); font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu, .menu-links a, .rail a, .rail a span, .nav-links a::after, .sys .sys-link { transition: none; }
+  footer .clock i { animation: none; }
 }

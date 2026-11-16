@@ -43,6 +43,10 @@ Pages at it.
 - **Every number on the portfolio comes from the Google Doc résumé**, which
   the résumé links hit live via `export?format=pdf`. There is no PDF in the
   repo any more. If a figure changes in that doc, change it on the page too.
+- **The section rail and the mobile menu are hand-written lists.** If a section is
+  added, removed or renamed, update the `<nav class="rail">` dots and the
+  `<nav class="menu-links">` entries in both `index.html` and `ikat/index.html`,
+  or the chrome will point at nothing.
 - `assets/` is not content-hashed, so `_headers` caps its cache at one day —
   and the stylesheet is linked as `style.css?v=N`. **Bump that N whenever the
   CSS changes**, in `index.html` and `404.html`, or returning visitors get new
