@@ -210,13 +210,19 @@ img, svg, canvas, iframe { display: block; max-width: 100%; }
   gap: 10px;
   margin-bottom: 22px;
 }
-.eyebrow::before {
-  content: "";
-  width: 22px;
-  height: 1px;
-  background: var(--sig-graph);
-  flex: none;
-  align-self: center;
+/* Sections are numbered instead of dashed: "02  OWNERSHIP". The number is
+   the one accent mark per section, and it doubles as a sense of place on a
+   long page. The hero's role line carries no number. */
+main { counter-reset: sec; }
+main > section:not(.hero):not(.proof) { counter-increment: sec; }
+main > section:not(.hero):not(.proof) .eyebrow::before {
+  content: counter(sec, decimal-leading-zero);
+  color: var(--sig);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding-right: 10px;
+  margin-right: 2px;
+  border-right: 1px solid var(--line-2);
 }
 /* the hero's role line is the longest on the page — let it hold one row
    wherever the column is wide enough for it */
@@ -1676,6 +1682,8 @@ body.fleet-on .panel.drawing > *:not(.box-draw) { opacity: 0; }
 .menu-links a:nth-child(5) { transition-delay: .16s }
 .menu-links a:nth-child(6) { transition-delay: .20s }
 .menu-links a:nth-child(7) { transition-delay: .24s }
+.menu-links a:nth-child(8) { transition-delay: .28s }
+.menu-links a:nth-child(9) { transition-delay: .32s }
 .menu-links a i { font-family: var(--mono); font-style: normal; font-size: 12px; color: var(--fg-3); width: 28px; flex: none; }
 .menu-links a.menu-ikat { color: var(--sig); }
 .menu-foot {
