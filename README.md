@@ -16,7 +16,7 @@ résumé                Google Doc, linked live as export?format=pdf
 
 ## Deploying
 
-Cloudflare Pages, **production branch `iteration-3`**, no build command, output
+Cloudflare Pages, **production branch `iteration-4`**, no build command, output
 directory `/` (the repository root).
 
 The `main` branch is the GitHub profile README, not the site — don't point
