@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..200,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=23">
+<link rel="stylesheet" href="/assets/css/style.css?v=27">
 <script>
 /* Applied before first paint: a stored choice wins, otherwise the page
    keeps its dark default. Inline and tiny on purpose — a deferred script
@@ -240,20 +240,20 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
             <li><button type="button" class="arch-node" data-node="mcp" data-note="MCP servers that let AI agents operate the platform, with scoped access and every call on the record.">MCP for agents</button></li>
           </ul>
         </div>
-        <div class="arch-zone arch-next" data-zone="ikat">
-          <a class="arch-zone-top" href="/ikat/"><span class="arch-year">next</span><span class="arch-org">Ikat &rarr;</span></a>
-          <b class="arch-name">Agent control plane</b>
-          <p class="arch-desc">The same problems one layer up: what an AI agent is allowed to touch, on whose behalf, and what it cost.</p>
+        <div class="arch-zone arch-now" data-zone="agents">
+          <a class="arch-zone-top" href="#ikat-sec" aria-label="Go to Ikat, section 04"><span class="arch-year">building</span><span class="arch-org">Ikat &rarr;</span></a>
+          <b class="arch-name">Agent platform</b>
+          <p class="arch-desc">The same problems one layer up, already in practice: what an AI agent may touch, on whose behalf, and what it cost &mdash; scoped, enforced and on the record.</p>
           <ul class="arch-nodes">
-            <li><button type="button" class="arch-node" data-node="aid" data-note="Scoped, short-lived identity per agent &mdash; the identity problem, one layer up.">Agent identity</button></li>
-            <li><button type="button" class="arch-node" data-node="pol" data-note="Rules as code, enforced on every agent call before it reaches anything real.">Policy in the path</button></li>
-            <li><button type="button" class="arch-node" data-node="led" data-note="The cost of each call attributed before it is spent, not reconciled next month.">Ledger</button></li>
-            <li><button type="button" class="arch-node" data-node="trc" data-note="One structured record per call, exported to the tools you already run.">Trace</button></li>
+            <li><button type="button" class="arch-node" data-node="aid" data-note="Every agent gets its own scoped, short-lived identity &mdash; the identity problem, one layer up.">Agent identity</button></li>
+            <li><button type="button" class="arch-node" data-node="pol" data-note="Rules as code, checked on every agent call before it reaches anything real.">Policy in the path</button></li>
+            <li><button type="button" class="arch-node" data-node="led" data-note="Each call&rsquo;s cost attributed as it happens, not reconciled next month.">Ledger</button></li>
+            <li><button type="button" class="arch-node" data-node="trc" data-note="One structured record per agent call, in the same observability stack as every service.">Trace</button></li>
           </ul>
         </div>
           </div>
         </div>
-        <p class="arch-readout" id="arch-readout" aria-live="polite">Identity in front of users, then the services behind them, then the platform they run on &mdash; and next, the agents.</p>
+        <p class="arch-readout" id="arch-readout" aria-live="polite">Identity in front of users, then the services behind them, then the platform they run on &mdash; and now, the agents working on it.</p>
       </div>
 
 <div class="roles" id="roles">
@@ -566,8 +566,8 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       <div class="music-row reveal">
         <div class="music-copy">
           <p class="eyebrow">Off the clock</p>
-          <h2>Usually on a highway out of Chennai.</h2>
-          <p>When I am not reading a query plan I am somewhere on a long drive, or working out what the city has decided is worth queueing for this month. Both are reconnaissance, in their own way.</p>
+          <h2>Usually somewhere in a game.</h2>
+          <p>When I am not reading a query plan I am learning a new map, tuning a build or losing to the same boss until the pattern clicks. It is the debugging loop with better graphics: read what happened, change one thing, go again.</p>
         </div>
         <div class="panel nowcard">
           <div class="panel-head">

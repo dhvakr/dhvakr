@@ -1797,7 +1797,7 @@ footer .clock b { color: var(--fg); font-weight: 500; }
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
 }
-.arch-zone.arch-next { border-style: dashed; }
+.arch-zone.arch-now .arch-year { color: var(--sig); }
 
 .arch-zone-top {
   display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
