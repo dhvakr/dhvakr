@@ -768,7 +768,7 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       var vw = innerWidth, crew = [];
       var pending = [];            // in-flight typing/drawing finishers
       var halted = false;          // once true, no new build may start
-      var N = vw < 560 ? 10 : (vw < 900 ? 16 : 24);
+      var N = vw < 560 ? 4 : (vw < 900 ? 5 : 6);   // a small crew; each one is always working
 
       function park(a, instant){
         var x = Math.random() * innerWidth, y = innerHeight + 70 + Math.random() * 60;
@@ -1006,7 +1006,10 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
     var KEY = 'dhvakr-built';
     var alreadyBuilt = false;
     try { alreadyBuilt = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
-    if (alreadyBuilt) {
+    /* Nobody to perform for: a background tab, or a visitor who landed
+       mid-page (anchor link, restored scroll). Show the page as it is. */
+    var unseen = document.hidden || location.hash.length > 1 || scrollY > innerHeight * 0.4;
+    if (alreadyBuilt || unseen) {
       // nothing to perform — tear the crew down and leave the page alone
       if (Fleet.layer && Fleet.layer.parentNode) Fleet.layer.remove();
       Fleet.ready = false;
@@ -1055,27 +1058,24 @@ setTimeout(function(){if(!window.__revealOK)document.documentElement.classList.a
       }, 900);
     }
 
-    targets.forEach(function(el, i){
-      var a = Fleet.crew[i % Fleet.crew.length];
+    /* A work queue: an agent takes the next target only once its last one
+       is finished, so nobody is pulled away mid-sentence. Agents with
+       nothing left leave the screen instead of loitering. */
+    var queue = targets.slice();
+    function next(a){
+      if (over) return;
+      var el = queue.shift();
+      if (!el) { Fleet.park(a); return; }
       var t0 = performance.now();
-      Fleet.dispatch(a, el, buildStepFor(el, a), 180 + i * 150, function(){
+      Fleet.dispatch(a, el, buildStepFor(el, a), 40, function(ag){
         done++;
         if (fbT) fbT.textContent = done;
-        logLine(a, el, Math.round(performance.now() - t0));
+        logLine(ag, el, Math.round(performance.now() - t0));
         if (done >= targets.length) setTimeout(end, 320);
+        else next(ag);
       });
-    });
-    // everyone else looks busy around the hero
-    for (var j = targets.length; j < Fleet.crew.length; j++) {
-      (function(a, d){
-        setTimeout(function(){
-          if (a.busy) return;
-          Fleet.moveTo(a, Math.random()*innerWidth,
-                          innerHeight*(0.12 + Math.random()*0.66), 520 + Math.random()*400);
-          if (Math.random() < 0.55) setTimeout(function(){ Fleet.strike(a); }, 470);
-        }, d);
-      })(Fleet.crew[j], 200 + j * 85);
     }
+    Fleet.crew.forEach(function(a, i){ setTimeout(function(){ next(a); }, 180 + i * 170); });
 
     ['pointerdown','keydown','wheel','touchstart'].forEach(function(ev){
       window.addEventListener(ev, end, { passive: true, once: true });
